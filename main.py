@@ -6,10 +6,6 @@ from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
-cursor.execute("ALTER TABLE messages ADD COLUMN chat_type TEXT;")
-cursor.execute("ALTER TABLE messages ADD COLUMN chat_title TEXT;")
-conn.commit()
-
 conn = sqlite3.connect("madar.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -21,7 +17,9 @@ CREATE TABLE IF NOT EXISTS messages (
     message_type TEXT,
     text TEXT,
     created_at TEXT,
-    raw TEXT
+    raw TEXT,
+    chat_type TEXT,
+    chat_title TEXT
 )
 """)
 conn.commit()
