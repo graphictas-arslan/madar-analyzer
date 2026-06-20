@@ -43,10 +43,14 @@ def home():
 async def webhook(request: Request):
     data = await request.json()
 
-    message = data.get("message", data)
+    message = data.get("message", {})
+
+    chat = message.get("chat", {})
+    chat_type = chat.get("type", "unknown")
+    chat_title = chat.get("title", "private")
 
     message_id = str(message.get("message_id", ""))
-    chat_id = str(message.get("chat", {}).get("id", ""))
+    chat_id = str(chat.get("id", ""))
     text = message.get("text", "")
 
     msg_type = detect_message_type(message)
@@ -60,20 +64,24 @@ async def webhook(request: Request):
             message_type,
             text,
             created_at,
-            raw
-        ) VALUES (?, ?, ?, ?, ?, ?)
+            raw,
+            chat_type,
+            chat_title
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         message_id,
         chat_id,
         msg_type,
         text,
         created_at,
-        json.dumps(data)
+        json.dumps(data),
+        chat_type,
+        chat_title
     ))
 
     conn.commit()
 
-    print("MESSAGE SAVED:", msg_type)
+    print("MESSAGE SAVED:", msg_type, chat_type)
 
     return {"ok": True}
 
