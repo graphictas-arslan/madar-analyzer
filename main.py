@@ -73,3 +73,22 @@ async def webhook(request: Request):
     print("MESSAGE SAVED:", msg_type)
 
     return {"ok": True}
+
+@app.get("/stats")
+def stats():
+    cursor.execute("SELECT message_type FROM messages")
+    rows = cursor.fetchall()
+
+    total = len(rows)
+    text = len([r for r in rows if r[0] == "text"])
+    photo = len([r for r in rows if r[0] == "photo"])
+    video = len([r for r in rows if r[0] == "video"])
+    other = len([r for r in rows if r[0] == "other"])
+
+    return {
+        "total_messages": total,
+        "text": text,
+        "photo": photo,
+        "video": video,
+        "other": other
+    }
