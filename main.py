@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 import sqlite3
 import json
 from datetime import datetime
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -74,7 +75,7 @@ async def webhook(request: Request):
 
     return {"ok": True}
 
-@app.get("/stats")
+@app.get("/stats", response_class=HTMLResponse)
 def stats():
     cursor.execute("SELECT message_type FROM messages")
     rows = cursor.fetchall()
@@ -85,10 +86,66 @@ def stats():
     video = len([r for r in rows if r[0] == "video"])
     other = len([r for r in rows if r[0] == "other"])
 
-    return {
-        "total_messages": total,
-        "text": text,
-        "photo": photo,
-        "video": video,
-        "other": other
-    }
+    return f"""
+    <html>
+    <head>
+        <title>Madar Analyzer</title>
+        <style>
+            body {{
+                font-family: Arial;
+                background: #0f172a;
+                color: white;
+                text-align: center;
+                padding: 40px;
+            }}
+            .card {{
+                display: inline-block;
+                background: #1e293b;
+                padding: 20px;
+                margin: 10px;
+                border-radius: 12px;
+                width: 150px;
+            }}
+            .title {{
+                font-size: 28px;
+                margin-bottom: 30px;
+            }}
+            .num {{
+                font-size: 32px;
+                font-weight: bold;
+                color: #38bdf8;
+            }}
+        </style>
+    </head>
+
+    <body>
+        <div class="title">📊 Madar Analyzer Dashboard</div>
+
+        <div class="card">
+            <div>Total</div>
+            <div class="num">{total}</div>
+        </div>
+
+        <div class="card">
+            <div>Text</div>
+            <div class="num">{text}</div>
+        </div>
+
+        <div class="card">
+            <div>Photo</div>
+            <div class="num">{photo}</div>
+        </div>
+
+        <div class="card">
+            <div>Video</div>
+            <div class="num">{video}</div>
+        </div>
+
+        <div class="card">
+            <div>Other</div>
+            <div class="num">{other}</div>
+        </div>
+
+    </body>
+    </html>
+    """
