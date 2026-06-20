@@ -9,8 +9,6 @@ app = FastAPI()
 conn = sqlite3.connect("madar.db", check_same_thread=False)
 cursor = conn.cursor()
 
-print("FULL DATA:")                                                #تست
-print(json.dumps(data, indent=2, ensure_ascii=False))              #تست
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS messages (
