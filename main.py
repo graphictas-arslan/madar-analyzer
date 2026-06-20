@@ -77,14 +77,20 @@ async def webhook(request: Request):
 
 @app.get("/stats", response_class=HTMLResponse)
 def stats():
-    cursor.execute("SELECT chat_id, message_type FROM messages")
+    cursor.execute("SELECT chat_id, message_type, raw FROM messages")
     rows = cursor.fetchall()
 
     channels = {}
 
-    for chat_id, msg_type in rows:
-        if chat_id not in channels:
-            channels[chat_id] = {
+    for chat_id, msg_type, raw in rows:
+
+        data = json.loads(raw)
+        chat = data.get("message", {}).get("chat", {})
+
+        channel_name = chat.get("title", f"کانال {chat_id}")
+
+        if channel_name not in channels:
+            channels[channel_name] = {
                 "total": 0,
                 "text": 0,
                 "photo": 0,
@@ -92,25 +98,32 @@ def stats():
                 "other": 0
             }
 
-        channels[chat_id]["total"] += 1
-        if msg_type in channels[chat_id]:
-            channels[chat_id][msg_type] += 1
+        channels[channel_name]["total"] += 1
+
+        if msg_type == "text":
+            channels[channel_name]["text"] += 1
+        elif msg_type == "photo":
+            channels[channel_name]["photo"] += 1
+        elif msg_type == "video":
+            channels[channel_name]["video"] += 1
         else:
-            channels[chat_id]["other"] += 1
+            channels[channel_name]["other"] += 1
 
     html_cards = ""
 
-    for chat_id, data in channels.items():
+    for name, data in channels.items():
         html_cards += f"""
         <div class="card">
-            <div class="label">Channel</div>
-            <div style="font-size:12px; opacity:0.7">{chat_id}</div>
-            <hr>
-            <div>Total: {data['total']}</div>
-            <div>Text: {data['text']}</div>
-            <div>Photo: {data['photo']}</div>
-            <div>Video: {data['video']}</div>
-            <div>Other: {data['other']}</div>
+            <div class="label">📢 کانال</div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:10px">
+                {name}
+            </div>
+
+            <div>📊 کل پیام‌ها: {data['total']}</div>
+            <div>📝 متن: {data['text']}</div>
+            <div>🖼 عکس: {data['photo']}</div>
+            <div>🎥 ویدیو: {data['video']}</div>
+            <div>📦 سایر: {data['other']}</div>
         </div>
         """
 
@@ -143,9 +156,10 @@ def stats():
                 background: rgba(255,255,255,0.08);
                 padding: 20px;
                 border-radius: 16px;
-                width: 220px;
-                text-align: left;
+                width: 260px;
+                text-align: right;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                direction: rtl;
             }}
 
             .label {{
@@ -156,7 +170,7 @@ def stats():
     </head>
 
     <body>
-        <h1>📊 Madar Analyzer - Channels</h1>
+        <h1>📊 داشبورد مادر آنالیزور</h1>
 
         <div class="container">
             {html_cards}
