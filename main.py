@@ -1,16 +1,17 @@
 from flask import Flask
 from config import Config
 from database import init_database
+from extensions import db, migrate
 
 # ساخت برنامه
 app = Flask(__name__)
 
 # تنظیمات
 app.config.from_object(Config)
-
+db.init_app(app)
+migrate.init_app(app, db)
 
 # اتصال دیتابیس
-init_database(app)
 
 
 @app.route("/")
