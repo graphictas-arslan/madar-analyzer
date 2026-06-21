@@ -9,6 +9,8 @@ import models
 app = Flask(__name__)
 
 app.config.from_object(Config)
+app.register_blueprint(auth_bp)
+
 
 db.init_app(app)
 migrate.init_app(app, db)
