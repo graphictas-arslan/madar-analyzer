@@ -2,6 +2,7 @@ from flask import Flask
 from config import Config
 from database import init_database
 from extensions import db, migrate
+from auth.routes import auth_bp
 
 import models
 
