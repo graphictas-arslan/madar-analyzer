@@ -62,3 +62,12 @@ def dashboard():
     return render_template(
         "dashboard.html"
     )
+
+@auth_bp.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(
+        url_for("auth.login")
+    )
