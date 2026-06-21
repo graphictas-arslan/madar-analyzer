@@ -3,6 +3,8 @@ from config import Config
 from database import init_database
 from extensions import db, migrate
 
+import models
+
 # ساخت برنامه
 app = Flask(__name__)
 
