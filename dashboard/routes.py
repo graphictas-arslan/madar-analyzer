@@ -7,9 +7,9 @@ dashboard_bp = Blueprint(
 )
 
 
-@dashboard_bp.route("/channels/create")
-def create_channel():
+@dashboard_bp.route("/dashboard")
+def dashboard():
 
     return render_template(
-        "create_channel.html"
+        "dashboard/index.html"
     )
