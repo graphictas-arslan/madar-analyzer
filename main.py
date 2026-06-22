@@ -3,8 +3,7 @@ from config import Config
 from database import init_database
 from extensions import db, migrate
 from auth.routes import auth_bp
-from bot.routes import bot_bp
-
+from auth.routes import bot_bp
 import models
 
 app = Flask(__name__)
