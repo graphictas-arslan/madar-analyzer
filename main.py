@@ -4,6 +4,11 @@ from database import init_database
 from extensions import db, migrate
 from auth.routes import bot_bp
 import models
+from dashboard.routes import dashboard_bp
+
+app.register_blueprint(
+    dashboard_bp
+)
 
 app = Flask(__name__)
 
