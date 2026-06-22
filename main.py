@@ -3,6 +3,7 @@ from config import Config
 from database import init_database
 from extensions import db, migrate
 from auth.routes import auth_bp
+from bot.routes import bot_bp
 
 import models
 
@@ -10,7 +11,7 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 app.register_blueprint(auth_bp)
-
+app.register_blueprint(bot_bp)
 
 db.init_app(app)
 migrate.init_app(app, db)
