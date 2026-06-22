@@ -2,34 +2,33 @@ from flask import Flask
 from config import Config
 from database import init_database
 from extensions import db, migrate
-from auth.routes import bot_bp
+from bot.routes import bot_bp
 from dashboard.routes import dashboard_bp
 from users.routes import users_bp
+from dotenv import load_dotenv
+import os
 import models
 
-app = Flask(__name__)
+load_dotenv()
 
+app = Flask(__name__)
 app.config.from_object(Config)
-app.config["SECRET_KEY"] = "tas-super-secret-key"
+app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "fallback-super-secret-key")
 
 app.register_blueprint(users_bp)
-
-db.init_app(app)
-migrate.init_app(app, db)
-
 app.register_blueprint(bot_bp)
 app.register_blueprint(dashboard_bp)
 
-init_database(app)
-
-
-@app.route("/")
-def home():
+@app.route('/')
+def index():
     return "Bale Analyzer is Running 🚀"
 
+# Initialize extensions
+db.init_app(app)
+migrate.init_app(app, db)
 
-if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=5000
-    )
+# Initialize database tables
+init_database(app)
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
