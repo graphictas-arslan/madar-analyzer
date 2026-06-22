@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+مدیریت کاربران
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>مدیریت کاربران</h2>
+
+    <table class="table table-striped mt-4">
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>نام</th>
+
+                <th>نام کاربری</th>
+
+                <th>وضعیت</th>
+
+                <th>ادمین</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for user in users %}
+
+            <tr>
+
+                <td>{{ user.id }}</td>
+
+                <td>{{ user.full_name }}</td>
+
+                <td>{{ user.username }}</td>
+
+                <td>
+
+                    {% if user.is_active %}
+                        فعال
+                    {% else %}
+                        غیرفعال
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if user.is_super_admin %}
+                        ✅
+                    {% else %}
+                        -
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
