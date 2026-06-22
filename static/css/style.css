@@ -1,1 +1,231 @@
- 
+:root{
+
+    --bg:#0f172a;
+
+    --sidebar:#111827;
+
+    --card:#1e293b;
+
+    --border:#334155;
+
+    --primary:#7c3aed;
+
+    --secondary:#2563eb;
+
+    --text:#f8fafc;
+
+    --muted:#94a3b8;
+
+    --success:#22c55e;
+
+    --danger:#ef4444;
+
+}
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:"Vazirmatn",sans-serif;
+
+}
+
+body{
+
+    background:var(--bg);
+
+    color:var(--text);
+
+}
+
+.wrapper{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+.main-content{
+
+    flex:1;
+
+    margin-right:260px;
+
+}
+
+.sidebar{
+
+    width:260px;
+
+    background:var(--sidebar);
+
+    position:fixed;
+
+    right:0;
+
+    top:0;
+
+    height:100vh;
+
+    border-left:1px solid var(--border);
+
+    padding:25px;
+
+}
+
+.logo{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:white;
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+}
+
+.sidebar ul{
+
+    list-style:none;
+
+}
+
+.sidebar ul li{
+
+    margin-bottom:12px;
+
+}
+
+.sidebar ul li a{
+
+    color:var(--muted);
+
+    text-decoration:none;
+
+    display:block;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    transition:.3s;
+
+}
+
+.sidebar ul li a:hover{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+.navbar-custom{
+
+    height:70px;
+
+    background:var(--card);
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 30px;
+
+}
+
+.page-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+.card-custom{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:20px;
+
+}
+
+.btn-primary{
+
+    background:var(--primary);
+
+    border:none;
+
+}
+
+.btn-primary:hover{
+
+    background:#6d28d9;
+
+}
+
+.table{
+
+    color:white;
+
+}
+
+.table thead{
+
+    background:#172033;
+
+}
+
+.table tbody tr{
+
+    border-color:var(--border);
+
+}
+
+input,
+select,
+textarea{
+
+    background:#172033 !important;
+
+    color:white !important;
+
+    border:1px solid var(--border) !important;
+
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    box-shadow:none !important;
+
+    border-color:var(--primary)!important;
+
+}
+
+.footer{
+
+    text-align:center;
+
+    padding:20px;
+
+    color:var(--muted);
+
+}
