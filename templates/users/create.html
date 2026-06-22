@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+کاربر جدید
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h3>ایجاد کاربر جدید</h3>
+
+<form method="POST">
+
+<div class="mb-3">
+<label>نام</label>
+<input class="form-control" name="full_name">
+</div>
+
+<div class="mb-3">
+<label>نام کاربری</label>
+<input class="form-control" name="username">
+</div>
+
+<div class="mb-3">
+<label>موبایل</label>
+<input class="form-control" name="mobile">
+</div>
+
+<div class="mb-3">
+<label>رمز عبور</label>
+<input class="form-control" type="password" name="password">
+</div>
+
+<button class="btn btn-primary">
+ثبت
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}
