@@ -1,23 +1,16 @@
-from flask import Blueprint
-from flask import request
-from flask import jsonify
-
+from flask import Blueprint, request, jsonify
 from extensions import db
 from models.channel import Channel
 from models.post import Post
 from datetime import datetime
 
-bot_bp = Blueprint(
-    "bot",
-    __name__
-)
+bot_bp = Blueprint("bot", __name__)
 
 
 @bot_bp.route("/webhook", methods=["POST"])
 def webhook():
 
     update = request.get_json()
-
     message = update.get("message")
 
     if not message:
@@ -30,7 +23,6 @@ def webhook():
     ).first()
 
     if not channel:
-
         channel = Channel(
             bale_channel_id=str(chat.get("id")),
             channel_name=chat.get("title"),
@@ -45,10 +37,8 @@ def webhook():
 
     if "video" in message:
         content_type = "video"
-
     elif "photo" in message:
         content_type = "photo"
-
     elif "document" in message:
         content_type = "document"
 
