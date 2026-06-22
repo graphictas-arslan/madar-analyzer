@@ -27,13 +27,80 @@
 
 <body>
 
-<div class="wrapper">
+<div class="d-flex">
 
-    {% block content %}
-    {% endblock %}
+    {% if session.get("user_id") %}
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            🚀 Mother Analyzer
+
+        </div>
+
+        <a href="/dashboard">
+            🏠 داشبورد
+        </a>
+
+        <a href="/users">
+            👤 کاربران
+        </a>
+
+        <a href="/organizations">
+            🏢 سازمان‌ها
+        </a>
+
+        <a href="/channels">
+            📢 کانال‌ها
+        </a>
+
+        <a href="/posts">
+            📝 پست‌ها
+        </a>
+
+        <a href="/logout">
+            🚪 خروج
+        </a>
+
+    </aside>
+
+    {% endif %}
+
+
+    <main class="content">
+
+        {% if session.get("user_id") %}
+
+        <nav class="topbar">
+
+            <div>
+
+                پنل مدیریت
+
+            </div>
+
+            <div>
+
+                {{ session.username }}
+
+            </div>
+
+        </nav>
+
+        {% endif %}
+
+
+        <div class="container-fluid mt-4">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </main>
 
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
