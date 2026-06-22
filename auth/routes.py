@@ -52,7 +52,7 @@ def webhook():
     elif "document" in message:
         content_type = "document"
 
-     post = Post.query.filter_by(
+    post = Post.query.filter_by(
         platform_post_id=str(message.get("message_id"))
     ).first()
 
