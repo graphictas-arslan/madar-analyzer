@@ -1,73 +1,79 @@
 from flask import Blueprint
-from flask import render_template
 from flask import request
-from flask import redirect
-from flask import url_for
-from flask import session
+from flask import jsonify
 
-from models.user import User
-from auth.utils import verify_password
+from extensions import db
+from models.channel import Channel
+from models.post import Post
 
 
-auth_bp = Blueprint(
-    "auth",
+bot_bp = Blueprint(
+    "bot",
     __name__
 )
 
 
-@auth_bp.route("/login", methods=["GET", "POST"])
-def login():
+@bot_bp.route("/webhook", methods=["POST"])
+def webhook():
 
-    if request.method == "POST":
+    update = request.get_json()
 
-        username = request.form.get(
-            "username"
+    message = update.get("message")
+
+    if not message:
+        return jsonify({"status": "ignored"})
+
+    chat = message.get("chat", {})
+
+    channel = Channel.query.filter_by(
+        bale_channel_id=str(chat.get("id"))
+    ).first()
+
+    if not channel:
+
+        channel = Channel(
+            bale_channel_id=str(chat.get("id")),
+            channel_name=chat.get("title"),
+            username=chat.get("username"),
+            status="active"
         )
 
-        password = request.form.get(
-            "password"
+        db.session.add(channel)
+        db.session.commit()
+
+    content_type = "text"
+
+    if "video" in message:
+        content_type = "video"
+
+    elif "photo" in message:
+        content_type = "photo"
+
+    elif "document" in message:
+        content_type = "document"
+
+    post = Post.query.filter_by(
+        bale_post_id=str(message.get("message_id"))
+    ).first()
+
+    if not post:
+
+        post = Post(
+            channel_id=channel.id,
+            bale_post_id=str(message.get("message_id")),
+            author_name=None,
+            content_type=content_type,
+            text=message.get("text"),
+            caption=message.get("caption"),
+            publish_time=None,
+            status="active"
         )
 
-        user = User.query.filter_by(
-            username=username
-        ).first()
+        db.session.add(post)
+        db.session.commit()
 
-        if user and verify_password(
-            password,
-            user.password_hash
-        ):
-
-            session["user_id"] = user.id
-
-            session["username"] = user.username
-
-            return redirect(
-                url_for("auth.dashboard")
-            )
-
-    return render_template(
-        "login.html"
-    )
-
-
-@auth_bp.route("/dashboard")
-def dashboard():
-
-    if "user_id" not in session:
-
-        return redirect(
-            url_for("auth.login")
-        )
-
-    return render_template(
-        "dashboard.html"
-    )
-
-@auth_bp.route("/logout")
-def logout():
-
-    session.clear()
-
-    return redirect(
-        url_for("auth.login")
+    return jsonify(
+        {
+            "status": "saved"
+        }
     )
