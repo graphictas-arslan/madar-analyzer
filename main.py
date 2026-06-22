@@ -4,12 +4,15 @@ from database import init_database
 from extensions import db, migrate
 from auth.routes import bot_bp
 from dashboard.routes import dashboard_bp
+from users.routes import users_bp
 import models
 
 app = Flask(__name__)
 
 app.config.from_object(Config)
 app.config["SECRET_KEY"] = "tas-super-secret-key"
+
+app.register_blueprint(users_bp)
 
 db.init_app(app)
 migrate.init_app(app, db)
