@@ -5,7 +5,7 @@ from auth.utils import hash_password
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
-@users_bp.route("/")
+@users_bp.route("/dashboard/users")
 def users():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
