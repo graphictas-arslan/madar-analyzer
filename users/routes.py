@@ -1,66 +1,33 @@
-from flask import Blueprint
-from flask import render_template
-from flask import session
-from flask import redirect
-from flask import url_for
-from flask import request
-from flask import flash
-
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from extensions import db
+from models import User
 from auth.utils import hash_password
-from models.user import User
 
+users_bp = Blueprint("users", __name__, url_prefix="/users")
 
-users_bp = Blueprint(
-    "users",
-    __name__
-)
+@users_bp.route("/")
+def users():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    users = User.query.order_by(User.id.desc()).all()
+    return render_template("users/index.html", users=users)
 
-@users_bp.route("/users/create", methods=["GET", "POST"])
+@users_bp.route("/create", methods=["GET", "POST"])
 def create_user():
-
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
 
     if request.method == "POST":
-
         user = User(
             full_name=request.form["full_name"],
             username=request.form["username"],
             mobile=request.form["mobile"],
-            password_hash=hash_password(
-                request.form["password"]
-            ),
             is_active=True
         )
-
+        user.set_password(request.form["password"])
         db.session.add(user)
         db.session.commit()
+        flash("کاربر با موفقیت ایجاد شد.", "success")
+        return redirect(url_for("users.users"))
 
-        flash("کاربر با موفقیت ایجاد شد.")
-
-        return redirect(
-            url_for("users.users")
-        )
-
-    return render_template(
-        "users/create.html"
-    )
-
-@users_bp.route("/users")
-def users():
-
-    if "user_id" not in session:
-
-        return redirect(
-            url_for("auth.login")
-        )
-
-    users = User.query.order_by(
-        User.id.desc()
-    ).all()
-
-    return render_template(
-        "users/index.html",
-        users=users
-    )
+    return render_template("users/create.html")
