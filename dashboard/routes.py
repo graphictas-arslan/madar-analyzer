@@ -7,3 +7,21 @@ def dashboard():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     return render_template("dashboard/index.html")
+
+@dashboard_bp.route("/organizations")
+def organizations():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard/organizations.html")
+
+@dashboard_bp.route("/channels")
+def channels():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard/channels.html")
+
+@dashboard_bp.route("/posts")
+def posts():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard/posts.html")
