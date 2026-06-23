@@ -81,3 +81,24 @@ def webhook():
         db.session.commit()
 
     return jsonify({"status": "saved"})
+
+@auth_bp.route("/setup", methods=["GET"])
+def setup_admin():
+    # بررسی می‌کنیم که آیا کاربر admin از قبل وجود دارد یا نه
+    existing = User.query.filter_by(username="admin").first()
+    if existing:
+        return "کاربر admin از قبل وجود دارد! برو لاگین کن."
+    
+    # کاربر جدید می‌سازیم
+    user = User(
+        username="admin",
+        full_name="مدیر سیستم",
+        mobile="09123456789",
+        is_active=True,
+        is_super_admin=True
+    )
+    user.set_password("123456")
+    db.session.add(user)
+    db.session.commit()
+    
+    return "✅ کاربر admin با موفقیت ساخته شد! حالا برو به صفحه لاگین و با رمز 123456 وارد شو."
