@@ -5,7 +5,7 @@ from auth.utils import hash_password
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
-@users_bp.route("/dashboard/users")
+@users_bp.route("/")
 def users():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
@@ -31,3 +31,25 @@ def create_user():
         return redirect(url_for("users.users"))
 
     return render_template("users/create.html")
+
+@users_bp.route("/delete/<int:user_id>")
+def delete_user(user_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash("کاربر حذف شد.", "success")
+    return redirect(url_for("users.users"))
+
+@users_bp.route("/toggle/<int:user_id>")
+def toggle_user(user_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(user_id)
+    if user:
+        user.is_active = not user.is_active
+        db.session.commit()
+        flash("وضعیت کاربر تغییر کرد.", "success")
+    return redirect(url_for("users.users"))
