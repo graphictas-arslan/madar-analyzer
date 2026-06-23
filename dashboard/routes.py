@@ -1,40 +1,79 @@
-{% extends "base.html" %}
-{% block title %}مدیریت سازمان‌ها{% endblock %}
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>مدیریت سازمان‌ها</h2>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createOrganizationModal">
-        <i class="fas fa-plus"></i> سازمان جدید
-    </button>
-</div>
+from flask import Blueprint, render_template, redirect, url_for, session, request, flash
+from extensions import db
+from models import Organization
 
-<!-- لیست سازمان‌ها -->
-<div class="card">
-    <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>نام سازمان</th>
-                    <th>توضیحات</th>
-                    <th>وضعیت</th>
-                    <th>تاریخ ایجاد</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for org in organizations %}
-                <tr>
-                    <td>{{ org.id }}</td>
-                    <td>{{ org.name }}</td>
-                    <td>{{ org.description or '-' }}</td>
-                    <td>
-                        {% if org.is_active %}
-                            <span class="badge bg-success">فعال</span>
-                        {% else %}
-                            <span class="badge bg-danger">غیرفعال</span>
-                        {% endif %}
-                    </td>
+dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
+
+# صفحه اصلی داشبورد
+@dashboard_bp.route("/")
+def dashboard():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard/index.html")
+
+# ============== سازمان‌ها ==============
+@dashboard_bp.route("/organizations")
+def organizations():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    orgs = Organization.query.order_by(Organization.id.desc()).all()
+    return render_template("dashboard/organizations.html", organizations=orgs)
+
+@dashboard_bp.route("/organizations/create", methods=["POST"])
+def create_organization():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    name = request.form.get("name")
+    description = request.form.get("description")
+    
+    if Organization.query.filter_by(name=name).first():
+        flash("این نام سازمان قبلاً وجود دارد!", "danger")
+        return redirect(url_for("dashboard.organizations"))
+    
+    org = Organization(name=name, description=description)
+    db.session.add(org)
+    db.session.commit()
+    flash("سازمان با موفقیت ایجاد شد.", "success")
+    return redirect(url_for("dashboard.organizations"))
+
+@dashboard_bp.route("/organizations/toggle/<int:org_id>")
+def toggle_organization(org_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    org = Organization.query.get(org_id)
+    if org:
+        org.is_active = not org.is_active
+        db.session.commit()
+        flash("وضعیت سازمان تغییر کرد.", "success")
+    return redirect(url_for("dashboard.organizations"))
+
+@dashboard_bp.route("/organizations/delete/<int:org_id>")
+def delete_organization(org_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    org = Organization.query.get(org_id)
+    if org:
+        db.session.delete(org)
+        db.session.commit()
+        flash("سازمان حذف شد.", "success")
+    return redirect(url_for("dashboard.organizations"))
+
+# ============== کانال‌ها (فعلاً موقت) ==============
+@dashboard_bp.route("/channels")
+def channels():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard/channels.html")
+
+# ============== پست‌ها (فعلاً موقت) ==============
+@dashboard_bp.route("/posts")
+def posts():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard/posts.html")                    </td>
                     <td>{{ org.created_at.strftime('%Y-%m-%d') }}</td>
                     <td>
                         <a href="/dashboard/organizations/toggle/{{ org.id }}" class="btn btn-sm btn-warning">
