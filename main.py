@@ -24,7 +24,7 @@ init_database(app)
 def home():
     if "user_id" in session:
         return redirect(url_for("dashboard.dashboard"))
-  return redirect(url_for("auth.login"))
+    return redirect(url_for("auth.login"))
 #_________________________________
 # ساخت کاربر ادمین هنگام اجرای برنامه
 with app.app_context():
