@@ -73,48 +73,4 @@ def channels():
 def posts():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    return render_template("dashboard/posts.html")                    </td>
-                    <td>{{ org.created_at.strftime('%Y-%m-%d') }}</td>
-                    <td>
-                        <a href="/dashboard/organizations/toggle/{{ org.id }}" class="btn btn-sm btn-warning">
-                            تغییر وضعیت
-                        </a>
-                        <a href="/dashboard/organizations/delete/{{ org.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
-                            حذف
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- مودال ایجاد سازمان جدید -->
-<div class="modal fade" id="createOrganizationModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">سازمان جدید</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="/dashboard/organizations/create">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">نام سازمان</label>
-                        <input type="text" class="form-control" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">توضیحات</label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
-                    <button type="submit" class="btn btn-primary">ذخیره</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock %}
+    return render_template("dashboard/posts.html")
