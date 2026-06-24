@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, session, request, flash
 from extensions import db
-from models import Organization, Channel, Platform
+from models import Organization, Channel, Platform, Post
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -128,9 +128,11 @@ def delete_channel(channel_id):
         flash("کانال حذف شد.", "success")
     return redirect(url_for("dashboard.channels"))
 
-# ============== پست‌ها (فعلاً موقت) ==============
+# ============== پست‌ها ==============
 @dashboard_bp.route("/posts")
 def posts():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    return render_template("dashboard/posts.html")
+    
+    posts = Post.query.order_by(Post.id.desc()).all()
+    return render_template("dashboard/posts.html", posts=posts)
