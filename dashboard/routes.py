@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, session, request, flash
 from extensions import db
-from models import Organization
+from models import Organization, Channel, Platform
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -61,12 +61,72 @@ def delete_organization(org_id):
         flash("سازمان حذف شد.", "success")
     return redirect(url_for("dashboard.organizations"))
 
-# ============== کانال‌ها (فعلاً موقت) ==============
+# ============== کانال‌ها ==============
 @dashboard_bp.route("/channels")
 def channels():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    return render_template("dashboard/channels.html")
+    
+    channels = Channel.query.order_by(Channel.id.desc()).all()
+    organizations = Organization.query.all()
+    platforms = Platform.query.all()
+    
+    return render_template(
+        "dashboard/channels.html",
+        channels=channels,
+        organizations=organizations,
+        platforms=platforms
+    )
+
+@dashboard_bp.route("/channels/create", methods=["POST"])
+def create_channel():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    channel_name = request.form.get("channel_name")
+    bale_channel_id = request.form.get("bale_channel_id")
+    organization_id = request.form.get("organization_id")
+    platform_id = request.form.get("platform_id")
+    
+    if Channel.query.filter_by(bale_channel_id=bale_channel_id).first():
+        flash("این شناسه کانال قبلاً ثبت شده است!", "danger")
+        return redirect(url_for("dashboard.channels"))
+    
+    channel = Channel(
+        channel_name=channel_name,
+        bale_channel_id=bale_channel_id,
+        organization_id=organization_id,
+        platform_id=platform_id,
+        is_active=True
+    )
+    db.session.add(channel)
+    db.session.commit()
+    flash("کانال با موفقیت ایجاد شد.", "success")
+    return redirect(url_for("dashboard.channels"))
+
+@dashboard_bp.route("/channels/toggle/<int:channel_id>")
+def toggle_channel(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    channel = Channel.query.get(channel_id)
+    if channel:
+        channel.is_active = not channel.is_active
+        db.session.commit()
+        flash("وضعیت کانال تغییر کرد.", "success")
+    return redirect(url_for("dashboard.channels"))
+
+@dashboard_bp.route("/channels/delete/<int:channel_id>")
+def delete_channel(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    channel = Channel.query.get(channel_id)
+    if channel:
+        db.session.delete(channel)
+        db.session.commit()
+        flash("کانال حذف شد.", "success")
+    return redirect(url_for("dashboard.channels"))
 
 # ============== پست‌ها (فعلاً موقت) ==============
 @dashboard_bp.route("/posts")
