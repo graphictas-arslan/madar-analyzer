@@ -193,7 +193,6 @@ def bots():
         return redirect(url_for("auth.login"))
     bots = Bot.query.order_by(Bot.id.desc()).all()
     return render_template("dashboard/bots.html", bots=bots)
-
 @dashboard_bp.route("/bots/create", methods=["POST"])
 def create_bot():
     if "user_id" not in session:
@@ -201,12 +200,13 @@ def create_bot():
     
     name = request.form.get("name")
     token = request.form.get("token")
+    platform = request.form.get("platform")  # اضافه کردن این خط
     
     if Bot.query.filter_by(token=token).first():
         flash("این توکن قبلاً ثبت شده!", "danger")
         return redirect(url_for("dashboard.bots"))
     
-    bot = Bot(name=name, token=token)
+    bot = Bot(name=name, token=token, platform=platform)  # ذخیره پلتفرم
     db.session.add(bot)
     db.session.commit()
     flash("ربات با موفقیت ثبت شد.", "success")
