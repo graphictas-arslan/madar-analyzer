@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}پست‌های {{ page.username }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>پست‌های پیج: {{ page.username }}</h2>
+    <a href="/dashboard/instagram" class="btn btn-secondary">
+        <i class="fas fa-arrow-right"></i> بازگشت
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>تصویر</th>
+                        <th>نوع</th>
+                        <th>کپشن</th>
+                        <th>لایک</th>
+                        <th>کامنت</th>
+                        <th>تاریخ</th>
+                        <th>امتیاز</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr class="{% if post.score %}table-success{% else %}table-danger{% endif %}">
+                        <td>{{ post.id }}</td>
+                        <td>
+                            {% if post.thumbnail_url %}
+                                <img src="{{ post.thumbnail_url }}" width="50" height="50" class="rounded">
+                            {% else %}
+                                <i class="fas fa-image fa-2x text-secondary"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.media_type == 'IMAGE' %}
+                                <span class="badge bg-primary">عکس</span>
+                            {% elif post.media_type == 'VIDEO' %}
+                                <span class="badge bg-success">ویدئو</span>
+                            {% elif post.media_type == 'CAROUSEL_ALBUM' %}
+                                <span class="badge bg-warning">آلبوم</span>
+                            {% elif post.is_story %}
+                                <span class="badge bg-info">استوری</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ post.caption[:50] + '...' if post.caption and post.caption|length > 50 else post.caption or '-' }}</td>
+                        <td>{{ post.like_count }}</td>
+                        <td>{{ post.comments_count }}</td>
+                        <td>{{ post.timestamp.strftime('%Y-%m-%d %H:%M') if post.timestamp else '-' }}</td>
+                        <td>
+                            {% if post.score %}
+                                <span class="badge bg-{{ 'success' if post.score >= 70 else 'warning' if post.score >= 40 else 'danger' }}">
+                                    {{ post.score }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">تعریف نشده</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#scoreModal{{ post.id }}">
+                                <i class="fas fa-star"></i> امتیاز
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- مودال امتیازدهی -->
+                    <div class="modal fade" id="scoreModal{{ post.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">امتیازدهی به پست #{{ post.id }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form method="POST" action="/dashboard/instagram/score/{{ post.id }}">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">کپشن پست:</label>
+                                            <p class="text-muted">{{ post.caption[:200] + '...' if post.caption and post.caption|length > 200 else post.caption or '-' }}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">امتیاز (۰ تا ۱۰۰)</label>
+                                            <input type="number" class="form-control" name="score" min="0" max="100" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                                        <button type="submit" class="btn btn-primary">ثبت امتیاز</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
