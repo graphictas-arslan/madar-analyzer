@@ -8,3 +8,4 @@ from .post_score import PostScore
 from .activity_log import ActivityLog
 from .setting import Setting
 from .organization_user import OrganizationUser
+from .bot import Bot
