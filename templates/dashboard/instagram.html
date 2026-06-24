@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}مدیریت پیج‌های اینستاگرام{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>مدیریت پیج‌های اینستاگرام</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInstagramModal">
+        <i class="fas fa-plus"></i> اضافه کردن پیج
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>عکس پروفایل</th>
+                        <th>نام کاربری</th>
+                        <th>نام کامل</th>
+                        <th>دنبال‌کنندگان</th>
+                        <th>وضعیت</th>
+                        <th>آخرین همگام‌سازی</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for page in pages %}
+                    <tr>
+                        <td>{{ page.id }}</td>
+                        <td>
+                            {% if page.profile_pic %}
+                                <img src="{{ page.profile_pic }}" width="40" height="40" class="rounded-circle">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-2x text-secondary"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ page.username }}</td>
+                        <td>{{ page.full_name or '-' }}</td>
+                        <td>{{ page.followers_count }}</td>
+                        <td>
+                            {% if page.is_active %}
+                                <span class="badge bg-success">فعال</span>
+                            {% else %}
+                                <span class="badge bg-danger">غیرفعال</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ page.last_sync.strftime('%Y-%m-%d %H:%M') if page.last_sync else '-' }}</td>
+                        <td>
+                            <a href="/dashboard/instagram/posts/{{ page.id }}" class="btn btn-sm btn-info">
+                                <i class="fas fa-image"></i> پست‌ها
+                            </a>
+                            <a href="/dashboard/instagram/sync/{{ page.id }}" class="btn btn-sm btn-success">
+                                <i class="fas fa-sync"></i> همگام‌سازی
+                            </a>
+                            <a href="/dashboard/instagram/toggle/{{ page.id }}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-toggle-on"></i>
+                            </a>
+                            <a href="/dashboard/instagram/delete/{{ page.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- مودال اضافه کردن پیج جدید -->
+<div class="modal fade" id="addInstagramModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">اضافه کردن پیج اینستاگرام</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="/dashboard/instagram/add">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">شناسه پیج (Page ID)</label>
+                        <input type="text" class="form-control" name="page_id" required placeholder="مثلاً: 17841400000000000">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">نام کاربری (username)</label>
+                        <input type="text" class="form-control" name="username" required placeholder="مثلاً: instagram">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">توکن دسترسی (Access Token)</label>
+                        <input type="text" class="form-control" name="access_token" required placeholder="توکن طولانی اینستاگرام">
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> برای دریافت توکن به <a href="https://developers.facebook.com/" target="_blank">Meta for Developers</a> مراجعه کنید.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
