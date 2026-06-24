@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}مدیریت ربات‌ها{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>مدیریت ربات‌ها</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBotModal">
+        <i class="fas fa-plus"></i> ربات جدید
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>نام ربات</th>
+                    <th>پلتفرم</th>
+                    <th>وضعیت</th>
+                    <th>وب‌هوک</th>
+                    <th>آخرین تنظیم</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bot in bots %}
+                <tr>
+                    <td>{{ bot.id }}</td>
+                    <td>{{ bot.name }}</td>
+                    <td>{{ bot.platform }}</td>
+                    <td>
+                        {% if bot.is_active %}
+                            <span class="badge bg-success">فعال</span>
+                        {% else %}
+                            <span class="badge bg-danger">غیرفعال</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if bot.webhook_url %}
+                            <span class="badge bg-info">تنظیم شده</span>
+                        {% else %}
+                            <span class="badge bg-warning">تنظیم نشده</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ bot.last_webhook_set.strftime('%Y-%m-%d %H:%M') if bot.last_webhook_set else '-' }}</td>
+                    <td>
+                        <a href="/dashboard/bots/set-webhook/{{ bot.id }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-link"></i> تنظیم وب‌هوک
+                        </a>
+                        <a href="/dashboard/bots/toggle/{{ bot.id }}" class="btn btn-sm btn-warning">
+                            تغییر وضعیت
+                        </a>
+                        <a href="/dashboard/bots/delete/{{ bot.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
+                            حذف
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- مودال ایجاد ربات جدید -->
+<div class="modal fade" id="createBotModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ربات جدید</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="/dashboard/bots/create">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">نام ربات</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">توکن ربات</label>
+                        <input type="text" class="form-control" name="token" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
