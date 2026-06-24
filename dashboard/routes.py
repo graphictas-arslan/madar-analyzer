@@ -246,7 +246,11 @@ def set_webhook(bot_id):
         flash("ربات پیدا نشد!", "danger")
         return redirect(url_for("dashboard.bots"))
     
-    webhook_url = request.host_url.rstrip('/') + "/auth/webhook"
+    # اصلاح آدرس: مطمئن می‌شویم با https:// شروع می‌شود
+    host_url = request.host_url.rstrip('/')
+    if host_url.startswith('http://'):
+        host_url = host_url.replace('http://', 'https://')
+    webhook_url = f"{host_url}/auth/webhook"
     
     # تشخیص پلتفرم
     if bot.platform == "telegram":
