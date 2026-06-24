@@ -1,6 +1,74 @@
 {% extends "base.html" %}
-{% block title %}پست‌ها{% endblock %}
+{% block title %}مدیریت پست‌ها{% endblock %}
 {% block content %}
-<h2>مدیریت پست‌ها</h2>
-<p>این صفحه در حال توسعه است...</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>مدیریت پست‌ها</h2>
+    <div>
+        <button class="btn btn-info" onclick="location.reload()">
+            <i class="fas fa-sync"></i> به‌روزرسانی
+        </button>
+    </div>
+</div>
+
+<!-- لیست پست‌ها -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>کانال</th>
+                        <th>نوع</th>
+                        <th>متن</th>
+                        <th>امتیاز</th>
+                        <th>تاریخ انتشار</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td>{{ post.id }}</td>
+                        <td>{{ post.channel.channel_name if post.channel else '-' }}</td>
+                        <td>
+                            {% if post.content_type == 'text' %}
+                                <span class="badge bg-secondary">متن</span>
+                            {% elif post.content_type == 'video' %}
+                                <span class="badge bg-primary">ویدئو</span>
+                            {% elif post.content_type == 'photo' %}
+                                <span class="badge bg-success">عکس</span>
+                            {% elif post.content_type == 'document' %}
+                                <span class="badge bg-warning">سند</span>
+                            {% else %}
+                                <span class="badge bg-dark">سایر</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ post.text[:50] + '...' if post.text and post.text|length > 50 else post.text or '-' }}</td>
+                        <td>
+                            {% if post.score %}
+                                <span class="badge bg-{{ 'success' if post.score > 70 else 'warning' if post.score > 40 else 'danger' }}">
+                                    {{ post.score }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">-</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ post.publish_time.strftime('%Y-%m-%d %H:%M') if post.publish_time else '-' }}</td>
+                        <td>
+                            {% if post.status == 'active' %}
+                                <span class="badge bg-success">فعال</span>
+                            {% elif post.status == 'pending' %}
+                                <span class="badge bg-warning">در انتظار</span>
+                            {% else %}
+                                <span class="badge bg-danger">غیرفعال</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}
