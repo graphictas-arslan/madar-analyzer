@@ -183,3 +183,86 @@ def channel_score(channel_id):
         channel=channel,
         posts=Post.query.filter_by(channel_id=channel_id).order_by(Post.id.desc()).all()
     )
+    # ============== مدیریت ربات‌ها ==============
+from models import Bot
+import requests
+
+@dashboard_bp.route("/bots")
+def bots():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    bots = Bot.query.order_by(Bot.id.desc()).all()
+    return render_template("dashboard/bots.html", bots=bots)
+
+@dashboard_bp.route("/bots/create", methods=["POST"])
+def create_bot():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    name = request.form.get("name")
+    token = request.form.get("token")
+    
+    if Bot.query.filter_by(token=token).first():
+        flash("این توکن قبلاً ثبت شده!", "danger")
+        return redirect(url_for("dashboard.bots"))
+    
+    bot = Bot(name=name, token=token)
+    db.session.add(bot)
+    db.session.commit()
+    flash("ربات با موفقیت ثبت شد.", "success")
+    return redirect(url_for("dashboard.bots"))
+
+@dashboard_bp.route("/bots/toggle/<int:bot_id>")
+def toggle_bot(bot_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    bot = Bot.query.get(bot_id)
+    if bot:
+        bot.is_active = not bot.is_active
+        db.session.commit()
+        flash("وضعیت ربات تغییر کرد.", "success")
+    return redirect(url_for("dashboard.bots"))
+
+@dashboard_bp.route("/bots/delete/<int:bot_id>")
+def delete_bot(bot_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    bot = Bot.query.get(bot_id)
+    if bot:
+        db.session.delete(bot)
+        db.session.commit()
+        flash("ربات حذف شد.", "success")
+    return redirect(url_for("dashboard.bots"))
+
+@dashboard_bp.route("/bots/set-webhook/<int:bot_id>")
+def set_webhook(bot_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    bot = Bot.query.get(bot_id)
+    if not bot:
+        flash("ربات پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.bots"))
+    
+    webhook_url = request.host_url.rstrip('/') + "/auth/webhook"
+    
+    try:
+        response = requests.post(
+            f"https://api.bale.ai/bot{bot.token}/setWebhook",
+            data={"url": webhook_url},
+            timeout=10
+        )
+        result = response.json()
+        if result.get("ok"):
+            bot.webhook_url = webhook_url
+            bot.last_webhook_set = datetime.utcnow()
+            db.session.commit()
+            flash("وب‌هوک با موفقیت تنظیم شد.", "success")
+        else:
+            flash(f"خطا در تنظیم وب‌هوک: {result.get('description')}", "danger")
+    except Exception as e:
+        flash(f"خطا در اتصال به سرور بله: {str(e)}", "danger")
+    
+    return redirect(url_for("dashboard.bots"))
