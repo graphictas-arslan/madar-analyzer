@@ -9,3 +9,4 @@ from .activity_log import ActivityLog
 from .setting import Setting
 from .organization_user import OrganizationUser
 from .bot import Bot
+from .instagram import InstagramPage, InstagramPost
