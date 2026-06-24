@@ -235,7 +235,7 @@ def delete_bot(bot_id):
         db.session.commit()
         flash("ربات حذف شد.", "success")
     return redirect(url_for("dashboard.bots"))
-
+#<--!ست وبهوک-->
 @dashboard_bp.route("/bots/set-webhook/<int:bot_id>")
 def set_webhook(bot_id):
     if "user_id" not in session:
@@ -248,24 +248,30 @@ def set_webhook(bot_id):
     
     webhook_url = request.host_url.rstrip('/') + "/auth/webhook"
     
+    # تشخیص پلتفرم
+    if bot.platform == "telegram":
+        api_url = f"https://api.telegram.org/bot{bot.token}/setWebhook"
+    elif bot.platform == "bale":
+        api_url = f"https://api.bale.ai/bot{bot.token}/setWebhook"
+    else:
+        flash("پلتفرم نامعتبر است!", "danger")
+        return redirect(url_for("dashboard.bots"))
+    
     try:
-        response = requests.post(
-            f"https://api.bale.ai/bot{bot.token}/setWebhook",
-            data={"url": webhook_url},
-            timeout=10
-        )
+        response = requests.post(api_url, data={"url": webhook_url}, timeout=10)
         result = response.json()
         if result.get("ok"):
             bot.webhook_url = webhook_url
             bot.last_webhook_set = datetime.utcnow()
             db.session.commit()
-            flash("وب‌هوک با موفقیت تنظیم شد.", "success")
+            flash(f"وب‌هوک برای {bot.platform} با موفقیت تنظیم شد.", "success")
         else:
             flash(f"خطا در تنظیم وب‌هوک: {result.get('description')}", "danger")
     except Exception as e:
-        flash(f"خطا در اتصال به سرور بله: {str(e)}", "danger")
+        flash(f"خطا در اتصال به سرور {bot.platform}: {str(e)}", "danger")
     
     return redirect(url_for("dashboard.bots"))
+
     # ============== پلتفرم‌ها ==============
 @dashboard_bp.route("/platforms")
 def platforms():
