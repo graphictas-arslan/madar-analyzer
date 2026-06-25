@@ -22,40 +22,53 @@ def login():
 def logout():
     session.pop("user_id", None)
     return redirect(url_for("auth.login"))
-#________________وب هووک __________________
+
 @auth_bp.route("/webhook", methods=["POST"])
 def webhook():
+    print("📩 وب‌هوک دریافت شد.")
     try:
         update = request.get_json()
-        print("📩 دریافت شد:", update)  # این خط کمک می‌کنه لاگ رو ببینی
-        
+        print(f"📦 داده‌های دریافتی: {update}")
+
         if not update or not update.get("message"):
+            print("⚠️ پیام یافت نشد.")
             return jsonify({"status": "ignored"})
 
         message = update["message"]
         chat = message.get("chat", {})
-        platform = Platform.query.filter_by(name="telegram").first()
-        
+        print(f"💬 چت: {chat}")
+
+        # پیدا کردن پلتفرم
+        platform_name = "telegram" if "telegram" in str(update) else "bale"
+        platform = Platform.query.filter_by(name=platform_name).first()
+        print(f"📌 پلتفرم: {platform}")
+
         if not platform:
-            platform = Platform(name="telegram", title="Telegram")
+            print(f"🆕 ایجاد پلتفرم {platform_name}...")
+            platform = Platform(name=platform_name, title=platform_name.capitalize())
             db.session.add(platform)
             db.session.commit()
+            print("✅ پلتفرم ایجاد شد.")
 
+        # پیدا کردن کانال با channel_id
         channel = Channel.query.filter_by(
             platform_id=platform.id,
-            bale_channel_id=str(chat.get("id"))
+            channel_id=str(chat.get("id"))
         ).first()
+        print(f"📢 کانال: {channel}")
 
         if not channel:
+            print("🆕 ایجاد کانال جدید...")
             channel = Channel(
                 platform_id=platform.id,
-                bale_channel_id=str(chat.get("id")),
+                channel_id=str(chat.get("id")),
                 channel_name=chat.get("title", "Unknown"),
                 username=chat.get("username"),
                 status="active"
             )
             db.session.add(channel)
             db.session.commit()
+            print("✅ کانال ایجاد شد.")
 
         content_type = "text"
         if "video" in message:
@@ -64,39 +77,45 @@ def webhook():
             content_type = "photo"
         elif "document" in message:
             content_type = "document"
+        print(f"🖼️ نوع محتوا: {content_type}")
 
+        # پیدا کردن پست
         post = Post.query.filter_by(
-            bale_post_id=str(message.get("message_id"))
+            platform_post_id=str(message.get("message_id"))
         ).first()
+        print(f"📝 پست موجود: {post}")
 
         if not post:
+            print("🆕 ایجاد پست جدید...")
             post = Post(
                 channel_id=channel.id,
-                bale_post_id=str(message.get("message_id")),
+                platform_post_id=str(message.get("message_id")),
                 author_name=message.get("from", {}).get("username"),
-                content_type=content_type,
+                post_type=content_type,
                 text=message.get("text"),
                 caption=message.get("caption"),
-                publish_time=datetime.utcfromtimestamp(message.get("date")),
+                publish_date=datetime.utcfromtimestamp(message.get("date")),
                 status="pending"
             )
             db.session.add(post)
             db.session.commit()
+            print("✅ پست ذخیره شد.")
 
+        print("✅ وب‌هوک با موفقیت پردازش شد.")
         return jsonify({"status": "saved"})
-        
+
     except Exception as e:
-        print("❌ خطا در وب‌هوک:", str(e))
-        return jsonify({"status": "error", "message": str(e)}), 500  
-#__________________________________________________
+        print("❌ خطای وب‌هوک:", str(e))
+        import traceback
+        traceback.print_exc()
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @auth_bp.route("/setup", methods=["GET"])
 def setup_admin():
-    # بررسی می‌کنیم که آیا کاربر admin از قبل وجود دارد یا نه
     existing = User.query.filter_by(username="admin").first()
     if existing:
         return "کاربر admin از قبل وجود دارد! برو لاگین کن."
     
-    # کاربر جدید می‌سازیم
     user = User(
         username="admin",
         full_name="مدیر سیستم",
