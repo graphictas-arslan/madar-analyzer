@@ -1,8 +1,8 @@
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
-from models import Channel, Organization, Platform, Post
+from models import Organization, Channel, Post
 from sqlalchemy import func
-from . import dashboard_bp
+from .core import dashboard_bp  # این خط مهم است
 
 @dashboard_bp.route("/channels")
 def channels():
