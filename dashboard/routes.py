@@ -503,3 +503,65 @@ def assign_channel(channel_id):
         flash("لطفاً یک سازمان انتخاب کنید.", "danger")
     
     return redirect(url_for("dashboard.assign_channels"))
+# ============== مدیریت دیتابیس ==============
+@dashboard_bp.route("/db-manage", methods=["GET", "POST"])
+def db_manage():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    message = None
+    if request.method == "POST":
+        action = request.form.get("action")
+        try:
+            if action == "create_tables":
+                # ایجاد جدول‌ها
+                db.create_all()
+                message = "✅ جدول‌ها با موفقیت ایجاد شدند!"
+            elif action == "fix_channels":
+                # اضافه کردن فیلدهای missing به channels
+                with db.engine.connect() as conn:
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS channel_id VARCHAR(150);")
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS channel_name VARCHAR(250);")
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS platform_id INTEGER;")
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS organization_id INTEGER;")
+                    conn.commit()
+                message = "✅ فیلدهای جدول channels تعمیر شدند!"
+            elif action == "fix_posts":
+                # اضافه کردن فیلدهای missing به posts
+                with db.engine.connect() as conn:
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS channel_id INTEGER;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS platform_post_id VARCHAR(200);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS post_type VARCHAR(50);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS author_name VARCHAR(200);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS publish_date TIMESTAMP;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS status VARCHAR(50);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS score FLOAT;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS caption TEXT;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS text TEXT;")
+                    conn.commit()
+                message = "✅ فیلدهای جدول posts تعمیر شدند!"
+            elif action == "fix_all":
+                # انجام همه
+                db.create_all()
+                with db.engine.connect() as conn:
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS channel_id VARCHAR(150);")
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS channel_name VARCHAR(250);")
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS platform_id INTEGER;")
+                    conn.execute("ALTER TABLE channels ADD COLUMN IF NOT EXISTS organization_id INTEGER;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS channel_id INTEGER;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS platform_post_id VARCHAR(200);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS post_type VARCHAR(50);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS author_name VARCHAR(200);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS publish_date TIMESTAMP;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS status VARCHAR(50);")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS score FLOAT;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS caption TEXT;")
+                    conn.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS text TEXT;")
+                    conn.commit()
+                message = "✅ همه فیلدها تعمیر شدند!"
+            else:
+                message = "⚠️ عملیات نامعتبر است."
+        except Exception as e:
+            message = f"❌ خطا: {str(e)}"
+    
+    return render_template("dashboard/db_manage.html", message=message)
