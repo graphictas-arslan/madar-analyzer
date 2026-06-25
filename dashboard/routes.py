@@ -1,10 +1,11 @@
+from . import dashboard_bp  # این خط باید باشد
+
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
 from models import Organization, Channel, Platform, Post, Bot, InstagramPage, InstagramPost
 from sqlalchemy import func
 from datetime import datetime
 import requests
-from . import dashboard_bp
 
 # ============== صفحه اصلی ==============
 @dashboard_bp.route("/")
