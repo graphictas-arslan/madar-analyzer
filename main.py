@@ -3,8 +3,8 @@ from config import Config
 from database import init_database
 from extensions import db, migrate
 from auth.routes import auth_bp
-from dashboard.routes import dashboard_bp
-from dashboard import dashboard_bp  # نه از dashboard.routes
+from dashboard import dashboard_bp  # فقط این خط کافی است
+from users.routes import users_bp
 import models
 
 app = Flask(__name__)
