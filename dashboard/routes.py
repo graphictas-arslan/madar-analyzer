@@ -1,7 +1,6 @@
 from flask import render_template, redirect, url_for, session
 from . import dashboard_bp
 
-# صفحه اصلی داشبورد
 @dashboard_bp.route("/")
 def dashboard():
     if "user_id" not in session:
