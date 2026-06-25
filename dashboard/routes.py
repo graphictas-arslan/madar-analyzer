@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, session
-from . import dashboard_bp
+from .core import dashboard_bp
 
 @dashboard_bp.route("/")
 def dashboard():
