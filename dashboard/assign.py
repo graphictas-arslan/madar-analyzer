@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
-from models import Channel, Organization
-from . import dashboard_bp
+from models import Organization, Channel, Post
+from sqlalchemy import func
+from .core import dashboard_bp  # این خط مهم است
 
 @dashboard_bp.route("/channels/assign")
 def assign_channels():
