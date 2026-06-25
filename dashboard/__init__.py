@@ -2,7 +2,8 @@ from flask import Blueprint
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
-# ایمپورت مسیرها بعد از ساخت blueprint (برای جلوگیری از circular import)
+# ایمپورت همه فایل‌ها بعد از ساخت بلوپرینت
+from . import routes
 from . import organizations
 from . import channels
 from . import posts
