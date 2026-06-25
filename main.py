@@ -25,24 +25,24 @@ def home():
     if "user_id" in session:
         return redirect(url_for("dashboard.dashboard"))
     return redirect(url_for("auth.login"))
-#_________________________________
-# ساخت کاربر ادمین هنگام اجرای برنامه
-with app.app_context():
-    from models import User
-    from extensions import db
-    existing = User.query.filter_by(username="admin").first()
-    if not existing:
-        admin = User(
-            username="admin",
-            full_name="مدیر سیستم",
-            mobile="09123456789",
-            is_active=True,
-            is_super_admin=True
-        )
-        admin.set_password("123456")
-        db.session.add(admin)
-        db.session.commit()
-        print("✅ کاربر admin با موفقیت ساخته شد! (در فایل main.py)")
-#__________________________________
+
 if __name__ == "__main__":
+    # ساخت کاربر ادمین (فقط در زمان اجرای مستقیم)
+    with app.app_context():
+        from models import User
+        from extensions import db
+        existing = User.query.filter_by(username="admin").first()
+        if not existing:
+            admin = User(
+                username="admin",
+                full_name="مدیر سیستم",
+                mobile="09123456789",
+                is_active=True,
+                is_super_admin=True
+            )
+            admin.set_password("123456")
+            db.session.add(admin)
+            db.session.commit()
+            print("✅ کاربر admin با موفقیت ساخته شد!")
+    
     app.run(host="0.0.0.0", port=8080)
