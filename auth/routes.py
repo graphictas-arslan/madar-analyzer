@@ -22,66 +22,73 @@ def login():
 def logout():
     session.pop("user_id", None)
     return redirect(url_for("auth.login"))
-
+#________________وب هووک __________________
 @auth_bp.route("/webhook", methods=["POST"])
 def webhook():
-    update = request.get_json()
-    message = update.get("message")
-    if not message:
-        return jsonify({"status": "ignored"})
+    try:
+        update = request.get_json()
+        print("📩 دریافت شد:", update)  # این خط کمک می‌کنه لاگ رو ببینی
+        
+        if not update or not update.get("message"):
+            return jsonify({"status": "ignored"})
 
-    chat = message.get("chat", {})
-    # پیدا کردن پلتفرم بله
-    platform = Platform.query.filter_by(name="bale").first()
-    if not platform:
-        platform = Platform(name="bale", title="Bale")
-        db.session.add(platform)
-        db.session.commit()
+        message = update["message"]
+        chat = message.get("chat", {})
+        platform = Platform.query.filter_by(name="telegram").first()
+        
+        if not platform:
+            platform = Platform(name="telegram", title="Telegram")
+            db.session.add(platform)
+            db.session.commit()
 
-    channel = Channel.query.filter_by(
-        platform_id=platform.id,
-        bale_channel_id=str(chat.get("id"))
-    ).first()
-
-    if not channel:
-        channel = Channel(
+        channel = Channel.query.filter_by(
             platform_id=platform.id,
-            bale_channel_id=str(chat.get("id")),
-            channel_name=chat.get("title", "Unknown"),
-            username=chat.get("username"),
-            status="active"
-        )
-        db.session.add(channel)
-        db.session.commit()
+            bale_channel_id=str(chat.get("id"))
+        ).first()
 
-    content_type = "text"
-    if "video" in message:
-        content_type = "video"
-    elif "photo" in message:
-        content_type = "photo"
-    elif "document" in message:
-        content_type = "document"
+        if not channel:
+            channel = Channel(
+                platform_id=platform.id,
+                bale_channel_id=str(chat.get("id")),
+                channel_name=chat.get("title", "Unknown"),
+                username=chat.get("username"),
+                status="active"
+            )
+            db.session.add(channel)
+            db.session.commit()
 
-    post = Post.query.filter_by(
-        bale_post_id=str(message.get("message_id"))
-    ).first()
+        content_type = "text"
+        if "video" in message:
+            content_type = "video"
+        elif "photo" in message:
+            content_type = "photo"
+        elif "document" in message:
+            content_type = "document"
 
-    if not post:
-        post = Post(
-            channel_id=channel.id,
-            bale_post_id=str(message.get("message_id")),
-            author_name=message.get("from", {}).get("username"),
-            content_type=content_type,
-            text=message.get("text"),
-            caption=message.get("caption"),
-            publish_time=datetime.utcfromtimestamp(message.get("date")),
-            status="pending"
-        )
-        db.session.add(post)
-        db.session.commit()
+        post = Post.query.filter_by(
+            bale_post_id=str(message.get("message_id"))
+        ).first()
 
-    return jsonify({"status": "saved"})
+        if not post:
+            post = Post(
+                channel_id=channel.id,
+                bale_post_id=str(message.get("message_id")),
+                author_name=message.get("from", {}).get("username"),
+                content_type=content_type,
+                text=message.get("text"),
+                caption=message.get("caption"),
+                publish_time=datetime.utcfromtimestamp(message.get("date")),
+                status="pending"
+            )
+            db.session.add(post)
+            db.session.commit()
 
+        return jsonify({"status": "saved"})
+        
+    except Exception as e:
+        print("❌ خطا در وب‌هوک:", str(e))
+        return jsonify({"status": "error", "message": str(e)}), 500  
+#__________________________________________________
 @auth_bp.route("/setup", methods=["GET"])
 def setup_admin():
     # بررسی می‌کنیم که آیا کاربر admin از قبل وجود دارد یا نه
