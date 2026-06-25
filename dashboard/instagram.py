@@ -1,9 +1,8 @@
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
-from models import InstagramPage, InstagramPost
-from datetime import datetime
-import requests
-from . import dashboard_bp
+from models import Organization, Channel, Post
+from sqlalchemy import func
+from .core import dashboard_bp  # این خط مهم است
 
 @dashboard_bp.route("/instagram")
 def instagram_pages():
