@@ -5,7 +5,7 @@ class Channel(db.Model):
     __tablename__ = "channels"
 
     id = db.Column(db.Integer, primary_key=True)
-    organization_id = db.Column(db.Integer, db.ForeignKey("organizations.id"), nullable=False, index=True)
+    organization_id = db.Column(db.Integer, db.ForeignKey("organizations.id"), nullable=True, index=True)  # nullable=True
     platform_id = db.Column(db.Integer, db.ForeignKey("platforms.id"), nullable=False, index=True)
     channel_id = db.Column(db.String(150), nullable=False)  # تغییر نام به channel_id
     channel_name = db.Column(db.String(250), nullable=False)
