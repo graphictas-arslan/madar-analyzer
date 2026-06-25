@@ -4,7 +4,7 @@ from database import init_database
 from extensions import db, migrate
 from auth.routes import auth_bp
 from dashboard.routes import dashboard_bp
-from users.routes import users_bp
+from dashboard import dashboard_bp  # نه از dashboard.routes
 import models
 
 app = Flask(__name__)
