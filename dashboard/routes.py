@@ -1,7 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, session
-from extensions import db
-
-dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
+from flask import render_template, redirect, url_for, session
+from . import dashboard_bp
 
 # صفحه اصلی داشبورد
 @dashboard_bp.route("/")
