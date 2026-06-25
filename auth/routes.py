@@ -38,8 +38,14 @@ def webhook():
         chat = message.get("chat", {})
         print(f"💬 چت: {chat}")
 
-        # پیدا کردن پلتفرم
-        platform_name = "telegram" if "telegram" in str(update) else "bale"
+        # تشخیص پلتفرم از طریق هدر User-Agent
+        user_agent = request.headers.get("User-Agent", "")
+        if "TelegramBot" in user_agent:
+            platform_name = "telegram"
+        else:
+            platform_name = "bale"
+        print(f"📌 پلتفرم تشخیص داده شده: {platform_name}")
+
         platform = Platform.query.filter_by(name=platform_name).first()
         print(f"📌 پلتفرم: {platform}")
 
@@ -65,7 +71,7 @@ def webhook():
                 channel_name=chat.get("title", "Unknown"),
                 username=chat.get("username"),
                 status="active",
-                organization_id=None  # فعلاً بدون سازمان
+                organization_id=None
             )
             db.session.add(channel)
             db.session.commit()
