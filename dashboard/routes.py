@@ -1,12 +1,13 @@
 from flask import Blueprint, render_template, redirect, url_for, session, request, flash
 from extensions import db
-from models import Organization, Channel, Platform, Post
+from models import Organization, Channel, Platform, Post, Bot, InstagramPage, InstagramPost
 from sqlalchemy import func
 from datetime import datetime
+import requests
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
-# صفحه اصلی داشبورد
+# ============== صفحه اصلی داشبورد ==============
 @dashboard_bp.route("/")
 def dashboard():
     if "user_id" not in session:
@@ -86,17 +87,17 @@ def create_channel():
         return redirect(url_for("auth.login"))
     
     channel_name = request.form.get("channel_name")
-    bale_channel_id = request.form.get("bale_channel_id")
+    channel_id = request.form.get("channel_id")  # تغییر نام فیلد
     organization_id = request.form.get("organization_id")
     platform_id = request.form.get("platform_id")
     
-    if Channel.query.filter_by(bale_channel_id=bale_channel_id).first():
+    if Channel.query.filter_by(channel_id=channel_id).first():
         flash("این شناسه کانال قبلاً ثبت شده است!", "danger")
         return redirect(url_for("dashboard.channels"))
     
     channel = Channel(
         channel_name=channel_name,
-        bale_channel_id=bale_channel_id,
+        channel_id=channel_id,  # تغییر نام
         organization_id=organization_id,
         platform_id=platform_id,
         is_active=True
@@ -184,16 +185,15 @@ def channel_score(channel_id):
         channel=channel,
         posts=Post.query.filter_by(channel_id=channel_id).order_by(Post.id.desc()).all()
     )
-    # ============== مدیریت ربات‌ها ==============
-from models import Bot
-import requests
 
+# ============== ربات‌ها ==============
 @dashboard_bp.route("/bots")
 def bots():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     bots = Bot.query.order_by(Bot.id.desc()).all()
     return render_template("dashboard/bots.html", bots=bots)
+
 @dashboard_bp.route("/bots/create", methods=["POST"])
 def create_bot():
     if "user_id" not in session:
@@ -201,13 +201,13 @@ def create_bot():
     
     name = request.form.get("name")
     token = request.form.get("token")
-    platform = request.form.get("platform")  # اضافه کردن این خط
+    platform = request.form.get("platform")
     
     if Bot.query.filter_by(token=token).first():
         flash("این توکن قبلاً ثبت شده!", "danger")
         return redirect(url_for("dashboard.bots"))
     
-    bot = Bot(name=name, token=token, platform=platform)  # ذخیره پلتفرم
+    bot = Bot(name=name, token=token, platform=platform)
     db.session.add(bot)
     db.session.commit()
     flash("ربات با موفقیت ثبت شد.", "success")
@@ -236,7 +236,7 @@ def delete_bot(bot_id):
         db.session.commit()
         flash("ربات حذف شد.", "success")
     return redirect(url_for("dashboard.bots"))
-#<--!ست وبهوک-->
+
 @dashboard_bp.route("/bots/set-webhook/<int:bot_id>")
 def set_webhook(bot_id):
     if "user_id" not in session:
@@ -277,7 +277,7 @@ def set_webhook(bot_id):
     
     return redirect(url_for("dashboard.bots"))
 
-    # ============== پلتفرم‌ها ==============
+# ============== پلتفرم‌ها ==============
 @dashboard_bp.route("/platforms")
 def platforms():
     if "user_id" not in session:
@@ -326,11 +326,8 @@ def delete_platform(platform_id):
         db.session.commit()
         flash("پلتفرم حذف شد.", "success")
     return redirect(url_for("dashboard.platforms"))
-    # ============== اینستاگرام ==============
-from models import InstagramPage, InstagramPost
-import requests
-import json
 
+# ============== اینستاگرام ==============
 @dashboard_bp.route("/instagram")
 def instagram_pages():
     if "user_id" not in session:
