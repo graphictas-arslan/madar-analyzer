@@ -64,11 +64,12 @@ def webhook():
                 channel_id=str(chat.get("id")),
                 channel_name=chat.get("title", "Unknown"),
                 username=chat.get("username"),
-                status="active"
+                status="active",
+                organization_id=None  # فعلاً بدون سازمان
             )
             db.session.add(channel)
             db.session.commit()
-            print("✅ کانال ایجاد شد.")
+            print("✅ کانال ایجاد شد (بدون سازمان).")
 
         content_type = "text"
         if "video" in message:
