@@ -257,7 +257,7 @@ def set_webhook(bot_id):
     if bot.platform == "telegram":
         api_url = f"https://api.telegram.org/bot{bot.token}/setWebhook"
     elif bot.platform == "bale":
-        api_url = f"https://api.bale.ai/bot{bot.token}/setWebhook"
+        api_url = f"https://tapi.bale.ai/bot{bot.token}/setWebhook"
     else:
         flash("پلتفرم نامعتبر است!", "danger")
         return redirect(url_for("dashboard.bots"))
