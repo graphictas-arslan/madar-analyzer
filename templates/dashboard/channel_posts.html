@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}پست‌های {{ channel.channel_name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📸 پست‌های کانال: {{ channel.channel_name }}</h2>
+    <a href="/dashboard/organizations/{{ channel.organization_id }}/channels" class="btn btn-secondary">
+        <i class="fas fa-arrow-right"></i> بازگشت
+    </a>
+</div>
+
+<!-- آمار کانال -->
+<div class="row mb-4 g-3">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="text-muted">📄 کل پست‌ها</h5>
+                <h2>{{ stats.total }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="text-muted">⭐ میانگین امتیاز</h5>
+                <h2>{{ stats.avg }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="text-muted">📈 بالاترین امتیاز</h5>
+                <h2>{{ stats.max }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="text-muted">📉 پایین‌ترین امتیاز</h5>
+                <h2>{{ stats.min }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- گرید پست‌ها (اینستاگرامی) -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    {% for post in posts %}
+    <div class="col">
+        <div class="card h-100 shadow-sm position-relative">
+            <!-- برچسب جدید یا ادیت شده -->
+            {% if post.publish_date and (datetime.utcnow() - post.publish_date).days < 1 %}
+                <span class="position-absolute top-0 end-0 badge bg-danger m-2" style="font-size: 0.8rem;">
+                    🔔 جدید
+                </span>
+            {% elif post.updated_at and (post.updated_at - post.created_at).days > 0 %}
+                <span class="position-absolute top-0 end-0 badge bg-warning m-2" style="font-size: 0.8rem;">
+                    🔄 ادیت شده
+                </span>
+            {% endif %}
+
+            <!-- تصویر یا ویدئو -->
+            <div style="height: 200px; overflow: hidden; background: #f0f0f0;">
+                {% if post.media_url %}
+                    <img src="{{ post.media_url }}" class="card-img-top" style="height: 100%; object-fit: cover;">
+                {% elif post.thumbnail_url %}
+                    <img src="{{ post.thumbnail_url }}" class="card-img-top" style="height: 100%; object-fit: cover;">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                        <i class="fas fa-file-alt fa-3x"></i>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body p-3">
+                <!-- کپشن و متن -->
+                {% if post.caption %}
+                    <p class="card-text text-truncate-2 small">{{ post.caption }}</p>
+                {% endif %}
+                {% if post.text and post.text != post.caption %}
+                    <p class="card-text text-truncate-2 small text-muted">{{ post.text }}</p>
+                {% endif %}
+
+                <!-- اطلاعات پایین -->
+                <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                    <span><i class="fas fa-eye"></i> {{ post.views or 0 }}</span>
+                    <span><i class="far fa-clock"></i> {{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else 'نامشخص' }}</span>
+                </div>
+
+                <!-- امتیاز فعلی -->
+                <div class="mt-2 text-center">
+                    {% if post.score %}
+                        <span class="badge bg-{{ 'success' if post.score >= 70 else 'warning' if post.score >= 40 else 'danger' }}">
+                            ⭐ {{ post.score }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary">بدون امتیاز</span>
+                    {% endif %}
+                </div>
+
+                <!-- فرم امتیازدهی -->
+                <form method="POST" action="/dashboard/posts/score/{{ post.id }}" class="mt-2">
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="form-control" name="score" min="0" max="100" placeholder="امتیاز 0-100" required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-star"></i> ثبت
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
