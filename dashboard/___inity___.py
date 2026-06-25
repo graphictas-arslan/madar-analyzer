@@ -1,6 +1,7 @@
 from flask import Blueprint
 
+# ابتدا بلوپرینت را تعریف کنید
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
-# ایمپورت مسیرها از routes.py
+# سپس routes.py را ایمپورت کنید
 from . import routes
