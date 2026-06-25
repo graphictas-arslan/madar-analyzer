@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}انتساب کانال به سازمان{% endblock %}
+{% block content %}
+<h2>انتساب کانال‌های بدون سازمان</h2>
+
+<div class="card">
+    <div class="card-body">
+        {% if unassigned_channels %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>نام کانال</th>
+                        <th>شناسه کانال</th>
+                        <th>پلتفرم</th>
+                        <th>سازمان</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for channel in unassigned_channels %}
+                    <tr>
+                        <td>{{ channel.channel_name }}</td>
+                        <td>{{ channel.channel_id }}</td>
+                        <td>{{ channel.platform.title if channel.platform else '-' }}</td>
+                        <td>
+                            <form method="POST" action="/dashboard/channels/assign/{{ channel.id }}">
+                                <select class="form-control" name="organization_id" required>
+                                    <option value="">انتخاب سازمان...</option>
+                                    {% for org in organizations %}
+                                        <option value="{{ org.id }}">{{ org.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                    <i class="fas fa-link"></i> متصل کن
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-muted">همه کانال‌ها به سازمان متصل هستند.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
