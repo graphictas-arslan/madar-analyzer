@@ -7,7 +7,8 @@ from sqlalchemy import func
 from datetime import datetime
 import requests
 import io
-import csv
+
+from .excel_exporter import generate_excel
 
 # ============== صفحه اصلی ==============
 @dashboard_bp.route("/")
@@ -241,41 +242,15 @@ def export_channel_posts(channel_id):
     
     posts = query.all()
     
-    # ایجاد فایل CSV در حافظه
-    output = io.StringIO()
-    writer = csv.writer(output)
+    # تولید فایل اکسل
+    excel_file = generate_excel(posts, title=f"پست‌های {channel.channel_name}")
     
-    # هدرهای CSV
-    writer.writerow([
-        'شناسه', 'کانال', 'نوع', 'متن', 'کپشن', 
-        'تاریخ انتشار', 'وضعیت', 'امتیاز', 
-        'بازدید', 'لایک', 'کامنت'
-    ])
-    
-    # نوشتن داده‌ها
-    for post in posts:
-        writer.writerow([
-            post.id,
-            post.channel.channel_name if post.channel else '-',
-            post.post_type,
-            post.text or '',
-            post.caption or '',
-            post.publish_date.strftime('%Y-%m-%d %H:%M') if post.publish_date else '',
-            post.status,
-            post.score or 0,
-            post.views or 0,
-            post.likes or 0,
-            post.comments or 0
-        ])
-    
-    # آماده‌سازی پاسخ
-    output.seek(0)
     return Response(
-        output.getvalue(),
-        mimetype="text/csv",
+        excel_file.getvalue(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": f"attachment; filename=posts_{channel.channel_name}.csv",
-            "Content-Type": "text/csv; charset=utf-8"
+            "Content-Disposition": f"attachment; filename=posts_{channel.channel_name}.xlsx",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         }
     )
 
@@ -356,41 +331,15 @@ def export_posts():
     
     posts = query.all()
     
-    # ایجاد فایل CSV در حافظه
-    output = io.StringIO()
-    writer = csv.writer(output)
+    # تولید فایل اکسل
+    excel_file = generate_excel(posts, title="پست‌ها")
     
-    # هدرهای CSV
-    writer.writerow([
-        'شناسه', 'کانال', 'نوع', 'متن', 'کپشن', 
-        'تاریخ انتشار', 'وضعیت', 'امتیاز', 
-        'بازدید', 'لایک', 'کامنت'
-    ])
-    
-    # نوشتن داده‌ها
-    for post in posts:
-        writer.writerow([
-            post.id,
-            post.channel.channel_name if post.channel else '-',
-            post.post_type,
-            post.text or '',
-            post.caption or '',
-            post.publish_date.strftime('%Y-%m-%d %H:%M') if post.publish_date else '',
-            post.status,
-            post.score or 0,
-            post.views or 0,
-            post.likes or 0,
-            post.comments or 0
-        ])
-    
-    # آماده‌سازی پاسخ
-    output.seek(0)
     return Response(
-        output.getvalue(),
-        mimetype="text/csv",
+        excel_file.getvalue(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": "attachment; filename=posts_export.csv",
-            "Content-Type": "text/csv; charset=utf-8"
+            "Content-Disposition": "attachment; filename=posts_export.xlsx",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         }
     )
 
@@ -813,27 +762,3 @@ def db_manage():
         except Exception as e:
             message = f"❌ خطا: {str(e)}"
     return render_template("dashboard/db_manage.html", message=message)
-# ============== کنسول (اجرای کد پایتون) ==============
-@dashboard_bp.route("/console", methods=["GET", "POST"])
-def console():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-    
-    output = None
-    if request.method == "POST":
-        code = request.form.get("code")
-        try:
-            # محیط امن برای اجرای کد
-            local_ns = {
-                'db': db,
-                'models': __import__('models'),
-                'requests': requests,
-                'datetime': datetime
-            }
-            exec(code, {}, local_ns)
-            output = "✅ کد با موفقیت اجرا شد!"
-        except Exception as e:
-            output = f"❌ خطا: {str(e)}"
-    
-    return render_template("dashboard/console.html", output=output)
-    
