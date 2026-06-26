@@ -1,11 +1,13 @@
 from . import dashboard_bp
 
-from flask import render_template, redirect, url_for, session, request, flash
+from flask import render_template, redirect, url_for, session, request, flash, Response
 from extensions import db
 from models import Organization, Channel, Platform, Post, Bot, InstagramPage, InstagramPost
 from sqlalchemy import func
 from datetime import datetime
 import requests
+import io
+import csv
 
 # ============== صفحه اصلی ==============
 @dashboard_bp.route("/")
@@ -170,17 +172,125 @@ def channel_posts(channel_id):
         channel=channel,
         posts=posts,
         stats=stats,
-        now=datetime.utcnow  # این خط را اضافه کنید
+        now=datetime.utcnow
     )
 
-# ============== پست‌ها ==============
+# ============== پست‌ها (با فیلتر و خروجی اکسل) ==============
 @dashboard_bp.route("/posts")
 def posts():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    posts = Post.query.order_by(Post.id.desc()).all()
-    return render_template("dashboard/posts.html", posts=posts)
+    
+    # دریافت پارامترهای فیلتر
+    channel_filter = request.args.get("channel", "")
+    type_filter = request.args.get("type", "")
+    status_filter = request.args.get("status", "")
+    date_from = request.args.get("date_from", "")
+    date_to = request.args.get("date_to", "")
+    
+    # ساخت کوئری پایه
+    query = Post.query.join(Channel).order_by(Post.id.desc())
+    
+    # اعمال فیلترها
+    if channel_filter:
+        query = query.filter(Channel.channel_name.contains(channel_filter))
+    if type_filter:
+        query = query.filter(Post.post_type == type_filter)
+    if status_filter:
+        query = query.filter(Post.status == status_filter)
+    if date_from:
+        query = query.filter(Post.publish_date >= datetime.strptime(date_from, "%Y-%m-%d"))
+    if date_to:
+        query = query.filter(Post.publish_date <= datetime.strptime(date_to, "%Y-%m-%d"))
+    
+    posts = query.all()
+    
+    # دریافت لیست کانال‌ها و انواع برای فیلتر
+    channels = Channel.query.all()
+    post_types = db.session.query(Post.post_type).distinct().all()
+    statuses = db.session.query(Post.status).distinct().all()
+    
+    return render_template(
+        "dashboard/posts.html",
+        posts=posts,
+        channels=channels,
+        post_types=[t[0] for t in post_types],
+        statuses=[s[0] for s in statuses],
+        channel_filter=channel_filter,
+        type_filter=type_filter,
+        status_filter=status_filter,
+        date_from=date_from,
+        date_to=date_to
+    )
 
+@dashboard_bp.route("/posts/export")
+def export_posts():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    # دریافت پارامترهای فیلتر
+    channel_filter = request.args.get("channel", "")
+    type_filter = request.args.get("type", "")
+    status_filter = request.args.get("status", "")
+    date_from = request.args.get("date_from", "")
+    date_to = request.args.get("date_to", "")
+    
+    # ساخت کوئری پایه
+    query = Post.query.join(Channel).order_by(Post.id.desc())
+    
+    # اعمال فیلترها
+    if channel_filter:
+        query = query.filter(Channel.channel_name.contains(channel_filter))
+    if type_filter:
+        query = query.filter(Post.post_type == type_filter)
+    if status_filter:
+        query = query.filter(Post.status == status_filter)
+    if date_from:
+        query = query.filter(Post.publish_date >= datetime.strptime(date_from, "%Y-%m-%d"))
+    if date_to:
+        query = query.filter(Post.publish_date <= datetime.strptime(date_to, "%Y-%m-%d"))
+    
+    posts = query.all()
+    
+    # ایجاد فایل CSV در حافظه
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # هدرهای CSV
+    writer.writerow([
+        'شناسه', 'کانال', 'نوع', 'متن', 'کپشن', 
+        'تاریخ انتشار', 'وضعیت', 'امتیاز', 
+        'بازدید', 'لایک', 'کامنت'
+    ])
+    
+    # نوشتن داده‌ها
+    for post in posts:
+        writer.writerow([
+            post.id,
+            post.channel.channel_name if post.channel else '-',
+            post.post_type,
+            post.text or '',
+            post.caption or '',
+            post.publish_date.strftime('%Y-%m-%d %H:%M') if post.publish_date else '',
+            post.status,
+            post.score or 0,
+            post.views or 0,
+            post.likes or 0,
+            post.comments or 0
+        ])
+    
+    # آماده‌سازی پاسخ
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=posts_export.csv",
+            "Content-Type": "text/csv; charset=utf-8"
+        }
+    )
+
+# ============== امتیازدهی به پست ==============
 @dashboard_bp.route("/posts/score/<int:post_id>", methods=["POST"])
 def score_post(post_id):
     if "user_id" not in session:
@@ -481,17 +591,13 @@ def assign_channel(channel_id):
 def db_manage():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    
     message = None
     if request.method == "POST":
         action = request.form.get("action")
-        custom_code = request.form.get("custom_code")  # کد دستی
-        
         try:
             if action == "create_tables":
                 db.create_all()
                 message = "✅ جدول‌ها با موفقیت ایجاد شدند!"
-            
             elif action == "fix_channels":
                 with db.engine.connect() as conn:
                     conn.execute("""
@@ -513,7 +619,6 @@ def db_manage():
                     """)
                     conn.commit()
                 message = "✅ فیلدهای جدول channels تعمیر شدند!"
-            
             elif action == "fix_posts":
                 with db.engine.connect() as conn:
                     conn.execute("""
@@ -550,7 +655,6 @@ def db_manage():
                     """)
                     conn.commit()
                 message = "✅ فیلدهای جدول posts تعمیر شدند!"
-            
             elif action == "fix_all":
                 db.create_all()
                 with db.engine.connect() as conn:
@@ -600,49 +704,8 @@ def db_manage():
                     """)
                     conn.commit()
                 message = "✅ همه فیلدها تعمیر شدند!"
-            
-            elif action == "run_custom":  # اجرای کد دستی
-                if custom_code:
-                    with db.engine.connect() as conn:
-                        conn.execute(custom_code)
-                        conn.commit()
-                    message = "✅ کد دستی با موفقیت اجرا شد!"
-                else:
-                    message = "⚠️ لطفاً کدی را وارد کنید."
             else:
                 message = "⚠️ عملیات نامعتبر است."
         except Exception as e:
             message = f"❌ خطا: {str(e)}"
-    
     return render_template("dashboard/db_manage.html", message=message)
-    
-# ============== کنسول (اجرای کد پایتون و SQL) ==============
-
-@dashboard_bp.route("/console", methods=["GET", "POST"])
-def console():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-    
-    output = None
-    if request.method == "POST":
-        code = request.form.get("code")
-        try:
-            # ایجاد یک محیط مجزا برای اجرای کد
-            # متغیر app را از برنامه اصلی می‌گیریم
-            from main import app as main_app
-            
-            local_ns = {
-                'app': main_app,
-                'db': db,
-                'models': __import__('models'),
-                'requests': requests,
-                'datetime': datetime,
-                'sqlalchemy': __import__('sqlalchemy')
-            }
-            exec(code, {}, local_ns)
-            output = "✅ کد با موفقیت اجرا شد!"
-        except Exception as e:
-            output = f"❌ خطا: {str(e)}"
-    
-    return render_template("dashboard/console.html", output=output)
-
