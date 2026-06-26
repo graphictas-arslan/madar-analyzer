@@ -177,12 +177,20 @@
                             {% endif %}
                         </td>
                         <td>
+                            <!-- دکمه امتیازدهی -->
                             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#scoreModal{{ post.id }}">
                                 <i class="fas fa-star"></i>
                             </button>
+                            <!-- دکمه جزئیات -->
                             <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailModal{{ post.id }}">
                                 <i class="fas fa-eye"></i>
                             </button>
+                            <!-- دکمه حذف -->
+                            <form method="POST" action="/dashboard/posts/delete/{{ post.id }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید که می‌خواهید این پست را حذف کنید؟ این عمل قابل بازگشت نیست.')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
 
