@@ -16,7 +16,17 @@ def login():
         if user and user.check_password(password) and user.is_active:
             session["user_id"] = user.id
             flash("خوش آمدید!", "success")
-            return redirect(url_for("dashboard.dashboard"))
+            
+            # هدایت بر اساس نقش کاربر
+            if user.role == "admin":
+                return redirect(url_for("dashboard.dashboard"))
+            elif user.role == "channel_admin":
+                return redirect(url_for("channel_admin.dashboard"))
+            elif user.role == "manager":
+                return redirect(url_for("manager.dashboard"))
+            else:
+                return redirect(url_for("dashboard.dashboard"))  # پیش‌فرض
+        
         flash("نام کاربری یا رمز عبور اشتباه است", "danger")
     return render_template("login.html")
 
