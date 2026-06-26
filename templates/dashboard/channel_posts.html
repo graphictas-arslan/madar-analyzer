@@ -61,14 +61,13 @@
             {% endif %}
 
             <!-- تصویر یا ویدئو -->
-            <div style="height: 200px; overflow: hidden; background: #f0f0f0;">
+            <div style="height: 200px; overflow: hidden; background: #f0f0f0; display:flex; align-items:center; justify-content:center;">
                 {% if post.media_url %}
                     <img src="{{ post.media_url }}" class="card-img-top" style="height: 100%; object-fit: cover;">
-                {% elif post.thumbnail_url %}
-                    <img src="{{ post.thumbnail_url }}" class="card-img-top" style="height: 100%; object-fit: cover;">
                 {% else %}
-                    <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                    <div class="text-muted text-center">
                         <i class="fas fa-file-alt fa-3x"></i>
+                        <p class="small mt-2">بدون تصویر</p>
                     </div>
                 {% endif %}
             </div>
