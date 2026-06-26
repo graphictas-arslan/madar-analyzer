@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify, render_template, redirect, url_fo
 from extensions import db
 from models import User, Channel, Post, Platform
 from datetime import datetime
+import requests
+from config import Config
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -23,6 +25,22 @@ def logout():
     session.pop("user_id", None)
     return redirect(url_for("auth.login"))
 
+# ============== دریافت لینک دانلود فایل از بله ==============
+def get_file_url(file_id, bot_token):
+    """دریافت لینک دانلود فایل از بله"""
+    try:
+        url = f"https://tapi.bale.ai/bot{bot_token}/getFile"
+        response = requests.post(url, data={"file_id": file_id})
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("ok"):
+                file_path = data["result"]["file_path"]
+                return f"https://tapi.bale.ai/file/bot{bot_token}/{file_path}"
+    except Exception as e:
+        print(f"❌ خطا در دریافت لینک فایل: {str(e)}")
+    return None
+
+# ============== وب‌هوک ==============
 @auth_bp.route("/webhook", methods=["POST"])
 def webhook():
     print("📩 وب‌هوک دریافت شد.")
@@ -94,6 +112,33 @@ def webhook():
 
         if not post:
             print("🆕 ایجاد پست جدید...")
+            
+            # دریافت لینک عکس یا ویدئو
+            media_url = None
+            thumbnail_url = None
+            bot_token = Config.BALE_TOKEN  # توکن از تنظیمات
+            
+            if content_type == "photo":
+                if "photo" in message:
+                    photos = message["photo"]
+                    if photos:
+                        file_id = photos[-1]["file_id"]  # بزرگترین عکس
+                        media_url = get_file_url(file_id, bot_token)
+                        thumbnail_url = media_url
+                elif "document" in message and message["document"]["mime_type"].startswith("image/"):
+                    file_id = message["document"]["file_id"]
+                    media_url = get_file_url(file_id, bot_token)
+                    thumbnail_url = media_url
+            elif content_type == "video":
+                if "video" in message:
+                    file_id = message["video"]["file_id"]
+                    media_url = get_file_url(file_id, bot_token)
+                    thumbnail_url = media_url
+                elif "document" in message and message["document"]["mime_type"].startswith("video/"):
+                    file_id = message["document"]["file_id"]
+                    media_url = get_file_url(file_id, bot_token)
+                    thumbnail_url = media_url
+
             post = Post(
                 channel_id=channel.id,
                 platform_post_id=str(message.get("message_id")),
@@ -102,7 +147,9 @@ def webhook():
                 text=message.get("text"),
                 caption=message.get("caption"),
                 publish_date=datetime.utcfromtimestamp(message.get("date")),
-                status="pending"
+                status="pending",
+                media_url=media_url,
+                thumbnail_url=thumbnail_url
             )
             db.session.add(post)
             db.session.commit()
