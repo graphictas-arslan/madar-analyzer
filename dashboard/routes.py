@@ -60,6 +60,97 @@ def dashboard():
         daily_posts=daily_posts,
         labels=labels
     )
+# ============== مدیریت کاربران ==============
+@dashboard_bp.route("/users")
+def users():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
+    users = User.query.order_by(User.id.desc()).all()
+    return render_template("dashboard/users.html", users=users)
+
+@dashboard_bp.route("/users/create", methods=["GET", "POST"])
+def create_user():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
+    if request.method == "POST":
+        full_name = request.form.get("full_name")
+        username = request.form.get("username")
+        mobile = request.form.get("mobile")
+        password = request.form.get("password")
+        role = request.form.get("role")
+        channel_ids = request.form.getlist("channels")  # لیست کانال‌های انتخاب شده
+        
+        new_user = User(
+            full_name=full_name,
+            username=username,
+            mobile=mobile,
+            role=role,
+            is_active=True
+        )
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        # اگر نقش ادمین کانال است، کانال‌ها را اختصاص بده
+        if role == "channel_admin" and channel_ids:
+            channels = Channel.query.filter(Channel.id.in_(channel_ids)).all()
+            new_user.channels = channels
+            db.session.commit()
+        
+        flash(f"کاربر {username} با نقش {role} ایجاد شد.", "success")
+        return redirect(url_for("dashboard.users"))
+    
+    # دریافت لیست کانال‌ها برای نمایش در فرم
+    channels = Channel.query.all()
+    return render_template(
+        "dashboard/create_user.html",
+        channels=channels,
+        roles=["admin", "channel_admin", "manager"]
+    )
+
+@dashboard_bp.route("/users/delete/<int:user_id>")
+def delete_user(user_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
+    target = User.query.get(user_id)
+    if target:
+        db.session.delete(target)
+        db.session.commit()
+        flash("کاربر حذف شد.", "success")
+    return redirect(url_for("dashboard.users"))
+
+@dashboard_bp.route("/users/toggle/<int:user_id>")
+def toggle_user(user_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
+    target = User.query.get(user_id)
+    if target:
+        target.is_active = not target.is_active
+        db.session.commit()
+        flash("وضعیت کاربر تغییر کرد.", "success")
+    return redirect(url_for("dashboard.users"))
+
+
 # ============== سازمان‌ها ==============
 @dashboard_bp.route("/organizations")
 def organizations():
