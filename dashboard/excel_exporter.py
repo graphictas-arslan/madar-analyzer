@@ -1,64 +1,46 @@
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, PatternFill
-from openpyxl.utils import get_column_letter
-import io
-
-def generate_excel(posts, title="پست‌ها"):
-    """
-    تولید فایل اکسل از لیست پست‌ها
-    """
-    # ایجاد Workbook
-    wb = Workbook()
-    ws = wb.active
-    ws.title = title
+@dashboard_bp.route("/channels/<int:channel_id>/posts/export")
+def export_channel_posts(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
     
-    # هدرها
-    headers = ['شناسه', 'کانال', 'نوع', 'متن', 'کپشن', 'تاریخ انتشار', 'وضعیت', 'امتیاز', 'بازدید', 'لایک', 'کامنت']
-    ws.append(headers)
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        flash("کانال پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.channels"))
     
-    # استایل هدر
-    header_font = Font(bold=True, color="FFFFFFFF")
-    header_fill = PatternFill(start_color="FF1F2937", end_color="FF1F2937", fill_type="solid")
-    header_alignment = Alignment(horizontal="center", vertical="center")
+    # دریافت پارامترهای فیلتر
+    type_filter = request.args.get("type", "")
+    status_filter = request.args.get("status", "")
+    date_from = request.args.get("date_from", "")
+    date_to = request.args.get("date_to", "")
     
-    for cell in ws[1]:
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.alignment = header_alignment
+    # ساخت کوئری پایه
+    query = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc())
     
-    # نوشتن داده‌ها
-    for post in posts:
-        # ایمپورت Channel در داخل تابع برای جلوگیری از circular import
-        from models import Channel
-        channel = Channel.query.get(post.channel_id)
-        channel_name = channel.channel_name if channel else '-'
-        
-        ws.append([
-            post.id,
-            channel_name,
-            post.post_type,
-            post.text or '',
-            post.caption or '',
-            post.publish_date.strftime('%Y-%m-%d %H:%M') if post.publish_date else '',
-            post.status,
-            post.score or 0,
-            post.views or 0,
-            post.likes or 0,
-            post.comments or 0
-        ])
+    # اعمال فیلترها
+    if type_filter:
+        query = query.filter(Post.post_type == type_filter)
+    if status_filter:
+        query = query.filter(Post.status == status_filter)
+    if date_from:
+        query = query.filter(Post.publish_date >= datetime.strptime(date_from, "%Y-%m-%d"))
+    if date_to:
+        query = query.filter(Post.publish_date <= datetime.strptime(date_to, "%Y-%m-%d"))
     
-    # تنظیم عرض ستون‌ها
-    column_widths = [10, 20, 10, 40, 30, 20, 15, 10, 10, 10, 10]
-    for i, width in enumerate(column_widths, 1):
-        col_letter = get_column_letter(i)
-        ws.column_dimensions[col_letter].width = width
+    posts = query.all()
     
-    # تنظیم راست‌چین
-    ws.sheet_view.rightToLeft = True
+    # تولید فایل اکسل
+    excel_file = generate_excel(posts, title=f"پست‌های {channel.channel_name}")
     
-    # ذخیره در حافظه
-    output = io.BytesIO()
-    wb.save(output)
-    output.seek(0)
+    # تولید نام فایل امن (انگلیسی)
+    safe_filename = f"posts_{channel.channel_name}.xlsx"
+    safe_filename = safe_filename.replace(" ", "_").replace(":", "_").replace("،", "_")
     
-    return output
+    return Response(
+        excel_file.getvalue(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename={safe_filename}",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+    )
