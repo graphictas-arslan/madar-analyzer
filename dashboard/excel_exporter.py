@@ -2,7 +2,6 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 from openpyxl.utils import get_column_letter
 import io
-from datetime import datetime
 
 def generate_excel(posts, title="پست‌ها"):
     """
