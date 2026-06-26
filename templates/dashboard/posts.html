@@ -2,107 +2,96 @@
 {% block title %}مدیریت پست‌ها{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>مدیریت پست‌ها</h2>
+    <h2>📊 مدیریت پست‌ها</h2>
     <div>
         <button class="btn btn-info" onclick="location.reload()">
             <i class="fas fa-sync"></i> به‌روزرسانی
         </button>
+        <a href="/dashboard/posts/export?channel={{ channel_filter }}&type={{ type_filter }}&status={{ status_filter }}&date_from={{ date_from }}&date_to={{ date_to }}" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> خروجی اکسل
+        </a>
     </div>
 </div>
 
-<!-- لیست پست‌ها -->
-<div class="card">
+<!-- فیلترها -->
+<div class="card mb-4">
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>کانال</th>
-                        <th>نوع</th>
-                        <th>متن</th>
-                        <th>امتیاز</th>
-                        <th>تاریخ انتشار</th>
-                        <th>وضعیت</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for post in posts %}
-                    <tr class="{% if post.score %}table-success{% else %}table-danger{% endif %}">
-                        <td>{{ post.id }}</td>
-                        <td>{{ post.channel.channel_name if post.channel else '-' }}</td>
-                        <td>
-                            {% if post.content_type == 'text' %}
-                                <span class="badge bg-secondary">متن</span>
-                            {% elif post.content_type == 'video' %}
-                                <span class="badge bg-primary">ویدئو</span>
-                            {% elif post.content_type == 'photo' %}
-                                <span class="badge bg-success">عکس</span>
-                            {% elif post.content_type == 'document' %}
-                                <span class="badge bg-warning">سند</span>
-                            {% else %}
-                                <span class="badge bg-dark">سایر</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ post.text[:50] + '...' if post.text and post.text|length > 50 else post.text or '-' }}</td>
-                        <td>
-                            {% if post.score %}
-                                <span class="badge bg-{{ 'success' if post.score >= 70 else 'warning' if post.score >= 40 else 'danger' }}">
-                                    {{ post.score }}
-                                </span>
-                            {% else %}
-                                <span class="badge bg-danger">تعریف نشده</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ post.publish_time.strftime('%Y-%m-%d %H:%M') if post.publish_time else '-' }}</td>
-                        <td>
-                            {% if post.status == 'active' %}
-                                <span class="badge bg-success">فعال</span>
-                            {% elif post.status == 'pending' %}
-                                <span class="badge bg-warning">در انتظار</span>
-                            {% else %}
-                                <span class="badge bg-danger">غیرفعال</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#scoreModal{{ post.id }}">
-                                <i class="fas fa-star"></i> امتیاز
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- مودال امتیازدهی -->
-                    <div class="modal fade" id="scoreModal{{ post.id }}" tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">امتیازدهی به پست #{{ post.id }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <form method="POST" action="/dashboard/posts/score/{{ post.id }}">
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">متن پست:</label>
-                                            <p class="text-muted">{{ post.text[:200] + '...' if post.text and post.text|length > 200 else post.text or '-' }}</p>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">امتیاز (۰ تا ۱۰۰)</label>
-                                            <input type="number" class="form-control" name="score" min="0" max="100" required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
-                                        <button type="submit" class="btn btn-primary">ثبت امتیاز</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+        <form method="GET" action="/dashboard/posts" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">جستجو در کانال</label>
+                <input type="text" class="form-control" name="channel" value="{{ channel_filter }}" placeholder="نام کانال را وارد کنید...">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">نوع محتوا</label>
+                <select class="form-control" name="type">
+                    <option value="">همه</option>
+                    {% for type in post_types %}
+                        <option value="{{ type }}" {% if type_filter == type %}selected{% endif %}>{{ type }}</option>
                     {% endfor %}
-                </tbody>
-            </table>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">وضعیت</label>
+                <select class="form-control" name="status">
+                    <option value="">همه</option>
+                    {% for status in statuses %}
+                        <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">از تاریخ</label>
+                <input type="date" class="form-control" name="date_from" value="{{ date_from }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">تا تاریخ</label>
+                <input type="date" class="form-control" name="date_to" value="{{ date_to }}">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> فیلتر
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- کارت آمار -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-muted">کل پست‌ها</h5>
+                <h2>{{ posts|length }}</h2>
+            </div>
         </div>
     </div>
-</div>
-{% endblock %}
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-muted">امتیازدار</h5>
+                <h2>{{ posts|selectattr('score', 'defined')|list|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-muted">بدون امتیاز</h5>
+                <h2>{{ posts|rejectattr('score', 'defined')|list|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-muted">میانگین امتیاز</h5>
+                <h2>
+                    {% set scores = posts|selectattr('score', 'defined')|list %}
+                    {% if scores %}
+                        {{ (scores|sum(attribute='score') / scores|length)|round(1) }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </h2>
+            </div>
