@@ -1,5 +1,3 @@
-{% set datetime = namespace() %}
-{% set datetime.utcnow = datetime.utcnow %}
 {% extends "base.html" %}
 {% block title %}پست‌های {{ channel.channel_name }}{% endblock %}
 {% block content %}
@@ -52,7 +50,7 @@
     <div class="col">
         <div class="card h-100 shadow-sm position-relative">
             <!-- برچسب جدید یا ادیت شده -->
-            {% if post.publish_date and (datetime.utcnow() - post.publish_date).days < 1 %}
+            {% if post.publish_date and (now() - post.publish_date).days < 1 %}
                 <span class="position-absolute top-0 end-0 badge bg-danger m-2" style="font-size: 0.8rem;">
                     🔔 جدید
                 </span>
