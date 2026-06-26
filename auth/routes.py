@@ -119,24 +119,34 @@ def webhook():
             bot_token = Config.BALE_TOKEN
             
             if content_type == "photo":
+                print("📸 پردازش عکس...")
                 if "photo" in message:
                     photos = message["photo"]
                     if photos:
-                        file_id = photos[-1]["file_id"]  # بزرگترین عکس
+                        file_id = photos[-1]["file_id"]
+                        print(f"📸 file_id یافت شد: {file_id}")
                         media_url = get_file_url(file_id, bot_token)
+                        print(f"🔗 media_url: {media_url}")
                         thumbnail_url = media_url
                 elif "document" in message and message["document"]["mime_type"].startswith("image/"):
                     file_id = message["document"]["file_id"]
+                    print(f"📸 file_id یافت شد: {file_id}")
                     media_url = get_file_url(file_id, bot_token)
+                    print(f"🔗 media_url: {media_url}")
                     thumbnail_url = media_url
             elif content_type == "video":
+                print("🎬 پردازش ویدئو...")
                 if "video" in message:
                     file_id = message["video"]["file_id"]
+                    print(f"📸 file_id یافت شد: {file_id}")
                     media_url = get_file_url(file_id, bot_token)
+                    print(f"🔗 media_url: {media_url}")
                     thumbnail_url = media_url
                 elif "document" in message and message["document"]["mime_type"].startswith("video/"):
                     file_id = message["document"]["file_id"]
+                    print(f"📸 file_id یافت شد: {file_id}")
                     media_url = get_file_url(file_id, bot_token)
+                    print(f"🔗 media_url: {media_url}")
                     thumbnail_url = media_url
 
             post = Post(
