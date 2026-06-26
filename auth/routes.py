@@ -116,7 +116,7 @@ def webhook():
             # دریافت لینک عکس یا ویدئو
             media_url = None
             thumbnail_url = None
-            bot_token = Config.BALE_TOKEN  # توکن از تنظیمات
+            bot_token = Config.BALE_TOKEN
             
             if content_type == "photo":
                 if "photo" in message:
