@@ -15,8 +15,51 @@ from .excel_exporter import generate_excel
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    return render_template("dashboard/index.html")
-
+    
+    # آمار کلی
+    total_posts = Post.query.count()
+    total_channels = Channel.query.count()
+    total_organizations = Organization.query.count()
+    scored_posts = Post.query.filter(Post.score.isnot(None)).count()
+    total_views = db.session.query(func.sum(Post.views)).scalar() or 0
+    total_likes = db.session.query(func.sum(Post.likes)).scalar() or 0
+    
+    # میانگین امتیاز
+    avg_score = db.session.query(func.avg(Post.score)).filter(Post.score.isnot(None)).scalar() or 0
+    
+    # کانال‌های برتر (۱۰ کانال با بالاترین میانگین امتیاز)
+    top_channels = db.session.query(
+        Channel.channel_name,
+        func.avg(Post.score).label('avg_score')
+    ).join(Post).filter(Post.score.isnot(None)).group_by(Channel.id).order_by(func.avg(Post.score).desc()).limit(10).all()
+    
+    # تعداد پست‌های هر نوع
+    post_types = db.session.query(Post.post_type, func.count(Post.id)).group_by(Post.post_type).all()
+    
+    # پست‌های روزانه (۷ روز اخیر)
+    from datetime import timedelta
+    daily_posts = []
+    labels = []
+    for i in range(6, -1, -1):
+        date = datetime.utcnow().date() - timedelta(days=i)
+        count = Post.query.filter(Post.publish_date >= date, Post.publish_date < date + timedelta(days=1)).count()
+        daily_posts.append(count)
+        labels.append(date.strftime('%Y/%m/%d'))
+    
+    return render_template(
+        "dashboard/index.html",
+        total_posts=total_posts,
+        total_channels=total_channels,
+        total_organizations=total_organizations,
+        scored_posts=scored_posts,
+        total_views=total_views,
+        total_likes=total_likes,
+        avg_score=round(avg_score, 2),
+        top_channels=top_channels,
+        post_types=post_types,
+        daily_posts=daily_posts,
+        labels=labels
+    )
 # ============== سازمان‌ها ==============
 @dashboard_bp.route("/organizations")
 def organizations():
