@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}ایجاد کاربر جدید{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h3>ایجاد کاربر جدید</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <label>نام کامل</label>
+            <input class="form-control" name="full_name" required>
+        </div>
+        <div class="mb-3">
+            <label>نام کاربری</label>
+            <input class="form-control" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label>موبایل</label>
+            <input class="form-control" name="mobile">
+        </div>
+        <div class="mb-3">
+            <label>رمز عبور</label>
+            <input class="form-control" type="password" name="password" required>
+        </div>
+        <div class="mb-3">
+            <label>نقش کاربر</label>
+            <select class="form-control" name="role" id="roleSelect">
+                {% for role in roles %}
+                    <option value="{{ role }}">{{ role }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3" id="channelsSection" style="display: none;">
+            <label>کانال‌های اختصاصی (برای ادمین کانال)</label>
+            <select class="form-control" name="channels" multiple size="5">
+                {% for channel in channels %}
+                    <option value="{{ channel.id }}">{{ channel.channel_name }}</option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">برای انتخاب چند کانال، Ctrl را نگه دارید.</small>
+        </div>
+        <button class="btn btn-primary">ثبت</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('roleSelect').addEventListener('change', function() {
+        const channelsSection = document.getElementById('channelsSection');
+        if (this.value === 'channel_admin') {
+            channelsSection.style.display = 'block';
+        } else {
+            channelsSection.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}
