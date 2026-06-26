@@ -481,13 +481,17 @@ def assign_channel(channel_id):
 def db_manage():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
+    
     message = None
     if request.method == "POST":
         action = request.form.get("action")
+        custom_code = request.form.get("custom_code")  # کد دستی
+        
         try:
             if action == "create_tables":
                 db.create_all()
                 message = "✅ جدول‌ها با موفقیت ایجاد شدند!"
+            
             elif action == "fix_channels":
                 with db.engine.connect() as conn:
                     conn.execute("""
@@ -509,6 +513,7 @@ def db_manage():
                     """)
                     conn.commit()
                 message = "✅ فیلدهای جدول channels تعمیر شدند!"
+            
             elif action == "fix_posts":
                 with db.engine.connect() as conn:
                     conn.execute("""
@@ -545,6 +550,7 @@ def db_manage():
                     """)
                     conn.commit()
                 message = "✅ فیلدهای جدول posts تعمیر شدند!"
+            
             elif action == "fix_all":
                 db.create_all()
                 with db.engine.connect() as conn:
@@ -594,8 +600,20 @@ def db_manage():
                     """)
                     conn.commit()
                 message = "✅ همه فیلدها تعمیر شدند!"
+            
+            elif action == "run_custom":  # اجرای کد دستی
+                if custom_code:
+                    with db.engine.connect() as conn:
+                        conn.execute(custom_code)
+                        conn.commit()
+                    message = "✅ کد دستی با موفقیت اجرا شد!"
+                else:
+                    message = "⚠️ لطفاً کدی را وارد کنید."
             else:
                 message = "⚠️ عملیات نامعتبر است."
         except Exception as e:
             message = f"❌ خطا: {str(e)}"
+    
     return render_template("dashboard/db_manage.html", message=message)
+            
+
