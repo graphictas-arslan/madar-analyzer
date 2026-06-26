@@ -17,8 +17,8 @@ def generate_excel(posts, title="پست‌ها"):
     ws.append(headers)
     
     # استایل هدر
-    header_font = Font(bold=True, color="FFFFFF")
-    header_fill = PatternFill(start_color="#1F2937", end_color="#1F2937", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFFFF")
+    header_fill = PatternFill(start_color="FF1F2937", end_color="FF1F2937", fill_type="solid")
     header_alignment = Alignment(horizontal="center", vertical="center")
     
     for cell in ws[1]:
