@@ -164,16 +164,13 @@ def channel_posts(channel_id):
         flash("کانال پیدا نشد!", "danger")
         return redirect(url_for("dashboard.channels"))
     
-    # دریافت پارامترهای فیلتر
     type_filter = request.args.get("type", "")
     status_filter = request.args.get("status", "")
     date_from = request.args.get("date_from", "")
     date_to = request.args.get("date_to", "")
     
-    # ساخت کوئری پایه
     query = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc())
     
-    # اعمال فیلترها
     if type_filter:
         query = query.filter(Post.post_type == type_filter)
     if status_filter:
@@ -185,7 +182,6 @@ def channel_posts(channel_id):
     
     posts = query.all()
     
-    # آمار
     total_posts = len(posts)
     scored_posts = [p for p in posts if p.score is not None]
     avg_score = round(sum(p.score for p in scored_posts) / len(scored_posts), 2) if scored_posts else 0
@@ -193,7 +189,6 @@ def channel_posts(channel_id):
     min_score = min(p.score for p in scored_posts) if scored_posts else 0
     stats = {'total': total_posts, 'avg': avg_score, 'max': max_score, 'min': min_score}
     
-    # دریافت انواع و وضعیت‌ها برای فیلتر
     post_types = db.session.query(Post.post_type).filter_by(channel_id=channel_id).distinct().all()
     statuses = db.session.query(Post.status).filter_by(channel_id=channel_id).distinct().all()
     
@@ -221,16 +216,13 @@ def export_channel_posts(channel_id):
         flash("کانال پیدا نشد!", "danger")
         return redirect(url_for("dashboard.channels"))
     
-    # دریافت پارامترهای فیلتر
     type_filter = request.args.get("type", "")
     status_filter = request.args.get("status", "")
     date_from = request.args.get("date_from", "")
     date_to = request.args.get("date_to", "")
     
-    # ساخت کوئری پایه
     query = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc())
     
-    # اعمال فیلترها
     if type_filter:
         query = query.filter(Post.post_type == type_filter)
     if status_filter:
@@ -242,35 +234,32 @@ def export_channel_posts(channel_id):
     
     posts = query.all()
     
-    # تولید فایل اکسل
     excel_file = generate_excel(posts, title=f"پست‌های {channel.channel_name}")
+    safe_filename = f"posts_{channel.channel_name}.xlsx".replace(" ", "_").replace(":", "_")
     
     return Response(
         excel_file.getvalue(),
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": f"attachment; filename=posts_{channel.channel_name}.xlsx",
+            "Content-Disposition": f"attachment; filename={safe_filename}",
             "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         }
     )
 
-# ============== لیست کل پست‌ها (با فیلتر و خروجی اکسل) ==============
+# ============== لیست کل پست‌ها ==============
 @dashboard_bp.route("/posts")
 def posts():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     
-    # دریافت پارامترهای فیلتر
     channel_filter = request.args.get("channel", "")
     type_filter = request.args.get("type", "")
     status_filter = request.args.get("status", "")
     date_from = request.args.get("date_from", "")
     date_to = request.args.get("date_to", "")
     
-    # ساخت کوئری پایه
     query = Post.query.join(Channel).order_by(Post.id.desc())
     
-    # اعمال فیلترها
     if channel_filter:
         query = query.filter(Channel.channel_name.contains(channel_filter))
     if type_filter:
@@ -284,7 +273,6 @@ def posts():
     
     posts = query.all()
     
-    # دریافت لیست کانال‌ها و انواع برای فیلتر
     channels = Channel.query.all()
     post_types = db.session.query(Post.post_type).distinct().all()
     statuses = db.session.query(Post.status).distinct().all()
@@ -307,17 +295,14 @@ def export_posts():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     
-    # دریافت پارامترهای فیلتر
     channel_filter = request.args.get("channel", "")
     type_filter = request.args.get("type", "")
     status_filter = request.args.get("status", "")
     date_from = request.args.get("date_from", "")
     date_to = request.args.get("date_to", "")
     
-    # ساخت کوئری پایه
     query = Post.query.join(Channel).order_by(Post.id.desc())
     
-    # اعمال فیلترها
     if channel_filter:
         query = query.filter(Channel.channel_name.contains(channel_filter))
     if type_filter:
@@ -331,14 +316,14 @@ def export_posts():
     
     posts = query.all()
     
-    # تولید فایل اکسل
-    excel_file = generate_excel(posts, title="پست‌ها")
+    excel_file = generate_excel(posts)
+    safe_filename = "posts_export.xlsx"
     
     return Response(
         excel_file.getvalue(),
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": "attachment; filename=posts_export.xlsx",
+            "Content-Disposition": f"attachment; filename={safe_filename}",
             "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         }
     )
@@ -762,16 +747,3 @@ def db_manage():
         except Exception as e:
             message = f"❌ خطا: {str(e)}"
     return render_template("dashboard/db_manage.html", message=message)
-
-@dashboard_bp.route("/channels/<int:channel_id>/posts/export")
-def export_channel_posts(channel_id):
-    # ... کدهای قبلی ...
-    excel_file = generate_excel(posts, title=f"پست‌های {channel.channel_name}")
-    safe_filename = f"posts_{channel.channel_name}.xlsx".replace(" ", "_").replace(":", "_")
-    return Response(...)
-
-@dashboard_bp.route("/posts/export")
-def export_posts():
-    # ... کدهای قبلی ...
-    excel_file = generate_excel(posts)
-    return Response(...)
