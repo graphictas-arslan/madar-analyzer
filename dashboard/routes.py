@@ -152,30 +152,134 @@ def delete_channel(channel_id):
         flash("کانال حذف شد.", "success")
     return redirect(url_for("dashboard.channels"))
 
+# ============== پست‌های یک کانال (با فیلتر و خروجی اکسل) ==============
 @dashboard_bp.route("/channels/<int:channel_id>/posts")
 def channel_posts(channel_id):
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
+    
     channel = Channel.query.get(channel_id)
     if not channel:
         flash("کانال پیدا نشد!", "danger")
         return redirect(url_for("dashboard.channels"))
-    posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
+    
+    # دریافت پارامترهای فیلتر
+    type_filter = request.args.get("type", "")
+    status_filter = request.args.get("status", "")
+    date_from = request.args.get("date_from", "")
+    date_to = request.args.get("date_to", "")
+    
+    # ساخت کوئری پایه
+    query = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc())
+    
+    # اعمال فیلترها
+    if type_filter:
+        query = query.filter(Post.post_type == type_filter)
+    if status_filter:
+        query = query.filter(Post.status == status_filter)
+    if date_from:
+        query = query.filter(Post.publish_date >= datetime.strptime(date_from, "%Y-%m-%d"))
+    if date_to:
+        query = query.filter(Post.publish_date <= datetime.strptime(date_to, "%Y-%m-%d"))
+    
+    posts = query.all()
+    
+    # آمار
     total_posts = len(posts)
     scored_posts = [p for p in posts if p.score is not None]
     avg_score = round(sum(p.score for p in scored_posts) / len(scored_posts), 2) if scored_posts else 0
     max_score = max(p.score for p in scored_posts) if scored_posts else 0
     min_score = min(p.score for p in scored_posts) if scored_posts else 0
     stats = {'total': total_posts, 'avg': avg_score, 'max': max_score, 'min': min_score}
+    
+    # دریافت انواع و وضعیت‌ها برای فیلتر
+    post_types = db.session.query(Post.post_type).filter_by(channel_id=channel_id).distinct().all()
+    statuses = db.session.query(Post.status).filter_by(channel_id=channel_id).distinct().all()
+    
     return render_template(
         "dashboard/channel_posts.html",
         channel=channel,
         posts=posts,
         stats=stats,
-        now=datetime.utcnow
+        now=datetime.utcnow,
+        post_types=[t[0] for t in post_types],
+        statuses=[s[0] for s in statuses],
+        type_filter=type_filter,
+        status_filter=status_filter,
+        date_from=date_from,
+        date_to=date_to
     )
 
-# ============== پست‌ها (با فیلتر و خروجی اکسل) ==============
+@dashboard_bp.route("/channels/<int:channel_id>/posts/export")
+def export_channel_posts(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        flash("کانال پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.channels"))
+    
+    # دریافت پارامترهای فیلتر
+    type_filter = request.args.get("type", "")
+    status_filter = request.args.get("status", "")
+    date_from = request.args.get("date_from", "")
+    date_to = request.args.get("date_to", "")
+    
+    # ساخت کوئری پایه
+    query = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc())
+    
+    # اعمال فیلترها
+    if type_filter:
+        query = query.filter(Post.post_type == type_filter)
+    if status_filter:
+        query = query.filter(Post.status == status_filter)
+    if date_from:
+        query = query.filter(Post.publish_date >= datetime.strptime(date_from, "%Y-%m-%d"))
+    if date_to:
+        query = query.filter(Post.publish_date <= datetime.strptime(date_to, "%Y-%m-%d"))
+    
+    posts = query.all()
+    
+    # ایجاد فایل CSV در حافظه
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # هدرهای CSV
+    writer.writerow([
+        'شناسه', 'کانال', 'نوع', 'متن', 'کپشن', 
+        'تاریخ انتشار', 'وضعیت', 'امتیاز', 
+        'بازدید', 'لایک', 'کامنت'
+    ])
+    
+    # نوشتن داده‌ها
+    for post in posts:
+        writer.writerow([
+            post.id,
+            post.channel.channel_name if post.channel else '-',
+            post.post_type,
+            post.text or '',
+            post.caption or '',
+            post.publish_date.strftime('%Y-%m-%d %H:%M') if post.publish_date else '',
+            post.status,
+            post.score or 0,
+            post.views or 0,
+            post.likes or 0,
+            post.comments or 0
+        ])
+    
+    # آماده‌سازی پاسخ
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename=posts_{channel.channel_name}.csv",
+            "Content-Type": "text/csv; charset=utf-8"
+        }
+    )
+
+# ============== لیست کل پست‌ها (با فیلتر و خروجی اکسل) ==============
 @dashboard_bp.route("/posts")
 def posts():
     if "user_id" not in session:
