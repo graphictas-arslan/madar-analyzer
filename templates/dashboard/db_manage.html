@@ -72,5 +72,23 @@
             </div>
         </div>
     </div>
+
+    <!-- بخش جدید: اجرای کد دستی -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">⌨️ اجرای کد دستی (SQL یا Python)</h5>
+            <p class="card-text">کد مورد نظر خود را در فیلد زیر وارد کنید و دکمه اجرا را بزنید.</p>
+            <form method="POST">
+                <input type="hidden" name="action" value="run_custom">
+                <div class="mb-3">
+                    <label for="custom_code" class="form-label">کد (SQL یا Python)</label>
+                    <textarea class="form-control" id="custom_code" name="custom_code" rows="5" placeholder="مثال: ALTER TABLE posts ADD COLUMN media_url TEXT;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark">
+                    <i class="fas fa-play"></i> اجرای کد
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
