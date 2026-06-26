@@ -762,3 +762,16 @@ def db_manage():
         except Exception as e:
             message = f"❌ خطا: {str(e)}"
     return render_template("dashboard/db_manage.html", message=message)
+
+@dashboard_bp.route("/channels/<int:channel_id>/posts/export")
+def export_channel_posts(channel_id):
+    # ... کدهای قبلی ...
+    excel_file = generate_excel(posts, title=f"پست‌های {channel.channel_name}")
+    safe_filename = f"posts_{channel.channel_name}.xlsx".replace(" ", "_").replace(":", "_")
+    return Response(...)
+
+@dashboard_bp.route("/posts/export")
+def export_posts():
+    # ... کدهای قبلی ...
+    excel_file = generate_excel(posts)
+    return Response(...)
