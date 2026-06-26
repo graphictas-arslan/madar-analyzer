@@ -1,4 +1,4 @@
-from . import dashboard_bp  # این خط باید باشد
+from . import dashboard_bp
 
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
@@ -170,7 +170,7 @@ def channel_posts(channel_id):
         channel=channel,
         posts=posts,
         stats=stats,
-        datetime=datetime  # این خط را اضافه کنید
+        now=datetime.utcnow  # این خط را اضافه کنید
     )
 
 # ============== پست‌ها ==============
