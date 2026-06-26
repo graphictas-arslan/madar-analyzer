@@ -1,4 +1,4 @@
-8from . import dashboard_bp  # این خط باید باشد
+from . import dashboard_bp  # این خط باید باشد
 
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
