@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}کنسول{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>💻 کنسول</h2>
+    <p class="text-muted">کدهای پایتون یا SQL خود را در اینجا بنویسید و اجرا کنید.</p>
+
+    {% if output %}
+    <div class="alert alert-info">
+        <pre>{{ output }}</pre>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="code" class="form-label">کد</label>
+                    <textarea class="form-control" id="code" name="code" rows="15" style="font-family: monospace; font-size: 14px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark">
+                    <i class="fas fa-play"></i> اجرا
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
