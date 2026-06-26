@@ -347,6 +347,27 @@ def score_post(post_id):
         flash("لطفاً یک عدد معتبر وارد کنید.", "danger")
     return redirect(url_for("dashboard.channel_posts", channel_id=post.channel_id))
 
+# ============== حذف پست ==============
+@dashboard_bp.route("/posts/delete/<int:post_id>", methods=["POST"])
+def delete_post(post_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    post = Post.query.get(post_id)
+    if not post:
+        flash("پست پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.posts"))
+    
+    db.session.delete(post)
+    db.session.commit()
+    flash(f"پست #{post.id} با موفقیت حذف شد.", "success")
+    
+    # بازگشت به صفحه قبلی
+    referrer = request.referrer
+    if referrer and "channels" in referrer:
+        return redirect(referrer)
+    return redirect(url_for("dashboard.posts"))
+
 # ============== ربات‌ها ==============
 @dashboard_bp.route("/bots")
 def bots():
