@@ -95,3 +95,177 @@
                     {% endif %}
                 </h2>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- جدول پست‌ها -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>تصویر</th>
+                        <th>کانال</th>
+                        <th>نوع</th>
+                        <th>متن</th>
+                        <th>امتیاز</th>
+                        <th>تاریخ</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td>
+                            {% if post.media_url %}
+                                <img src="{{ post.media_url }}" width="50" height="50" class="rounded" style="object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light text-center rounded" style="width:50px; height:50px; display:flex; align-items:center; justify-content:center;">
+                                    <i class="fas fa-file-alt text-secondary"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ post.channel.channel_name if post.channel else 'Unknown' }}</strong>
+                        </td>
+                        <td>
+                            {% if post.post_type == 'text' %}
+                                <span class="badge bg-secondary">متن</span>
+                            {% elif post.post_type == 'photo' %}
+                                <span class="badge bg-primary">عکس</span>
+                            {% elif post.post_type == 'video' %}
+                                <span class="badge bg-success">ویدئو</span>
+                            {% elif post.post_type == 'document' %}
+                                <span class="badge bg-warning">سند</span>
+                            {% else %}
+                                <span class="badge bg-dark">سایر</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.text %}
+                                {{ post.text[:60] + '...' if post.text|length > 60 else post.text }}
+                            {% else %}
+                                <span class="text-muted">بدون متن</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.score %}
+                                <span class="badge bg-{{ 'success' if post.score >= 70 else 'warning' if post.score >= 40 else 'danger' }}">
+                                    {{ post.score }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-light text-secondary">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.publish_date %}
+                                {{ post.publish_date.strftime('%Y/%m/%d') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.status == 'active' %}
+                                <span class="badge bg-success">فعال</span>
+                            {% elif post.status == 'pending' %}
+                                <span class="badge bg-warning">در انتظار</span>
+                            {% else %}
+                                <span class="badge bg-danger">غیرفعال</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#scoreModal{{ post.id }}">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailModal{{ post.id }}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- مودال امتیازدهی -->
+                    <div class="modal fade" id="scoreModal{{ post.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">⭐ امتیازدهی به پست</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form method="POST" action="/dashboard/posts/score/{{ post.id }}">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">متن پست:</label>
+                                            <p class="text-muted">{{ post.text[:200] + '...' if post.text and post.text|length > 200 else post.text or '-' }}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">امتیاز (۰ تا ۱۰۰)</label>
+                                            <input type="number" class="form-control" name="score" min="0" max="100" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                                        <button type="submit" class="btn btn-primary">ثبت امتیاز</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- مودال جزئیات -->
+                    <div class="modal fade" id="detailModal{{ post.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">📄 جزئیات پست</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>کانال:</strong> {{ post.channel.channel_name if post.channel else '-' }}
+                                            <br>
+                                            <strong>نوع:</strong> {{ post.post_type }}
+                                            <br>
+                                            <strong>تاریخ انتشار:</strong> {{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else '-' }}
+                                            <br>
+                                            <strong>وضعیت:</strong> {{ post.status }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>امتیاز:</strong> {{ post.score or '-' }}
+                                            <br>
+                                            <strong>نویسنده:</strong> {{ post.author_name or '-' }}
+                                            <br>
+                                            <strong>لایک:</strong> {{ post.likes or 0 }}
+                                            <br>
+                                            <strong>کامنت:</strong> {{ post.comments or 0 }}
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <strong>متن کامل:</strong>
+                                    <p>{{ post.text or 'بدون متن' }}</p>
+                                    {% if post.caption %}
+                                    <strong>کپشن:</strong>
+                                    <p>{{ post.caption }}</p>
+                                    {% endif %}
+                                    {% if post.media_url %}
+                                    <div class="text-center mt-3">
+                                        <img src="{{ post.media_url }}" class="img-fluid rounded" style="max-height: 400px;">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
