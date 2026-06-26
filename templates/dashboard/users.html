@@ -1,1 +1,50 @@
+{% extends "base.html" %}
+{% block title %}مدیریت کاربران{% endblock %}
+{% block content %}
+<a class="btn btn-success mb-3" href="/dashboard/users/create">➕ کاربر جدید</a>
 
+<div class="container mt-4">
+    <h2>مدیریت کاربران</h2>
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>نام</th>
+                <th>نام کاربری</th>
+                <th>نقش</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.username }}</td>
+                <td>
+                    <span class="badge bg-{{ 'primary' if user.role == 'admin' else 'success' if user.role == 'channel_admin' else 'info' }}">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td>
+                    {% if user.is_active %}
+                        <span class="badge bg-success">فعال</span>
+                    {% else %}
+                        <span class="badge bg-danger">غیرفعال</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/dashboard/users/toggle/{{ user.id }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-toggle-on"></i>
+                    </a>
+                    <a href="/dashboard/users/delete/{{ user.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
