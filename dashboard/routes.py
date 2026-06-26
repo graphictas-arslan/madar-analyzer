@@ -234,8 +234,8 @@ def export_channel_posts(channel_id):
     
     posts = query.all()
     
-    excel_file = generate_excel(posts, title=f"پست‌های {channel.channel_name}")
-    safe_filename = f"posts_{channel.channel_name}.xlsx".replace(" ", "_").replace(":", "_")
+    excel_file = generate_excel(posts, title=f"Posts of {channel.channel_name}")
+    safe_filename = f"posts_channel_{channel.id}.xlsx"
     
     return Response(
         excel_file.getvalue(),
