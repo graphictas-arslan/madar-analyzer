@@ -615,7 +615,9 @@ def db_manage():
             message = f"❌ خطا: {str(e)}"
     
     return render_template("dashboard/db_manage.html", message=message)
+    
 # ============== کنسول (اجرای کد پایتون و SQL) ==============
+
 @dashboard_bp.route("/console", methods=["GET", "POST"])
 def console():
     if "user_id" not in session:
@@ -626,8 +628,11 @@ def console():
         code = request.form.get("code")
         try:
             # ایجاد یک محیط مجزا برای اجرای کد
+            # متغیر app را از برنامه اصلی می‌گیریم
+            from main import app as main_app
+            
             local_ns = {
-                'app': app,
+                'app': main_app,
                 'db': db,
                 'models': __import__('models'),
                 'requests': requests,
@@ -640,5 +645,4 @@ def console():
             output = f"❌ خطا: {str(e)}"
     
     return render_template("dashboard/console.html", output=output)
-            
 
