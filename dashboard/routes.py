@@ -615,5 +615,30 @@ def db_manage():
             message = f"❌ خطا: {str(e)}"
     
     return render_template("dashboard/db_manage.html", message=message)
+# ============== کنسول (اجرای کد پایتون و SQL) ==============
+@dashboard_bp.route("/console", methods=["GET", "POST"])
+def console():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    output = None
+    if request.method == "POST":
+        code = request.form.get("code")
+        try:
+            # ایجاد یک محیط مجزا برای اجرای کد
+            local_ns = {
+                'app': app,
+                'db': db,
+                'models': __import__('models'),
+                'requests': requests,
+                'datetime': datetime,
+                'sqlalchemy': __import__('sqlalchemy')
+            }
+            exec(code, {}, local_ns)
+            output = "✅ کد با موفقیت اجرا شد!"
+        except Exception as e:
+            output = f"❌ خطا: {str(e)}"
+    
+    return render_template("dashboard/console.html", output=output)
             
 
