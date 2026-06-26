@@ -2,7 +2,6 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 from openpyxl.utils import get_column_letter
 import io
-from models import Channel  # این خط را اضافه کنید
 
 def generate_excel(posts, title="پست‌ها"):
     """
@@ -29,7 +28,8 @@ def generate_excel(posts, title="پست‌ها"):
     
     # نوشتن داده‌ها
     for post in posts:
-        # دریافت نام کانال از طریق channel_id
+        # ایمپورت Channel در داخل تابع برای جلوگیری از circular import
+        from models import Channel
         channel = Channel.query.get(post.channel_id)
         channel_name = channel.channel_name if channel else '-'
         
