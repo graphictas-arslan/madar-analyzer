@@ -1,4 +1,4 @@
-from . import dashboard_bp  # این خط باید باشد
+8from . import dashboard_bp  # این خط باید باشد
 
 from flask import render_template, redirect, url_for, session, request, flash
 from extensions import db
@@ -169,7 +169,8 @@ def channel_posts(channel_id):
         "dashboard/channel_posts.html",
         channel=channel,
         posts=posts,
-        stats=stats
+        stats=stats,
+        datetime=datetime  # این خط را اضافه کنید
     )
 
 # ============== پست‌ها ==============
