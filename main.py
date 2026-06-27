@@ -2,23 +2,27 @@ from flask import Flask, redirect, url_for, session
 from config import Config
 from database import init_database
 from extensions import db, migrate
-from auth.routes import auth_bp
-from dashboard import dashboard_bp  # فقط این خط کافی است
-from users.routes import users_bp
 import models
-from dashboard.channel_admin.routes import channel_admin_bp
-from dashboard.manager.routes import manager_bp
 
-app.register_blueprint(channel_admin_bp)
-app.register_blueprint(manager_bp)
+# ============== ایجاد اپلیکیشن ==============
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# ثبت بلوپرینت‌ها
+# ============== ایمپورت بلوپرینت‌ها ==============
+from auth.routes import auth_bp
+from dashboard import dashboard_bp
+from users.routes import users_bp
+from dashboard.channel_admin.routes import channel_admin_bp
+from dashboard.manager.routes import manager_bp
+
+# ============== ثبت بلوپرینت‌ها ==============
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(users_bp)
+app.register_blueprint(channel_admin_bp)
+app.register_blueprint(manager_bp)
 
+# ============== تنظیمات دیتابیس ==============
 db.init_app(app)
 migrate.init_app(app, db)
 
