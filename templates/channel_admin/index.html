@@ -1,1 +1,24 @@
-
+{% extends "base.html" %}
+{% block title %}داشبورد ادمین کانال{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📢 داشبورد ادمین کانال</h2>
+    <p>شما فقط کانال‌های اختصاصی خود را می‌بینید.</p>
+    
+    <div class="row">
+        {% for channel in channels %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ channel.channel_name }}</h5>
+                    <p class="card-text">شناسه: {{ channel.channel_id }}</p>
+                    <a href="/channel-admin/channels/{{ channel.id }}/posts" class="btn btn-primary">
+                        مشاهده پست‌ها
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
