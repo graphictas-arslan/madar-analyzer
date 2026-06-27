@@ -21,15 +21,11 @@ def check_permission():
 @channel_admin_bp.route("/")
 def dashboard():
     user = User.query.get(session["user_id"])
-    # فقط کانال‌هایی که به کاربر اختصاص داده شده
     channels = Channel.query.filter(Channel.id.in_([c.id for c in user.channels])).all()
     
-    # آمار
     total_channels = len(channels)
     total_posts = Post.query.filter(Post.channel_id.in_([c.id for c in channels])).count()
     scored_posts = Post.query.filter(Post.channel_id.in_([c.id for c in channels]), Post.score.isnot(None)).count()
-    
-    # میانگین امتیاز کانال‌ها
     avg_score = db.session.query(func.avg(Post.score)).filter(
         Post.channel_id.in_([c.id for c in channels]),
         Post.score.isnot(None)
@@ -41,8 +37,8 @@ def dashboard():
         total_channels=total_channels,
         total_posts=total_posts,
         scored_posts=scored_posts,
-        avg_score=round(avg_score, 2)
-        user=user  # این خط را اضافه کنید      
+        avg_score=round(avg_score, 2),
+        user=user
     )
 
 @channel_admin_bp.route("/channels")
@@ -71,7 +67,7 @@ def channel_posts(channel_id):
         posts=posts,
         total_posts=total_posts,
         avg_score=avg_score,
-        now=datetime.utcnow  # این خط را اضافه کنید
+        now=datetime.utcnow
     )
 
 @channel_admin_bp.route("/channels/<int:channel_id>/posts/export")
@@ -84,7 +80,6 @@ def export_channel_posts(channel_id):
     channel = Channel.query.get(channel_id)
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
     
-    # ایجاد فایل CSV
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(['شناسه', 'نوع', 'متن', 'کپشن', 'تاریخ', 'امتیاز'])
