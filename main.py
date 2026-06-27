@@ -6,7 +6,11 @@ from auth.routes import auth_bp
 from dashboard import dashboard_bp  # فقط این خط کافی است
 from users.routes import users_bp
 import models
+from dashboard.channel_admin.routes import channel_admin_bp
+from dashboard.manager.routes import manager_bp
 
+app.register_blueprint(channel_admin_bp)
+app.register_blueprint(manager_bp)
 app = Flask(__name__)
 app.config.from_object(Config)
 
