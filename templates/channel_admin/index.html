@@ -2,73 +2,75 @@
 {% block title %}داشبورد ادمین کانال{% endblock %}
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">📢 داشبورد ادمین کانال</h2>
-    <p class="text-muted">شما فقط کانال‌های اختصاصی خود را می‌بینید.</p>
+    <!-- نام ادمین -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="text-muted">
+                👋 خوش آمدید، 
+                <span class="fw-bold">
+                    {{ user.full_name }}
+                </span>
+            </h4>
+            <small class="text-muted">نقش: ادمین کانال</small>
+        </div>
+    </div>
 
-    <!-- کارت‌های آمار -->
-    <div class="row mb-4 g-3">
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm h-100">
-                <div class="card-body">
-                    <div class="mb-2">
-                        <i class="fas fa-bullhorn fa-2x text-primary"></i>
-                    </div>
-                    <h5 class="text-muted">کانال‌ها</h5>
-                    <h2 class="fw-bold">{{ total_channels }}</h2>
+    <!-- کارت‌های آمار (مینیمال) -->
+    <div class="row mb-4 g-2">
+        <div class="col-6 col-md-3">
+            <div class="card text-center shadow-sm border-0 p-2" style="border-radius: 12px;">
+                <div class="card-body p-2">
+                    <small class="text-muted d-block">📢 کانال‌ها</small>
+                    <h4 class="m-0 fw-bold">{{ total_channels }}</h4>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm h-100">
-                <div class="card-body">
-                    <div class="mb-2">
-                        <i class="fas fa-file-alt fa-2x text-success"></i>
-                    </div>
-                    <h5 class="text-muted">پست‌ها</h5>
-                    <h2 class="fw-bold">{{ total_posts }}</h2>
+        <div class="col-6 col-md-3">
+            <div class="card text-center shadow-sm border-0 p-2" style="border-radius: 12px;">
+                <div class="card-body p-2">
+                    <small class="text-muted d-block">📄 پست‌ها</small>
+                    <h4 class="m-0 fw-bold">{{ total_posts }}</h4>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm h-100">
-                <div class="card-body">
-                    <div class="mb-2">
-                        <i class="fas fa-star fa-2x text-warning"></i>
-                    </div>
-                    <h5 class="text-muted">امتیازدار</h5>
-                    <h2 class="fw-bold">{{ scored_posts }}</h2>
+        <div class="col-6 col-md-3">
+            <div class="card text-center shadow-sm border-0 p-2" style="border-radius: 12px;">
+                <div class="card-body p-2">
+                    <small class="text-muted d-block">⭐ امتیازدار</small>
+                    <h4 class="m-0 fw-bold">{{ scored_posts }}</h4>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm h-100">
-                <div class="card-body">
-                    <div class="mb-2">
-                        <i class="fas fa-chart-line fa-2x text-info"></i>
-                    </div>
-                    <h5 class="text-muted">میانگین</h5>
-                    <h2 class="fw-bold">{{ avg_score }}</h2>
+        <div class="col-6 col-md-3">
+            <div class="card text-center shadow-sm border-0 p-2" style="border-radius: 12px;">
+                <div class="card-body p-2">
+                    <small class="text-muted d-block">📈 میانگین</small>
+                    <h4 class="m-0 fw-bold">{{ avg_score }}</h4>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- گرید کانال‌ها (کارت‌های فلش) -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <!-- لیست کانال‌ها (فقط نام و شناسه) -->
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3">
         {% for channel in channels %}
         <div class="col">
-            <div class="card h-100 shadow-sm border-0" style="border-radius: 15px; transition: transform 0.2s;">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="fas fa-bullhorn fa-3x text-primary"></i>
+            <a href="/channel-admin/channels/{{ channel.id }}/posts" 
+               class="text-decoration-none text-dark">
+                <div class="card shadow-sm border-0 p-3" style="border-radius: 15px; transition: 0.2s;">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-bullhorn text-primary fa-lg"></i>
+                        </div>
+                        <div>
+                            <h6 class="m-0 fw-bold">{{ channel.channel_name }}</h6>
+                            <small class="text-muted" style="font-size: 0.75rem;">
+                                شناسه: {{ channel.channel_id }}
+                            </small>
+                        </div>
                     </div>
-                    <h5 class="card-title">{{ channel.channel_name }}</h5>
-                    <p class="card-text text-muted small">شناسه: {{ channel.channel_id }}</p>
-                    <a href="/channel-admin/channels/{{ channel.id }}/posts" class="btn btn-primary btn-sm w-100">
-                        <i class="fas fa-eye"></i> مشاهده پست‌ها
-                    </a>
                 </div>
-            </div>
+            </a>
         </div>
         {% endfor %}
     </div>
