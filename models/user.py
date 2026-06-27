@@ -2,6 +2,13 @@ from extensions import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# جدول واسط برای ارتباط کاربر و کانال (Many-to-Many)
+user_channels = db.Table(
+    'user_channels',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('channel_id', db.Integer, db.ForeignKey('channels.id'), primary_key=True)
+)
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -10,7 +17,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
     mobile = db.Column(db.String(20), unique=True)
-    role = db.Column(db.String(50), default="channel_admin")  # نقش کاربر
+    role = db.Column(db.String(50), default="channel_admin")  # نقش کاربر (admin, channel_admin, manager)
     is_active = db.Column(db.Boolean, default=True)
     is_super_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -19,7 +26,7 @@ class User(db.Model):
     # رابطه با کانال‌ها (برای ادمین کانال)
     channels = db.relationship(
         'Channel',
-        secondary='user_channels',
+        secondary=user_channels,
         backref=db.backref('admins', lazy='dynamic')
     )
 
@@ -31,11 +38,3 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.username}>"
-
-
-# جدول واسط برای ارتباط کاربر و کانال (Many-to-Many)
-user_channels = db.Table(
-    'user_channels',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-    db.Column('channel_id', db.Integer, db.ForeignKey('channels.id'), primary_key=True)
-)
