@@ -2,56 +2,66 @@
 {% block title %}مدیریت کانال‌ها{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>مدیریت کانال‌ها</h2>
+    <h2>📢 مدیریت کانال‌ها</h2>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createChannelModal">
         <i class="fas fa-plus"></i> کانال جدید
     </button>
 </div>
 
-<!-- لیست کانال‌ها -->
 <div class="card">
     <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>نام کانال</th>
-                    <th>شناسه کانال</th>
-                    <th>سازمان</th>
-                    <th>پلتفرم</th>
-                    <th>وضعیت</th>
-                    <th>تاریخ ایجاد</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for channel in channels %}
-                <tr>
-                    <td>{{ channel.id }}</td>
-                    <td>{{ channel.channel_name }}</td>
-                    <td>{{ channel.bale_channel_id }}</td>
-                    <td>{{ channel.organization.name if channel.organization else '-' }}</td>
-                    <td>{{ channel.platform.title if channel.platform else '-' }}</td>
-                    <td>
-                        {% if channel.is_active %}
-                            <span class="badge bg-success">فعال</span>
-                        {% else %}
-                            <span class="badge bg-danger">غیرفعال</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ channel.created_at.strftime('%Y-%m-%d') }}</td>
-                    <td>
-                        <a href="/dashboard/channels/toggle/{{ channel.id }}" class="btn btn-sm btn-warning">
-                            تغییر وضعیت
-                        </a>
-                        <a href="/dashboard/channels/delete/{{ channel.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
-                            حذف
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نام کانال</th>
+                        <th>شناسه</th>
+                        <th>سازمان</th>
+                        <th>پلتفرم</th>
+                        <th>ادمین‌ها</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for channel in channels %}
+                    <tr>
+                        <td>{{ channel.id }}</td>
+                        <td>{{ channel.channel_name }}</td>
+                        <td>{{ channel.channel_id }}</td>
+                        <td>{{ channel.organization.name if channel.organization else '-' }}</td>
+                        <td>{{ channel.platform.title if channel.platform else '-' }}</td>
+                        <td>
+                            {% for admin in channel.admins %}
+                                <span class="badge bg-info">{{ admin.full_name }}</span>
+                            {% else %}
+                                <span class="text-muted">بدون ادمین</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if channel.is_active %}
+                                <span class="badge bg-success">فعال</span>
+                            {% else %}
+                                <span class="badge bg-danger">غیرفعال</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/dashboard/channels/assign/{{ channel.id }}" class="btn btn-sm btn-info">
+                                <i class="fas fa-user-plus"></i>
+                            </a>
+                            <a href="/dashboard/channels/toggle/{{ channel.id }}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-toggle-on"></i>
+                            </a>
+                            <a href="/dashboard/channels/delete/{{ channel.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -70,8 +80,8 @@
                         <input type="text" class="form-control" name="channel_name" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">شناسه کانال (در پلتفرم)</label>
-                        <input type="text" class="form-control" name="bale_channel_id" required>
+                        <label class="form-label">شناسه کانال</label>
+                        <input type="text" class="form-control" name="channel_id" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">سازمان</label>
