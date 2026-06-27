@@ -5,50 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Madar Analyzer{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- بوت‌استرپ برای زیبایی بیشتر -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- آیکون‌ها -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    {% include "sidebar.html" %}
-    <div class="content">
-        {% include "navbar.html" %}
-        <div style="padding: 20px;">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            {% block content %}{% endblock %}
+    <div class="app-container">
+        <!-- هدر -->
+        <div class="header">
+            <div class="title">🚀 مادر آنالیزر</div>
+            <div>
+                <span class="badge">۳</span>
+            </div>
         </div>
-    </div>
-    
-    <!-- اسکریپت بوت‌استرپ -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+        <!-- محتوای اصلی -->
+        {% block content %}{% endblock %}
+
+        <!-- نوار پایین -->
+        <nav class="bottom-nav">
+            <a href="/dashboard" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>خانه</span>
+            </a>
+            <a href="/dashboard/channels" class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>کانال‌ها</span>
+            </a>
+            <a href="/dashboard/posts" class="nav-item">
+                <i class="fas fa-file-alt"></i>
+                <span>پست‌ها</span>
+            </a>
+            <a href="/users" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>پروفایل</span>
+            </a>
+            <a href="/auth/logout" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>خروج</span>
+            </a>
+        </nav>
+    </div>
 </body>
 </html>
-<button class="sidebar-toggle" id="sidebarToggle">☰</button>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<script>
-    const toggleBtn = document.getElementById('sidebarToggle');
-    const sidebar = document.querySelector('.sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('open');
-    });
-
-    overlay.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('open');
-    });
-</script>
