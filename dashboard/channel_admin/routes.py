@@ -42,6 +42,7 @@ def dashboard():
         total_posts=total_posts,
         scored_posts=scored_posts,
         avg_score=round(avg_score, 2)
+        user=user  # این خط را اضافه کنید      
     )
 
 @channel_admin_bp.route("/channels")
