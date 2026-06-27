@@ -98,9 +98,15 @@ def organization_channels(org_id):
 def channels():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
     channels = Channel.query.order_by(Channel.id.desc()).all()
     organizations = Organization.query.all()
     platforms = Platform.query.all()
+    
     return render_template(
         "dashboard/channels.html",
         channels=channels,
@@ -112,13 +118,20 @@ def channels():
 def create_channel():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
     channel_name = request.form.get("channel_name")
     channel_id = request.form.get("channel_id")
     organization_id = request.form.get("organization_id")
     platform_id = request.form.get("platform_id")
+    
     if Channel.query.filter_by(channel_id=channel_id).first():
         flash("این شناسه کانال قبلاً ثبت شده است!", "danger")
         return redirect(url_for("dashboard.channels"))
+    
     channel = Channel(
         channel_name=channel_name,
         channel_id=channel_id,
@@ -130,6 +143,39 @@ def create_channel():
     db.session.commit()
     flash("کانال با موفقیت ایجاد شد.", "success")
     return redirect(url_for("dashboard.channels"))
+
+@dashboard_bp.route("/channels/assign/<int:channel_id>", methods=["GET", "POST"])
+def assign_channel_admins(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    user = User.query.get(session["user_id"])
+    if user.role != "admin":
+        flash("شما دسترسی به این صفحه را ندارید.", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        flash("کانال پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.channels"))
+    
+    if request.method == "POST":
+        admin_ids = request.form.getlist("admin_ids")
+        # حذف ادمین‌های قبلی و اضافه کردن جدید
+        channel.admins = []
+        if admin_ids:
+            admins = User.query.filter(User.id.in_(admin_ids), User.role == "channel_admin").all()
+            channel.admins = admins
+            db.session.commit()
+            flash("ادمین‌های کانال با موفقیت به‌روز شدند.", "success")
+        return redirect(url_for("dashboard.channels"))
+    
+    # دریافت لیست ادمین‌های کانال برای نمایش در فرم
+    channel_admins = User.query.filter(User.role == "channel_admin").all()
+    return render_template(
+        "dashboard/assign_channel.html",
+        channel=channel,
+        channel_admins=channel_admins
+    )
 
 @dashboard_bp.route("/channels/toggle/<int:channel_id>")
 def toggle_channel(channel_id):
@@ -314,7 +360,6 @@ def export_posts():
             "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         }
     )
-
 
 # ============== مدیریت کاربران ==============
 @dashboard_bp.route("/users")
@@ -788,38 +833,3 @@ def db_manage():
                                 ALTER TABLE channels ADD COLUMN organization_id INTEGER;
                             END IF;
                             IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='channel_id') THEN
-                                ALTER TABLE posts ADD COLUMN channel_id INTEGER;
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='platform_post_id') THEN
-                                ALTER TABLE posts ADD COLUMN platform_post_id VARCHAR(200);
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='post_type') THEN
-                                ALTER TABLE posts ADD COLUMN post_type VARCHAR(50);
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='author_name') THEN
-                                ALTER TABLE posts ADD COLUMN author_name VARCHAR(200);
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='publish_date') THEN
-                                ALTER TABLE posts ADD COLUMN publish_date TIMESTAMP;
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='status') THEN
-                                ALTER TABLE posts ADD COLUMN status VARCHAR(50);
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='score') THEN
-                                ALTER TABLE posts ADD COLUMN score FLOAT;
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='caption') THEN
-                                ALTER TABLE posts ADD COLUMN caption TEXT;
-                            END IF;
-                            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='posts' AND column_name='text') THEN
-                                ALTER TABLE posts ADD COLUMN text TEXT;
-                            END IF;
-                        END $$;
-                    """)
-                    conn.commit()
-                message = "✅ همه فیلدها تعمیر شدند!"
-            else:
-                message = "⚠️ عملیات نامعتبر است."
-        except Exception as e:
-            message = f"❌ خطا: {str(e)}"
-    return render_template("dashboard/db_manage.html", message=message)
