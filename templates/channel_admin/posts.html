@@ -2,7 +2,7 @@
 {% block title %}پست‌های {{ channel.channel_name }}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>📸 پست‌های {{ channel.channel_name }}</h2>
+    <h2>📸 پست‌های کانال: {{ channel.channel_name }}</h2>
     <a href="/channel-admin/channels" class="btn btn-secondary">بازگشت</a>
 </div>
 
@@ -26,19 +26,152 @@
     </div>
 </div>
 
-<!-- لیست پست‌ها -->
-<div class="row">
+<!-- گرید پست‌ها (مثل ادمین اصلی) -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
     {% for post in posts %}
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm">
-            {% if post.media_url %}
-            <img src="{{ post.media_url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+    <div class="col">
+        <div class="card h-100 shadow-sm position-relative">
+            <!-- برچسب جدید -->
+            {% if post.publish_date and (now() - post.publish_date).days < 1 %}
+                <span class="position-absolute top-0 end-0 badge bg-danger m-2" style="font-size: 0.8rem;">
+                    🔔 جدید
+                </span>
+            {% elif post.updated_at and (post.updated_at - post.created_at).days > 0 %}
+                <span class="position-absolute top-0 end-0 badge bg-warning m-2" style="font-size: 0.8rem;">
+                    🔄 ادیت شده
+                </span>
             {% endif %}
-            <div class="card-body">
-                <p>{{ post.text[:100] }}...</p>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">{{ post.publish_date.strftime('%Y/%m/%d') }}</small>
-                    <small class="text-muted">⭐ {{ post.score or '-' }}</small>
+
+            <!-- تصویر -->
+            <div style="height: 200px; overflow: hidden; background: #f0f0f0; display:flex; align-items:center; justify-content:center; cursor:pointer;" 
+                 data-bs-toggle="modal" data-bs-target="#postModal{{ post.id }}">
+                {% if post.media_url %}
+                    <img src="{{ post.media_url }}" class="card-img-top" style="height: 100%; object-fit: cover;">
+                {% else %}
+                    <div class="text-muted text-center">
+                        <i class="fas fa-file-alt fa-3x"></i>
+                        <p class="small mt-2">بدون تصویر</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body p-3">
+                {% if post.caption %}
+                    <p class="card-text text-truncate-2 small">{{ post.caption }}</p>
+                {% endif %}
+                {% if post.text and post.text != post.caption %}
+                    <p class="card-text text-truncate-2 small text-muted">{{ post.text }}</p>
+                {% endif %}
+
+                <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                    <span><i class="fas fa-eye"></i> {{ post.views or 0 }}</span>
+                    <span><i class="far fa-clock"></i> {{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else 'نامشخص' }}</span>
+                </div>
+
+                <div class="mt-2 text-center">
+                    {% if post.score %}
+                        <span class="badge bg-{{ 'success' if post.score >= 70 else 'warning' if post.score >= 40 else 'danger' }}">
+                            ⭐ {{ post.score }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary">بدون امتیاز</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال پاپ‌آپ (مثل ادمین اصلی) -->
+    <div class="modal fade" id="postModal{{ post.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header" style="background: #1f2937; color: white; border: none;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-alt"></i> جزئیات پست #{{ post.id }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <!-- سمت راست: عکس بزرگ -->
+                        <div class="col-md-7" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; min-height: 400px;">
+                            {% if post.media_url %}
+                                <img src="{{ post.media_url }}" class="img-fluid" style="max-height: 600px; width: 100%; object-fit: contain;">
+                            {% else %}
+                                <div class="text-muted text-center p-5">
+                                    <i class="fas fa-file-alt fa-5x"></i>
+                                    <p class="mt-3">این پست تصویر ندارد</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- سمت چپ: اطلاعات -->
+                        <div class="col-md-5 p-4" style="background: white;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="text-muted mb-0">📢 {{ post.channel.channel_name if post.channel else 'Unknown' }}</h6>
+                                <span class="badge bg-{{ 'success' if post.status == 'active' else 'warning' if post.status == 'pending' else 'danger' }}">
+                                    {{ post.status }}
+                                </span>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-3">
+                                <strong>📝 متن:</strong>
+                                <p class="text-muted" style="font-size: 0.95rem;">{{ post.text or 'بدون متن' }}</p>
+                            </div>
+
+                            {% if post.caption %}
+                            <div class="mb-3">
+                                <strong>📌 کپشن:</strong>
+                                <p class="text-muted" style="font-size: 0.95rem;">{{ post.caption }}</p>
+                            </div>
+                            {% endif %}
+
+                            <hr>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: #f8f9fa;">
+                                        <small class="text-muted d-block">🕒 انتشار</small>
+                                        <strong>{{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else '-' }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: #f8f9fa;">
+                                        <small class="text-muted d-block">⭐ امتیاز</small>
+                                        <strong>{{ post.score or 'بدون امتیاز' }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 rounded" style="background: #f8f9fa;">
+                                        <small class="text-muted d-block">👁️ بازدید</small>
+                                        <strong>{{ post.views or 0 }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 rounded" style="background: #f8f9fa;">
+                                        <small class="text-muted d-block">❤️ لایک</small>
+                                        <strong>{{ post.likes or 0 }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 rounded" style="background: #f8f9fa;">
+                                        <small class="text-muted d-block">💬 کامنت</small>
+                                        <strong>{{ post.comments or 0 }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="border-top: 1px solid #e5e7eb;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <a href="{{ post.media_url }}" target="_blank" class="btn btn-primary" style="border-radius: 10px;">
+                        <i class="fas fa-external-link-alt"></i> دانلود عکس
+                    </a>
                 </div>
             </div>
         </div>
