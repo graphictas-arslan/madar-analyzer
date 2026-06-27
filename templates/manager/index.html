@@ -1,1 +1,27 @@
-
+{% extends "base.html" %}
+{% block title %}داشبورد مدیر{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📊 داشبورد مدیر</h2>
+    <p>شما می‌توانید همه‌چیز را ببینید، اما چیزی را تغییر ندهید.</p>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>کل کانال‌ها</h5>
+                    <h2>{{ channels|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>کل پست‌ها</h5>
+                    <h2>{{ posts|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
