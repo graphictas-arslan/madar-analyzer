@@ -60,7 +60,6 @@ def channel_posts(channel_id):
     channel = Channel.query.get(channel_id)
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
     
-    # آمار کانال
     total_posts = len(posts)
     scored_posts = [p for p in posts if p.score is not None]
     avg_score = round(sum(p.score for p in scored_posts) / len(scored_posts), 2) if scored_posts else 0
@@ -70,7 +69,8 @@ def channel_posts(channel_id):
         channel=channel,
         posts=posts,
         total_posts=total_posts,
-        avg_score=avg_score
+        avg_score=avg_score,
+        now=datetime.utcnow  # این خط را اضافه کنید
     )
 
 @channel_admin_bp.route("/channels/<int:channel_id>/posts/export")
