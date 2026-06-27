@@ -10,8 +10,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     direction: rtl;
     color: #1e293b;
-    line-height: 1.5;
-    font-size: 13px; /* کاهش فونت پایه */
+    line-height: 1.4;
+    font-size: 11px; /* فونت پایه ۱۱px */
 }
 
 a {
@@ -20,7 +20,7 @@ a {
 
 /* ========== سایدبار ========== */
 .sidebar {
-    width: 200px;
+    width: 160px;
     min-height: 100vh;
     background: #0f172a;
     color: #e2e8f0;
@@ -34,9 +34,9 @@ a {
 }
 
 .sidebar .logo {
-    padding: 16px 16px;
+    padding: 12px 12px;
     text-align: center;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 700;
     background: #1e293b;
     color: #fff;
@@ -52,13 +52,13 @@ a {
 .sidebar ul li a {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
+    gap: 6px;
+    padding: 7px 12px;
     color: #94a3b8;
     text-decoration: none;
     transition: all 0.2s ease;
     border-right: 2px solid transparent;
-    font-size: 13px;
+    font-size: 11px;
 }
 
 .sidebar ul li a:hover,
@@ -69,24 +69,24 @@ a {
 }
 
 .sidebar ul li a i {
-    width: 18px;
+    width: 14px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
 }
 
-/* ========== دکمه باز/بستن سایدبار (سه‌نقطه) ========== */
+/* ========== دکمه باز/بستن سایدبار ========== */
 .sidebar-toggle {
     display: none;
     position: fixed;
-    top: 12px;
-    right: 16px;
+    top: 8px;
+    right: 10px;
     z-index: 1100;
     background: #0f172a;
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 20px;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 16px;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
@@ -95,14 +95,14 @@ a {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 999;
 }
 
 /* ========== محتوای اصلی ========== */
 .content {
-    margin-right: 200px;
-    padding: 16px;
+    margin-right: 160px;
+    padding: 12px;
     min-height: 100vh;
 }
 
@@ -111,17 +111,17 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 16px;
+    padding: 8px 12px;
     background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    margin-bottom: 16px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    margin-bottom: 12px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
 }
 
 .navbar-custom .page-title {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
     color: #0f172a;
 }
@@ -130,41 +130,41 @@ a {
 .card {
     background: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     overflow: hidden;
 }
 
 .card-body {
-    padding: 14px;
+    padding: 10px;
 }
 
 .card-title {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
 }
 
 .card-text {
-    font-size: 12px;
+    font-size: 10px;
     color: #64748b;
 }
 
 /* ========== جداول ========== */
 .table-responsive {
     overflow-x: auto;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .table {
     width: 100%;
     background: #fff;
     border-collapse: collapse;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .table th,
 .table td {
-    padding: 8px 10px;
+    padding: 5px 7px;
     text-align: right;
     border-bottom: 1px solid #e2e8f0;
     vertical-align: middle;
@@ -181,9 +181,9 @@ a {
 }
 
 .table img {
-    border-radius: 6px;
-    width: 36px;
-    height: 36px;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
     object-fit: cover;
 }
 
@@ -192,11 +192,11 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 5px 12px;
+    gap: 3px;
+    padding: 4px 8px;
     border: none;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 4px;
+    font-size: 10px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -205,8 +205,8 @@ a {
 }
 
 .btn-sm {
-    padding: 3px 8px;
-    font-size: 10px;
+    padding: 2px 6px;
+    font-size: 8px;
 }
 
 .btn-primary {
@@ -268,9 +268,9 @@ a {
 /* ========== بدج‌ها ========== */
 .badge {
     display: inline-block;
-    padding: 2px 10px;
-    border-radius: 16px;
-    font-size: 10px;
+    padding: 1px 8px;
+    border-radius: 12px;
+    font-size: 8px;
     font-weight: 500;
 }
 
@@ -297,10 +297,10 @@ a {
 
 /* ========== هشدارها ========== */
 .alert {
-    padding: 8px 14px;
-    border-radius: 6px;
-    margin-bottom: 12px;
-    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 10px;
 }
 
 .alert-success {
@@ -322,23 +322,23 @@ a {
 
 /* ========== مودال ========== */
 .modal-content {
-    border-radius: 8px;
+    border-radius: 6px;
     border: none;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
     background: #f8fafc;
-    border-radius: 8px 8px 0 0;
-    padding: 12px 16px;
+    border-radius: 6px 6px 0 0;
+    padding: 8px 12px;
 }
 
 .modal-body {
-    padding: 16px;
+    padding: 12px;
 }
 
 .modal-footer {
-    padding: 12px 16px;
+    padding: 8px 12px;
     border-top: 1px solid #e2e8f0;
 }
 
@@ -346,10 +346,10 @@ a {
 .form-control {
     display: block;
     width: 100%;
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: 4px 8px;
+    font-size: 10px;
     border: 1px solid #cbd5e1;
-    border-radius: 6px;
+    border-radius: 4px;
     transition: border-color 0.2s;
     background: #fff;
 }
@@ -362,25 +362,25 @@ a {
 
 .form-label {
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     font-weight: 500;
     color: #334155;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 select.form-control {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236b7280' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%236b7280' d='M4 6L1 2h6z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: left 10px center;
-    padding-left: 28px;
+    background-position: left 8px center;
+    padding-left: 22px;
 }
 
 /* ========== واکنش‌گرا (موبایل) ========== */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(100%);
-        width: 240px;
+        width: 200px;
     }
     .sidebar.open {
         transform: translateX(0);
@@ -400,35 +400,35 @@ select.form-control {
     }
     .content {
         margin-right: 0;
-        padding: 12px;
+        padding: 8px;
     }
     .navbar-custom {
-        padding: 8px 12px;
+        padding: 6px 8px;
     }
     .navbar-custom .page-title {
-        font-size: 14px;
+        font-size: 12px;
     }
     .table th,
     .table td {
-        padding: 6px 8px;
-        font-size: 11px;
+        padding: 4px 5px;
+        font-size: 9px;
     }
     .btn {
-        font-size: 11px;
-        padding: 4px 10px;
+        font-size: 9px;
+        padding: 3px 7px;
     }
     .btn-sm {
-        font-size: 9px;
-        padding: 2px 6px;
+        font-size: 7px;
+        padding: 1px 4px;
     }
     .card-body {
-        padding: 12px;
+        padding: 8px;
     }
     .card-title {
-        font-size: 13px;
+        font-size: 11px;
     }
     .form-control {
-        font-size: 11px;
-        padding: 5px 8px;
+        font-size: 9px;
+        padding: 3px 6px;
     }
-}
+        }
