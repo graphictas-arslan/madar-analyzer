@@ -1,17 +1,54 @@
-{% extends "base.html" %}
+{% extends "channel_admin/base.html" %}
 {% block title %}داشبورد ادمین کانال{% endblock %}
 {% block content %}
 <div class="container mt-4">
     <h2>📢 داشبورد ادمین کانال</h2>
     <p>شما فقط کانال‌های اختصاصی خود را می‌بینید.</p>
-    
+
+    <!-- کارت‌های آمار -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">📄 کانال‌ها</h5>
+                    <h2>{{ total_channels }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">📄 پست‌ها</h5>
+                    <h2>{{ total_posts }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">⭐ امتیازدار</h5>
+                    <h2>{{ scored_posts }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">⭐ میانگین</h5>
+                    <h2>{{ avg_score }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- لیست کانال‌ها -->
     <div class="row">
         {% for channel in channels %}
         <div class="col-md-4 mb-3">
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">{{ channel.channel_name }}</h5>
-                    <p class="card-text">شناسه: {{ channel.channel_id }}</p>
+                    <p class="card-text text-muted">شناسه: {{ channel.channel_id }}</p>
                     <a href="/channel-admin/channels/{{ channel.id }}/posts" class="btn btn-primary">
                         مشاهده پست‌ها
                     </a>
