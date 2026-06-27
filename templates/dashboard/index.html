@@ -1,172 +1,70 @@
 {% extends "base.html" %}
-{% block title %}داشبورد{% endblock %}
 {% block content %}
-<!-- کارت‌های آمار -->
-<div class="row mb-4 g-3">
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">📄 کل پست‌ها</h5>
-                <h2 class="fw-bold">{{ total_posts }}</h2>
+<!-- کارت آمار دایره‌ای -->
+<div class="card">
+    <div class="row text-center g-3">
+        <div class="col-3">
+            <div class="stat-circle circle-blue">
+                <div class="number">{{ total_posts }}</div>
+                <div class="label">پست‌ها</div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">📢 کل کانال‌ها</h5>
-                <h2 class="fw-bold">{{ total_channels }}</h2>
+        <div class="col-3">
+            <div class="stat-circle circle-orange">
+                <div class="number">{{ total_channels }}</div>
+                <div class="label">کانال‌ها</div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">🏢 کل سازمان‌ها</h5>
-                <h2 class="fw-bold">{{ total_organizations }}</h2>
+        <div class="col-3">
+            <div class="stat-circle circle-green">
+                <div class="number">{{ scored_posts }}</div>
+                <div class="label">امتیازدار</div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">⭐ امتیازدار</h5>
-                <h2 class="fw-bold">{{ scored_posts }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">👁️ کل بازدیدها</h5>
-                <h2 class="fw-bold">{{ total_views }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">❤️ کل لایک‌ها</h5>
-                <h2 class="fw-bold">{{ total_likes }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">⭐ میانگین امتیاز</h5>
-                <h2 class="fw-bold">{{ avg_score }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="text-muted">📈 کانال‌های برتر</h5>
-                <h2 class="fw-bold">{{ top_channels|length }}</h2>
+        <div class="col-3">
+            <div class="stat-circle circle-purple">
+                <div class="number">{{ avg_score }}</div>
+                <div class="label">میانگین</div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- نمودارها -->
-<div class="row mb-4 g-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">📊 پست‌های روزانه (۷ روز اخیر)</h5>
-                <canvas id="dailyChart"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">📊 توزیع نوع پست‌ها</h5>
-                <canvas id="typeChart"></canvas>
-            </div>
-        </div>
+<!-- دکمه‌های اصلی -->
+<div class="card">
+    <div class="d-flex gap-2">
+        <button class="btn btn-orange flex-grow-1">
+            <i class="fas fa-file-excel"></i> خروجی اکسل
+        </button>
+        <button class="btn btn-outline flex-grow-1">
+            <i class="fas fa-filter"></i> فیلتر
+        </button>
     </div>
 </div>
 
-<!-- کانال‌های برتر -->
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <h5 class="card-title">🏆 کانال‌های برتر (بر اساس میانگین امتیاز)</h5>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>نام کانال</th>
-                        <th>میانگین امتیاز</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for channel in top_channels %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ channel.channel_name }}</td>
-                        <td>
-                            <span class="badge bg-{{ 'success' if channel.avg_score >= 70 else 'warning' if channel.avg_score >= 40 else 'danger' }}">
-                                {{ channel.avg_score|round(1) }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<!-- لیست افقی پست‌ها -->
+<div class="card">
+    <div class="d-flex justify-content-between mb-2">
+        <span style="font-weight: 600;">📸 آخرین پست‌ها</span>
+        <a href="/dashboard/posts" style="color: #f97316; font-size: 11px;">مشاهده همه</a>
+    </div>
+    <div class="horizontal-scroll">
+        {% for post in posts[:10] %}
+        <div class="post-card">
+            {% if post.media_url %}
+                <img src="{{ post.media_url }}" alt="post image">
+            {% else %}
+                <div style="height: 90px; background: #2a2d33; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-file-alt fa-2x" style="color: #666;"></i>
+                </div>
+            {% endif %}
+            <div class="title">{{ post.text[:30] }}...</div>
+            <div class="meta">
+                <span>{{ post.channel.channel_name if post.channel else '-' }}</span>
+                <span>⭐ {{ post.score or '-' }}</span>
+            </div>
         </div>
+        {% endfor %}
     </div>
 </div>
-
-<!-- اسکریپت‌های نمودار -->
-<script>
-    // نمودار پست‌های روزانه
-    const ctx1 = document.getElementById('dailyChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'line',
-        data: {
-            labels: {{ labels|safe }},
-            datasets: [{
-                label: 'تعداد پست',
-                data: {{ daily_posts|safe }},
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-
-    // نمودار نوع پست‌ها
-    const ctx2 = document.getElementById('typeChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: {{ post_types|map(attribute=0)|list|safe }},
-            datasets: [{
-                data: {{ post_types|map(attribute=1)|list|safe }},
-                backgroundColor: [
-                    '#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom' }
-            }
-        }
-    });
-</script>
 {% endblock %}
