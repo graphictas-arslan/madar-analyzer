@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}اختصاص ادمین به کانال{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h3>اختصاص ادمین به کانال: {{ channel.channel_name }}</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <label>ادمین‌های کانال</label>
+            <select class="form-control" name="admin_ids" multiple size="10">
+                {% for admin in channel_admins %}
+                    <option value="{{ admin.id }}" 
+                            {% if admin in channel.admins %}selected{% endif %}>
+                        {{ admin.full_name }} ({{ admin.username }})
+                    </option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">برای انتخاب چند نفر، Ctrl را نگه دارید.</small>
+        </div>
+        <button class="btn btn-primary">ذخیره</button>
+        <a href="/dashboard/channels" class="btn btn-secondary">لغو</a>
+    </form>
+</div>
+{% endblock %}
