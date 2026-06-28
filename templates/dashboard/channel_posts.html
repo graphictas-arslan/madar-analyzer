@@ -1,259 +1,195 @@
 {% extends "base.html" %}
 {% block title %}پست‌های {{ channel.channel_name }}{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>📸 پست‌های کانال: {{ channel.channel_name }}</h2>
-    <div>
-        <a href="/dashboard/channels/{{ channel.id }}/posts/export?type={{ type_filter }}&status={{ status_filter }}&date_from={{ date_from }}&date_to={{ date_to }}" class="btn btn-success">
-            <i class="fas fa-file-excel"></i> خروجی اکسل
-        </a>
-        <a href="/dashboard/organizations/{{ channel.organization_id }}/channels" class="btn btn-secondary">
-            <i class="fas fa-arrow-right"></i> بازگشت
-        </a>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+    <h2 style="font-size: 18px; margin: 0;">📸 پست‌های {{ channel.channel_name }}</h2>
+    <a href="/dashboard/channels" class="btn btn-outline btn-sm">بازگشت</a>
+</div>
+
+<!-- آمار کانال -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+    <div style="background: #1a1d23; border-radius: 12px; padding: 12px; text-align: center;">
+        <div style="font-size: 20px; font-weight: 700;">{{ stats.total }}</div>
+        <div style="font-size: 11px; color: #a0a0a0;">کل پست‌ها</div>
+    </div>
+    <div style="background: #1a1d23; border-radius: 12px; padding: 12px; text-align: center;">
+        <div style="font-size: 20px; font-weight: 700;">{{ stats.scored }}</div>
+        <div style="font-size: 11px; color: #a0a0a0;">امتیازدار</div>
+    </div>
+    <div style="background: #1a1d23; border-radius: 12px; padding: 12px; text-align: center;">
+        <div style="font-size: 20px; font-weight: 700;">{{ stats.avg_score }}</div>
+        <div style="font-size: 11px; color: #a0a0a0;">میانگین</div>
     </div>
 </div>
 
-<!-- فیلترها -->
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="GET" action="/dashboard/channels/{{ channel.id }}/posts" class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label">نوع محتوا</label>
-                <select class="form-control" name="type">
-                    <option value="">همه</option>
-                    {% for type in post_types %}
-                        <option value="{{ type }}" {% if type_filter == type %}selected{% endif %}>{{ type }}</option>
-                    {% endfor %}
-                </select>
+<!-- لیست پست‌ها به صورت ۲×۲ -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+    {% for post in posts %}
+    <!-- باکس مربعی -->
+    <div onclick="openPostModal({{ post.id }})"
+         style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: space-between;">
+        
+        <!-- تصویر -->
+        <div style="height: 45%; border-radius: 8px; overflow: hidden; background: #0f1115;">
+            {% if post.media_url %}
+                <img src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0;">
+                    <i class="fas fa-file-alt fa-2x"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- متن -->
+        <div style="flex: 1; margin-top: 4px;">
+            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {% if post.text %}
+                    {{ post.text[:35] }}{% if post.text|length > 35 %}...{% endif %}
+                {% else %}
+                    بدون متن
+                {% endif %}
             </div>
-            <div class="col-md-3">
-                <label class="form-label">وضعیت</label>
-                <select class="form-control" name="status">
-                    <option value="">همه</option>
-                    {% for status in statuses %}
-                        <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
-                    {% endfor %}
-                </select>
+            {% if post.caption %}
+            <div style="font-size: 9px; color: #a0a0a0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ post.caption[:25] }}{% if post.caption|length > 25 %}...{% endif %}
             </div>
-            <div class="col-md-2">
-                <label class="form-label">از تاریخ</label>
-                <input type="date" class="form-control" name="date_from" value="{{ date_from }}">
+            {% endif %}
+        </div>
+
+        <!-- امتیاز (وسط، بالای آیکون‌ها) -->
+        <div style="display: flex; justify-content: center; margin-bottom: 4px;">
+            <div style="display: flex; align-items: baseline; gap: 3px;">
+                <span style="font-size: 13px; font-weight: 600; color: #fbbf24;">{{ post.score or '۰' }}</span>
+                <span style="font-size: 8px; color: #a0a0a0;">امتیاز</span>
             </div>
-            <div class="col-md-2">
-                <label class="form-label">تا تاریخ</label>
-                <input type="date" class="form-control" name="date_to" value="{{ date_to }}">
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search"></i> فیلتر
-                </button>
+        </div>
+
+        <!-- پایین کارت: آیکون‌های وسط با خط جداکننده -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+            <!-- ستاره (امتیازدهی) -->
+            <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
+                    style="background: transparent; border: none; color: #facc15; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                <i class="fas fa-star"></i>
+            </button>
+
+            <!-- خط جداکننده باریک -->
+            <div style="width: 1px; height: 18px; background: #2a2d33;"></div>
+
+            <!-- سطل آشغال (حذف) -->
+            <button onclick="event.stopPropagation(); openDeleteModal({{ post.id }})"
+                    style="background: transparent; border: none; color: #ef4444; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- مودال امتیازدهی -->
+<div id="scoreModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: #1a1d23; border-radius: 16px; padding: 20px; max-width: 400px; width: 90%;">
+        <h3 style="margin: 0 0 12px;">⭐ امتیازدهی</h3>
+        <form id="scoreForm" method="POST" action="/dashboard/posts/score/">
+            <input type="number" name="score" min="0" max="100" required
+                   style="width: 100%; padding: 8px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff;">
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button type="button" onclick="closeScoreModal()" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 6px 14px; color: #a0a0a0;">لغو</button>
+                <button type="submit" style="background: #f97316; border: none; border-radius: 8px; padding: 6px 14px; color: #fff;">ثبت</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- آمار کانال -->
-<div class="row mb-4 g-3">
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5 class="text-muted">📄 کل پست‌ها</h5>
-                <h2>{{ stats.total }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5 class="text-muted">⭐ میانگین امتیاز</h5>
-                <h2>{{ stats.avg }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5 class="text-muted">📈 بالاترین امتیاز</h5>
-                <h2>{{ stats.max }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5 class="text-muted">📉 پایین‌ترین امتیاز</h5>
-                <h2>{{ stats.min }}</h2>
-            </div>
+<!-- مودال تایید حذف -->
+<div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: #1a1d23; border-radius: 16px; padding: 24px; max-width: 380px; width: 90%; text-align: center;">
+        <div style="font-size: 48px; color: #ef4444; margin-bottom: 8px;">⚠️</div>
+        <h3 style="color: #fff; margin: 0 0 8px;">آیا مطمئن هستید؟</h3>
+        <p style="color: #a0a0a0; font-size: 13px; margin: 0 0 16px;">این عمل قابل بازگشت نیست.</p>
+        
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button onclick="closeDeleteModal()" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 8px 20px; color: #a0a0a0; cursor: pointer;">لغو</button>
+            <form id="deleteForm" method="POST" style="display: inline;">
+                <button type="submit" style="background: #ef4444; border: none; border-radius: 8px; padding: 8px 20px; color: #fff; cursor: pointer;">حذف</button>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- گرید پست‌ها -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-    {% for post in posts %}
-    <div class="col">
-        <div class="card h-100 shadow-sm position-relative">
-            <!-- برچسب جدید -->
-            {% if post.publish_date and (now() - post.publish_date).days < 1 %}
-                <span class="position-absolute top-0 end-0 badge bg-danger m-2" style="font-size: 0.8rem;">
-                    🔔 جدید
-                </span>
-            {% elif post.updated_at and (post.updated_at - post.created_at).days > 0 %}
-                <span class="position-absolute top-0 end-0 badge bg-warning m-2" style="font-size: 0.8rem;">
-                    🔄 ادیت شده
-                </span>
-            {% endif %}
+<script>
+    const postsData = [
+        {% for post in posts %}
+        {
+            id: {{ post.id }},
+            text: {{ post.text|tojson }},
+            caption: {{ post.caption|tojson if post.caption else 'null' }},
+            media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
+            channel: {{ channel.channel_name|tojson }},
+            score: {{ post.score|tojson if post.score else 'null' }},
+            date: {{ post.publish_date.strftime('%Y/%m/%d %H:%M')|tojson if post.publish_date else 'null' }}
+        },
+        {% endfor %}
+    ];
 
-            <!-- تصویر -->
-            <div style="height: 200px; overflow: hidden; background: #f0f0f0; display:flex; align-items:center; justify-content:center; cursor:pointer;" 
-                 data-bs-toggle="modal" data-bs-target="#postModal{{ post.id }}">
-                {% if post.media_url %}
-                    <img src="{{ post.media_url }}" class="card-img-top" style="height: 100%; object-fit: cover;">
-                {% else %}
-                    <div class="text-muted text-center">
-                        <i class="fas fa-file-alt fa-3x"></i>
-                        <p class="small mt-2">بدون تصویر</p>
-                    </div>
-                {% endif %}
-            </div>
+    function openPostModal(id) {
+        const post = postsData.find(p => p.id === id);
+        if (!post) return;
 
-            <div class="card-body p-3">
-                {% if post.caption %}
-                    <p class="card-text text-truncate-2 small">{{ post.caption }}</p>
-                {% endif %}
-                {% if post.text and post.text != post.caption %}
-                    <p class="card-text text-truncate-2 small text-muted">{{ post.text }}</p>
-                {% endif %}
+        document.getElementById('postModal').style.display = 'flex';
+        document.getElementById('postDetailImage').src = post.media_url || '';
+        document.getElementById('postDetailChannel').textContent = '📢 کانال: ' + post.channel;
+        document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + post.score;
+        document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
+        document.getElementById('postDetailText').textContent = post.text || 'بدون متن';
 
-                <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
-                    <span><i class="fas fa-eye"></i> {{ post.views or 0 }}</span>
-                    <span><i class="far fa-clock"></i> {{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else 'نامشخص' }}</span>
-                </div>
+        const captionDiv = document.getElementById('postDetailCaption');
+        const captionText = document.getElementById('postDetailCaptionText');
+        if (post.caption) {
+            captionDiv.style.display = 'block';
+            captionText.textContent = post.caption;
+        } else {
+            captionDiv.style.display = 'none';
+        }
+    }
 
-                <div class="mt-2 text-center">
-                    {% if post.score %}
-                        <span class="badge bg-{{ 'success' if post.score >= 70 else 'warning' if post.score >= 40 else 'danger' }}">
-                            ⭐ {{ post.score }}
-                        </span>
-                    {% else %}
-                        <span class="badge bg-secondary">بدون امتیاز</span>
-                    {% endif %}
-                </div>
+    function closePostModal() {
+        document.getElementById('postModal').style.display = 'none';
+    }
 
-                <form method="POST" action="/dashboard/posts/score/{{ post.id }}" class="mt-2">
-                    <div class="input-group input-group-sm">
-                        <input type="number" class="form-control" name="score" min="0" max="100" placeholder="امتیاز 0-100" required>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-star"></i> ثبت
-                        </button>
-                    </div>
-                </form>
+    function openScoreModal(id) {
+        document.getElementById('scoreForm').action = '/dashboard/posts/score/' + id;
+        document.getElementById('scoreModal').style.display = 'flex';
+    }
 
-                <!-- دکمه حذف -->
-                <form method="POST" action="/dashboard/posts/delete/{{ post.id }}" class="mt-2">
-                    <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('آیا مطمئن هستید که می‌خواهید این پست را حذف کنید؟ این عمل قابل بازگشت نیست.')">
-                        <i class="fas fa-trash"></i> حذف پست
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+    function closeScoreModal() {
+        document.getElementById('scoreModal').style.display = 'none';
+    }
 
-    <!-- ===== مودال پاپ‌آپ برای هر پست ===== -->
-    <div class="modal fade" id="postModal{{ post.id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px; overflow: hidden;">
-                <div class="modal-header" style="background: #1f2937; color: white; border: none;">
-                    <h5 class="modal-title">
-                        <i class="fas fa-file-alt"></i> جزئیات پست #{{ post.id }}
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
+    function openDeleteModal(id) {
+        document.getElementById('deleteModal').style.display = 'flex';
+        document.getElementById('deleteForm').action = '/dashboard/posts/delete/' + id;
+    }
 
-                <div class="modal-body p-0">
-                    <div class="row g-0">
-                        <!-- سمت راست: عکس بزرگ -->
-                        <div class="col-md-7" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; min-height: 400px;">
-                            {% if post.media_url %}
-                                <img src="{{ post.media_url }}" class="img-fluid" style="max-height: 600px; width: 100%; object-fit: contain;">
-                            {% else %}
-                                <div class="text-muted text-center p-5">
-                                    <i class="fas fa-file-alt fa-5x"></i>
-                                    <p class="mt-3">این پست تصویر ندارد</p>
-                                </div>
-                            {% endif %}
-                        </div>
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
 
-                        <!-- سمت چپ: اطلاعات -->
-                        <div class="col-md-5 p-4" style="background: white;">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="text-muted mb-0">📢 {{ post.channel.channel_name if post.channel else 'Unknown' }}</h6>
-                                <span class="badge bg-{{ 'success' if post.status == 'active' else 'warning' if post.status == 'pending' else 'danger' }}">
-                                    {{ post.status }}
-                                </span>
-                            </div>
+    document.getElementById('postModal').addEventListener('click', function(e) {
+        if (e.target === this) closePostModal();
+    });
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+    document.getElementById('scoreModal').addEventListener('click', function(e) {
+        if (e.target === this) closeScoreModal();
+    });
+</script>
 
-                            <hr>
-
-                            <div class="mb-3">
-                                <strong>📝 متن:</strong>
-                                <p class="text-muted" style="font-size: 0.95rem;">{{ post.text or 'بدون متن' }}</p>
-                            </div>
-
-                            {% if post.caption %}
-                            <div class="mb-3">
-                                <strong>📌 کپشن:</strong>
-                                <p class="text-muted" style="font-size: 0.95rem;">{{ post.caption }}</p>
-                            </div>
-                            {% endif %}
-
-                            <hr>
-
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <div class="p-2 rounded" style="background: #f8f9fa;">
-                                        <small class="text-muted d-block">🕒 انتشار</small>
-                                        <strong>{{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else '-' }}</strong>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-2 rounded" style="background: #f8f9fa;">
-                                        <small class="text-muted d-block">⭐ امتیاز</small>
-                                        <strong>{{ post.score or 'بدون امتیاز' }}</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="p-2 rounded" style="background: #f8f9fa;">
-                                        <small class="text-muted d-block">👁️ بازدید</small>
-                                        <strong>{{ post.views or 0 }}</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="p-2 rounded" style="background: #f8f9fa;">
-                                        <small class="text-muted d-block">❤️ لایک</small>
-                                        <strong>{{ post.likes or 0 }}</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="p-2 rounded" style="background: #f8f9fa;">
-                                        <small class="text-muted d-block">💬 کامنت</small>
-                                        <strong>{{ post.comments or 0 }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer" style="border-top: 1px solid #e5e7eb;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                    <a href="{{ post.media_url }}" target="_blank" class="btn btn-primary" style="border-radius: 10px;">
-                        <i class="fas fa-external-link-alt"></i> دانلود عکس
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
+<style>
+    @media (min-width: 768px) {
+        .grid-posts {
+            grid-template-columns: repeat(4, 1fr) !important;
+        }
+    }
+</style>
 {% endblock %}
