@@ -24,19 +24,14 @@
             {% endif %}
         </div>
 
-        <!-- متن -->
+        <!-- فقط کپشن (متن حذف شد) -->
         <div style="flex: 1; margin-top: 4px;">
-            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {% if post.text %}
-                    {{ post.text[:35] }}{% if post.text|length > 35 %}...{% endif %}
-                {% else %}
-                    بدون متن
-                {% endif %}
-            </div>
             {% if post.caption %}
-            <div style="font-size: 9px; color: #a0a0a0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ post.caption[:25] }}{% if post.caption|length > 25 %}...{% endif %}
+            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ post.caption[:35] }}{% if post.caption|length > 35 %}...{% endif %}
             </div>
+            {% else %}
+            <div style="font-size: 11px; color: #a0a0a0;">بدون کپشن</div>
             {% endif %}
         </div>
 
@@ -135,7 +130,6 @@
         {% for post in posts %}
         {
             id: {{ post.id }},
-            text: {{ post.text|tojson }},
             caption: {{ post.caption|tojson if post.caption else 'null' }},
             media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
             channel: {{ post.channel.channel_name|tojson if post.channel else 'null' }},
@@ -155,7 +149,6 @@
         document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + post.score;
         document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
 
-        // فقط کپشن
         const captionDiv = document.getElementById('postDetailCaption');
         const captionText = document.getElementById('postDetailCaptionText');
         if (post.caption) {
