@@ -120,3 +120,11 @@ body {
         margin-bottom: 16px;
     }
 }
+/* ========== نوار پایین ========== */
+.bottom-nav .nav-item.active {
+    color: #f97316;
+}
+
+.bottom-nav .nav-item.active i {
+    color: #f97316;
+}
