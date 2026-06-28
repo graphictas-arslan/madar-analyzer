@@ -1,23 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- کارت آمار دایره‌ای (افقی) -->
+<!-- کارت باکس‌های نمودار -->
 <div class="card">
-    <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
-        <div class="stat-circle circle-blue">
-            <div class="number">{{ total_posts }}</div>
-            <div class="label">پست‌ها</div>
+    <div class="d-flex justify-content-around align-items-center gap-2">
+        <!-- باکس ۱ -->
+        <div class="chart-box">
+            <div class="chart-circle chart-blue">{{ total_posts }}</div>
+            <div class="chart-label">پست‌ها</div>
         </div>
-        <div class="stat-circle circle-orange">
-            <div class="number">{{ total_channels }}</div>
-            <div class="label">کانال‌ها</div>
+        <!-- باکس ۲ -->
+        <div class="chart-box">
+            <div class="chart-circle chart-orange">{{ total_channels }}</div>
+            <div class="chart-label">کانال‌ها</div>
         </div>
-        <div class="stat-circle circle-green">
-            <div class="number">{{ scored_posts }}</div>
-            <div class="label">امتیازدار</div>
+        <!-- باکس ۳ -->
+        <div class="chart-box">
+            <div class="chart-circle chart-green">{{ scored_posts }}</div>
+            <div class="chart-label">امتیازدار</div>
         </div>
-        <div class="stat-circle circle-purple">
-            <div class="number">{{ avg_score }}</div>
-            <div class="label">میانگین</div>
+        <!-- باکس ۴ -->
+        <div class="chart-box">
+            <div class="chart-circle chart-purple">{{ avg_score }}</div>
+            <div class="chart-label">میانگین</div>
         </div>
     </div>
 </div>
