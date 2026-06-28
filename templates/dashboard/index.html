@@ -2,34 +2,22 @@
 {% block content %}
 <!-- کارت آمار دایره‌ای (افقی) -->
 <div class="card">
-    <div class="row g-2 justify-content-center">
-        <!-- دایره ۱ -->
-        <div class="col-3">
-            <div class="stat-circle circle-blue">
-                <div class="number">{{ total_posts }}</div>
-                <div class="label">پست‌ها</div>
-            </div>
+    <div class="d-flex justify-content-between align-items-center gap-1 px-1">
+        <div class="stat-circle circle-blue">
+            <div class="number">{{ total_posts }}</div>
+            <div class="label">پست‌ها</div>
         </div>
-        <!-- دایره ۲ -->
-        <div class="col-3">
-            <div class="stat-circle circle-orange">
-                <div class="number">{{ total_channels }}</div>
-                <div class="label">کانال‌ها</div>
-            </div>
+        <div class="stat-circle circle-orange">
+            <div class="number">{{ total_channels }}</div>
+            <div class="label">کانال‌ها</div>
         </div>
-        <!-- دایره ۳ -->
-        <div class="col-3">
-            <div class="stat-circle circle-green">
-                <div class="number">{{ scored_posts }}</div>
-                <div class="label">امتیازدار</div>
-            </div>
+        <div class="stat-circle circle-green">
+            <div class="number">{{ scored_posts }}</div>
+            <div class="label">امتیازدار</div>
         </div>
-        <!-- دایره ۴ -->
-        <div class="col-3">
-            <div class="stat-circle circle-purple">
-                <div class="number">{{ avg_score }}</div>
-                <div class="label">میانگین</div>
-            </div>
+        <div class="stat-circle circle-purple">
+            <div class="number">{{ avg_score }}</div>
+            <div class="label">میانگین</div>
         </div>
     </div>
 </div>
