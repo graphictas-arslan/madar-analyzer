@@ -23,21 +23,21 @@
         <!-- محتوای اصلی -->
         {% block content %}{% endblock %}
 
-        <!-- نوار پایین -->
+        <!-- نوار پایین با تشخیص مسیر فعال -->
         <nav class="bottom-nav">
-            <a href="/dashboard" class="nav-item active">
+            <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
                 <i class="fas fa-home"></i>
                 <span>خانه</span>
             </a>
-            <a href="/dashboard/channels" class="nav-item">
+            <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
                 <i class="fas fa-bullhorn"></i>
                 <span>کانال‌ها</span>
             </a>
-            <a href="/dashboard/posts" class="nav-item">
+            <a href="/dashboard/posts" class="nav-item {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
                 <i class="fas fa-file-alt"></i>
                 <span>پست‌ها</span>
             </a>
-            <a href="/users" class="nav-item">
+            <a href="/users" class="nav-item {% if request.path.startswith('/users') %}active{% endif %}">
                 <i class="fas fa-user"></i>
                 <span>پروفایل</span>
             </a>
