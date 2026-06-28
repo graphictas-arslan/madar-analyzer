@@ -50,7 +50,7 @@
 
         <!-- پایین کارت: آیکون‌های وسط با خط جداکننده -->
         <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-            <!-- ستاره (امتیازدهی) - رنگ طلایی -->
+            <!-- ستاره (امتیازدهی) -->
             <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
                     style="background: transparent; border: none; color: #facc15; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
                 <i class="fas fa-star"></i>
@@ -59,7 +59,7 @@
             <!-- خط جداکننده باریک -->
             <div style="width: 1px; height: 18px; background: #2a2d33;"></div>
 
-            <!-- سطل آشغال (حذف با مودال تایید) -->
+            <!-- سطل آشغال (حذف) -->
             <button onclick="event.stopPropagation(); openDeleteModal({{ post.id }})"
                     style="background: transparent; border: none; color: #ef4444; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
                 <i class="fas fa-trash"></i>
@@ -84,7 +84,7 @@
     </div>
 </div>
 
-<!-- مودال جزئیات پست -->
+<!-- مودال جزئیات پست (فقط کپشن، متن حذف شد) -->
 <div id="postModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
     <div style="background: #1a1d23; border-radius: 20px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative;">
         <button onclick="closePostModal()" style="position: absolute; top: 12px; left: 12px; background: transparent; border: none; color: #a0a0a0; font-size: 20px; cursor: pointer;">
@@ -94,20 +94,19 @@
         <div id="postDetailContent">
             <h3 style="margin-top: 0; color: #fff;">📄 جزئیات پست</h3>
             
+            <!-- تصویر -->
             <div style="width: 100%; height: 250px; border-radius: 12px; overflow: hidden; background: #0f1115; margin: 12px 0;">
                 <img id="postDetailImage" src="" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
 
+            <!-- اطلاعات -->
             <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
                 <span id="postDetailChannel" style="color: #a0a0a0; font-size: 13px;">📢 کانال: -</span>
                 <span id="postDetailScore" style="color: #fbbf24; font-size: 13px; font-weight: 600;">⭐ امتیاز: -</span>
                 <span id="postDetailDate" style="color: #a0a0a0; font-size: 12px;">🕒 تاریخ: -</span>
             </div>
 
-            <div style="background: #0f1115; border-radius: 8px; padding: 12px; margin: 8px 0;">
-                <p id="postDetailText" style="color: #fff; font-size: 14px; line-height: 1.6; margin: 0;"></p>
-            </div>
-
+            <!-- فقط کپشن (متن حذف شد) -->
             <div id="postDetailCaption" style="color: #a0a0a0; font-size: 13px; margin-top: 4px; display: none;">
                 📌 کپشن: <span id="postDetailCaptionText"></span>
             </div>
@@ -132,7 +131,6 @@
 </div>
 
 <script>
-    // داده‌های پست‌ها با |tojson (ایمن برای متن‌های دارای " و \n)
     const postsData = [
         {% for post in posts %}
         {
@@ -147,7 +145,6 @@
         {% endfor %}
     ];
 
-    // باز کردن مودال جزئیات
     function openPostModal(id) {
         const post = postsData.find(p => p.id === id);
         if (!post) return;
@@ -157,8 +154,8 @@
         document.getElementById('postDetailChannel').textContent = '📢 کانال: ' + post.channel;
         document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + post.score;
         document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
-        document.getElementById('postDetailText').textContent = post.text || 'بدون متن';
 
+        // فقط کپشن
         const captionDiv = document.getElementById('postDetailCaption');
         const captionText = document.getElementById('postDetailCaptionText');
         if (post.caption) {
@@ -173,7 +170,6 @@
         document.getElementById('postModal').style.display = 'none';
     }
 
-    // امتیازدهی
     function openScoreModal(id) {
         document.getElementById('scoreForm').action = '/dashboard/posts/score/' + id;
         document.getElementById('scoreModal').style.display = 'flex';
@@ -183,7 +179,6 @@
         document.getElementById('scoreModal').style.display = 'none';
     }
 
-    // تایید حذف
     function openDeleteModal(id) {
         document.getElementById('deleteModal').style.display = 'flex';
         document.getElementById('deleteForm').action = '/dashboard/posts/delete/' + id;
@@ -193,7 +188,6 @@
         document.getElementById('deleteModal').style.display = 'none';
     }
 
-    // بستن مودال‌ها با کلیک روی پس‌زمینه
     document.getElementById('postModal').addEventListener('click', function(e) {
         if (e.target === this) closePostModal();
     });
