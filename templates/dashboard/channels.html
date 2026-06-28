@@ -1,110 +1,61 @@
 {% extends "base.html" %}
-{% block title %}مدیریت کانال‌ها{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>📢 مدیریت کانال‌ها</h2>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createChannelModal">
-        <i class="fas fa-plus"></i> کانال جدید
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+    <h2 style="font-size: 18px; margin: 0;">📢 کانال‌ها</h2>
+    <button style="background: #f97316; border: none; border-radius: 8px; padding: 6px 14px; color: #fff; font-size: 12px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#createChannelModal">
+        <i class="fas fa-plus"></i> جدید
     </button>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>نام کانال</th>
-                        <th>شناسه</th>
-                        <th>سازمان</th>
-                        <th>پلتفرم</th>
-                        <th>ادمین‌ها</th>
-                        <th>وضعیت</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for channel in channels %}
-                    <tr>
-                        <td>{{ channel.id }}</td>
-                        <td>{{ channel.channel_name }}</td>
-                        <td>{{ channel.channel_id }}</td>
-                        <td>{{ channel.organization.name if channel.organization else '-' }}</td>
-                        <td>{{ channel.platform.title if channel.platform else '-' }}</td>
-                        <td>
-                            {% for admin in channel.admins %}
-                                <span class="badge bg-info">{{ admin.full_name }}</span>
-                            {% else %}
-                                <span class="text-muted">بدون ادمین</span>
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% if channel.is_active %}
-                                <span class="badge bg-success">فعال</span>
-                            {% else %}
-                                <span class="badge bg-danger">غیرفعال</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/dashboard/channels/assign/{{ channel.id }}" class="btn btn-sm btn-info">
-                                <i class="fas fa-user-plus"></i>
-                            </a>
-                            <a href="/dashboard/channels/toggle/{{ channel.id }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-toggle-on"></i>
-                            </a>
-                            <a href="/dashboard/channels/delete/{{ channel.id }}" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<!-- لیست کانال‌ها به صورت ۲×۲ -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+    {% for channel in channels %}
+    <div style="background: #1a1d23; border-radius: 12px; padding: 12px; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 14px; font-weight: 600;">{{ channel.channel_name }}</div>
+                <div style="font-size: 10px; color: #a0a0a0;">شناسه: {{ channel.channel_id }}</div>
+            </div>
+            <div>
+                <span style="display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 10px; background: {% if channel.is_active %}#1a3a2a; color: #4ade80;{% else %}#3a1a1a; color: #f87171;{% endif %};">
+                    {{ 'فعال' if channel.is_active else 'غیرفعال' }}
+                </span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 4px; margin-top: 8px;">
+            <a href="/dashboard/channels/toggle/{{ channel.id }}" style="background: #f59e0b; border: none; border-radius: 6px; padding: 3px 10px; color: #fff; font-size: 10px; text-decoration: none; cursor: pointer;">
+                تغییر وضعیت
+            </a>
+            <a href="/dashboard/channels/delete/{{ channel.id }}" style="background: #ef4444; border: none; border-radius: 6px; padding: 3px 10px; color: #fff; font-size: 10px; text-decoration: none; cursor: pointer;" onclick="return confirm('حذف شود؟')">
+                حذف
+            </a>
         </div>
     </div>
+    {% endfor %}
 </div>
 
-<!-- مودال ایجاد کانال جدید -->
+<!-- مودال ایجاد کانال -->
 <div class="modal fade" id="createChannelModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">کانال جدید</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content" style="background: #1a1d23; color: #fff;">
+            <div class="modal-header" style="border-bottom: 1px solid #2a2d33;">
+                <h5 class="modal-title" style="margin: 0;">کانال جدید</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="/dashboard/channels/create">
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">نام کانال</label>
-                        <input type="text" class="form-control" name="channel_name" required>
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: block; color: #a0a0a0; font-size: 12px; margin-bottom: 4px;">نام کانال</label>
+                        <input type="text" class="form-control" name="channel_name" required style="width: 100%; padding: 8px 12px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 13px;">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">شناسه کانال</label>
-                        <input type="text" class="form-control" name="channel_id" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">سازمان</label>
-                        <select class="form-control" name="organization_id" required>
-                            <option value="">انتخاب کنید...</option>
-                            {% for org in organizations %}
-                                <option value="{{ org.id }}">{{ org.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">پلتفرم</label>
-                        <select class="form-control" name="platform_id" required>
-                            <option value="">انتخاب کنید...</option>
-                            {% for platform in platforms %}
-                                <option value="{{ platform.id }}">{{ platform.title }}</option>
-                            {% endfor %}
-                        </select>
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: block; color: #a0a0a0; font-size: 12px; margin-bottom: 4px;">شناسه کانال</label>
+                        <input type="text" class="form-control" name="channel_id" required style="width: 100%; padding: 8px 12px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 13px;">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
-                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                <div class="modal-footer" style="border-top: 1px solid #2a2d33; padding-top: 12px;">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 6px 14px; color: #a0a0a0;">لغو</button>
+                    <button type="submit" class="btn btn-orange" style="background: #f97316; border: none; border-radius: 8px; padding: 6px 14px; color: #fff;">ذخیره</button>
                 </div>
             </form>
         </div>
