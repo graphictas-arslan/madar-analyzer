@@ -11,7 +11,7 @@ body {
     direction: rtl;
     color: #ffffff;
     font-size: 13px;
-    padding-bottom: 70px;
+    padding-bottom: 70px; /* فضا برای نوار پایین */
 }
 
 /* ========== کانتینر اصلی ========== */
@@ -34,13 +34,13 @@ body {
 /* ========== کارت‌های آماری (دایره‌ای) ========== */
 .stat-circle {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 80px;
     height: 80px;
     border-radius: 50%;
     border: 4px solid;
+    margin: 0 auto;
     position: relative;
     transition: transform 0.2s;
 }
@@ -225,7 +225,7 @@ body {
     font-size: 11px;
 }
 
-/* ========== واکنش‌گرا (دسکتاپ) ========== */
+/* ========== واکنش‌گرا ========== */
 @media (min-width: 769px) {
     .app-container {
         max-width: 900px;
