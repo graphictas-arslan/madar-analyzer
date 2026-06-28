@@ -37,24 +37,23 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    border: 4px solid;
+    border: 3px solid;
     margin: 0 auto;
     position: relative;
-    transition: transform 0.2s;
 }
 
 .stat-circle .number {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
 }
 
 .stat-circle .label {
-    font-size: 10px;
+    font-size: 8px;
     color: #a0a0a0;
-    margin-top: 2px;
+    margin-top: 1px;
 }
 
 /* رنگ‌های دایره‌ها */
@@ -233,17 +232,17 @@ body {
         padding: 20px;
     }
     .stat-circle {
-        width: 100px;
-        height: 100px;
+        width: 90px;
+        height: 90px;
     }
     .stat-circle .number {
-        font-size: 24px;
+        font-size: 22px;
     }
     .post-card {
-        min-width: 200px;
-        max-width: 220px;
+        min-width: 180px;
+        max-width: 200px;
     }
     .post-card img {
-        height: 110px;
+        height: 100px;
     }
 }
