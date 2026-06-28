@@ -14,7 +14,7 @@
         <div class="header">
             <div class="title">🚀 مادر آنالیزر</div>
             <div>
-                <span class="badge">پلتفورم آنالیز محتوا</span>
+                <span class="badge">۳</span>
             </div>
         </div>
 
@@ -22,9 +22,9 @@
         {% block content %}{% endblock %}
     </div>
 
-    <!-- نوار پایین با شرط‌های فعال‌سازی -->
+    <!-- نوار پایین -->
     <nav class="bottom-nav">
-        <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
+        <a href="/dashboard" class="nav-item {% if request.path.startswith('/dashboard') %}active{% endif %}">
             <i class="fas fa-home"></i>
             <span>خانه</span>
         </a>
