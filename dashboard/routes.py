@@ -16,13 +16,11 @@ def dashboard():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     
-    # آمارها
     total_posts = Post.query.count()
     total_channels = Channel.query.count()
     scored_posts = Post.query.filter(Post.score.isnot(None)).count()
     avg_score = db.session.query(func.avg(Post.score)).filter(Post.score.isnot(None)).scalar() or 0
     
-    # کانال‌های برتر (۵ کانال با بالاترین میانگین امتیاز)
     top_channels = db.session.query(
         Channel.channel_name,
         Channel.id,
@@ -30,7 +28,6 @@ def dashboard():
         func.avg(Post.score).label('avg_score')
     ).join(Post).filter(Post.score.isnot(None)).group_by(Channel.id).order_by(func.avg(Post.score).desc()).limit(5).all()
     
-    # پست‌های روزانه (۷ روز اخیر)
     daily_labels = []
     daily_data = []
     for i in range(6, -1, -1):
@@ -39,12 +36,10 @@ def dashboard():
         daily_labels.append(date.strftime('%Y/%m/%d'))
         daily_data.append(count)
     
-    # توزیع نوع پست‌ها
     types = db.session.query(Post.post_type, func.count(Post.id)).group_by(Post.post_type).all()
     type_labels = [t[0] for t in types]
     type_data = [t[1] for t in types]
     
-    # آخرین فعالیت‌ها (نمونه)
     recent_activities = [
         {'icon': '📄', 'text': 'پست جدید در کانال دیجی‌کالا', 'time': '۲ دقیقه پیش', 'color': 'green'},
         {'icon': '⭐', 'text': 'امتیاز ۸۵ به پست #۱۲۳', 'time': '۱۵ دقیقه پیش', 'color': 'blue'},
@@ -165,8 +160,21 @@ def channel_posts(channel_id):
     if not channel:
         flash("کانال پیدا نشد!", "danger")
         return redirect(url_for("dashboard.channels"))
+    
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
-    return render_template("dashboard/channel_posts.html", channel=channel, posts=posts)
+    
+    stats = {
+        'total': len(posts),
+        'scored': Post.query.filter(Post.channel_id == channel_id, Post.score.isnot(None)).count(),
+        'avg_score': db.session.query(func.avg(Post.score)).filter(Post.channel_id == channel_id, Post.score.isnot(None)).scalar() or 0
+    }
+    
+    return render_template(
+        "dashboard/channel_posts.html",
+        channel=channel,
+        posts=posts,
+        stats=stats
+    )
 
 @dashboard_bp.route("/channels/assign/<int:channel_id>")
 def assign_channel_admins(channel_id):
