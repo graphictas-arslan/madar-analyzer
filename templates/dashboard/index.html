@@ -1,72 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- کارت‌های آماری (مثل تصویر) -->
-<div class="d-flex gap-2 mb-3 flex-wrap">
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="icon">📄</span>
-            <span class="change">+۱۲%</span>
-        </div>
-        <div class="stat-number">{{ total_posts }}</div>
-        <div class="stat-label">کل پست‌ها</div>
-        <div class="mini-chart">
-            <canvas id="chartPosts" width="100" height="40"></canvas>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="icon">📢</span>
-            <span class="change">+۵%</span>
-        </div>
-        <div class="stat-number">{{ total_channels }}</div>
-        <div class="stat-label">کل کانال‌ها</div>
-        <div class="mini-chart">
-            <canvas id="chartChannels" width="100" height="40"></canvas>
+<!-- ۴ کارت حلقوی کنار هم -->
+<div class="row g-2 mb-3">
+    <!-- کارت ۱: پست‌ها -->
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3" style="border-radius: 16px;">
+            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
+                <canvas id="chartPosts" width="90" height="90"></canvas>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
+                    {{ total_posts }}
+                </div>
+            </div>
+            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">پست‌ها</div>
         </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="icon">⭐</span>
-            <span class="change">+۸%</span>
-        </div>
-        <div class="stat-number">{{ scored_posts }}</div>
-        <div class="stat-label">امتیازدار</div>
-        <div class="mini-chart">
-            <canvas id="chartScored" width="100" height="40"></canvas>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="icon">📊</span>
-            <span class="change">-۲%</span>
-        </div>
-        <div class="stat-number">{{ avg_score }}</div>
-        <div class="stat-label">میانگین</div>
-        <div class="mini-chart">
-            <canvas id="chartAvg" width="100" height="40"></canvas>
-        </div>
-    </div>
-</div>
 
-<!-- نمودار پست‌های روزانه -->
-<div class="card">
-    <div class="d-flex justify-content-between mb-2">
-        <span style="font-weight: 600;">📊 پست‌های روزانه</span>
-        <span style="font-size: 11px; color: #666;">۷ روز اخیر</span>
+    <!-- کارت ۲: کانال‌ها -->
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3" style="border-radius: 16px;">
+            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
+                <canvas id="chartChannels" width="90" height="90"></canvas>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
+                    {{ total_channels }}
+                </div>
+            </div>
+            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">کانال‌ها</div>
+        </div>
     </div>
-    <div style="height: 150px;">
-        <canvas id="dailyChart"></canvas>
-    </div>
-</div>
 
-<!-- نمودار توزیع نوع پست‌ها -->
-<div class="card">
-    <div class="d-flex justify-content-between mb-2">
-        <span style="font-weight: 600;">📊 نوع پست‌ها</span>
-        <span style="font-size: 11px; color: #666;">توزیع</span>
+    <!-- کارت ۳: پست‌های دارای امتیاز -->
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3" style="border-radius: 16px;">
+            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
+                <canvas id="chartScored" width="90" height="90"></canvas>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
+                    {{ scored_posts }}
+                </div>
+            </div>
+            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">پست‌های دارای امتیاز</div>
+        </div>
     </div>
-    <div style="height: 150px;">
-        <canvas id="typeChart"></canvas>
+
+    <!-- کارت ۴: میانگین -->
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3" style="border-radius: 16px;">
+            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
+                <canvas id="chartAvg" width="90" height="90"></canvas>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
+                    {{ avg_score }}
+                </div>
+            </div>
+            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">میانگین</div>
+        </div>
     </div>
 </div>
 
@@ -107,102 +92,38 @@
     </div>
 </div>
 
-<!-- اسکریپت نمودارها -->
+<!-- اسکریپت Chart.js برای رسم ۴ نمودار حلقوی -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // نمودارهای کوچک در کارت‌های آماری
-    function createMiniChart(id, data, color) {
+    // تابع کمکی برای رسم نمودار حلقوی
+    function createDonutChart(id, percentage, color) {
         const ctx = document.getElementById(id).getContext('2d');
         new Chart(ctx, {
-            type: 'line',
+            type: 'doughnut',
             data: {
-                labels: ['1', '2', '3', '4', '5'],
+                labels: ['پر شده', 'خالی'],
                 datasets: [{
-                    data: data,
-                    borderColor: color,
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    tension: 0.4,
-                    fill: false
+                    data: [percentage, 100 - percentage],
+                    backgroundColor: [color, '#2a2d33'],
+                    borderWidth: 0,
+                    cutout: '75%'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: { display: false },
-                    y: { display: false }
+                    legend: { display: false },
+                    tooltip: { enabled: false }
                 }
             }
         });
     }
 
-    // داده‌های نمونه برای نمودارهای کوچک
-    createMiniChart('chartPosts', [10, 15, 12, 18, 22], '#4ade80');
-    createMiniChart('chartChannels', [5, 8, 6, 9, 10], '#60a5fa');
-    createMiniChart('chartScored', [8, 12, 10, 15, 18], '#fb923c');
-    createMiniChart('chartAvg', [0.5, 0.6, 0.4, 0.7, 0.1], '#c084fc');
-
-    // نمودار پست‌های روزانه
-    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
-    new Chart(dailyCtx, {
-        type: 'line',
-        data: {
-            labels: {{ daily_labels|safe }},
-            datasets: [{
-                label: 'پست‌ها',
-                data: {{ daily_data|safe }},
-                borderColor: '#4ade80',
-                backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: '#a0a0a0' }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#a0a0a0' }
-                }
-            }
-        }
-    });
-
-    // نمودار توزیع نوع پست‌ها
-    const typeCtx = document.getElementById('typeChart').getContext('2d');
-    new Chart(typeCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {{ type_labels|safe }},
-            datasets: [{
-                data: {{ type_data|safe }},
-                backgroundColor: ['#4ade80', '#60a5fa', '#fb923c', '#c084fc'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { color: '#a0a0a0' }
-                }
-            }
-        }
-    });
+    // رسم ۴ نمودار با درصدهای فرضی (می‌تونی بعداً واقعی کنی)
+    createDonutChart('chartPosts', 72, '#4ade80');    // پست‌ها
+    createDonutChart('chartChannels', 40, '#60a5fa');  // کانال‌ها
+    createDonutChart('chartScored', 72, '#fb923c');    // پست‌های دارای امتیاز
+    createDonutChart('chartAvg', 20, '#c084fc');       // میانگین
 </script>
 {% endblock %}
