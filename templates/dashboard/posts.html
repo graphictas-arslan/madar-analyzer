@@ -23,7 +23,11 @@
 
         <!-- متن -->
         <div style="font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            {{ post.text[:50] }}{% if post.text|length > 50 %}...{% endif %}
+            {% if post.text %}
+                {{ post.text[:50] }}{% if post.text|length > 50 %}...{% endif %}
+            {% else %}
+                بدون متن
+            {% endif %}
         </div>
 
         <!-- اطلاعات پایین -->
