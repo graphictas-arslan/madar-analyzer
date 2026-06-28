@@ -135,21 +135,6 @@ def channels():
     channels = Channel.query.order_by(Channel.id.desc()).all()
     return render_template("dashboard/channels.html", channels=channels)
 
-@dashboard_bp.route("/channels/create", methods=["POST"])
-def create_channel():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-    channel_name = request.form.get("channel_name")
-    channel_id = request.form.get("channel_id")
-    if Channel.query.filter_by(channel_id=channel_id).first():
-        flash("این شناسه کانال قبلاً ثبت شده است!", "danger")
-        return redirect(url_for("dashboard.channels"))
-    channel = Channel(channel_name=channel_name, channel_id=channel_id, is_active=True)
-    db.session.add(channel)
-    db.session.commit()
-    flash("کانال با موفقیت ایجاد شد.", "success")
-    return redirect(url_for("dashboard.channels"))
-
 @dashboard_bp.route("/channels/toggle/<int:channel_id>")
 def toggle_channel(channel_id):
     if "user_id" not in session:
@@ -172,6 +157,27 @@ def delete_channel(channel_id):
         flash("کانال حذف شد.", "success")
     return redirect(url_for("dashboard.channels"))
 
+@dashboard_bp.route("/channels/<int:channel_id>/posts")
+def channel_posts(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        flash("کانال پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.channels"))
+    posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
+    return render_template("dashboard/channel_posts.html", channel=channel, posts=posts)
+
+@dashboard_bp.route("/channels/assign/<int:channel_id>")
+def assign_channel_admins(channel_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        flash("کانال پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.channels"))
+    return redirect(url_for("dashboard.channels"))
+
 # ============== پست‌ها ==============
 @dashboard_bp.route("/posts")
 def posts():
@@ -179,22 +185,6 @@ def posts():
         return redirect(url_for("auth.login"))
     posts = Post.query.order_by(Post.publish_date.desc()).all()
     return render_template("dashboard/posts.html", posts=posts)
-
-@dashboard_bp.route("/posts/export")
-def export_posts():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-    posts = Post.query.order_by(Post.publish_date.desc()).all()
-    excel_file = generate_excel(posts)
-    safe_filename = "posts_export.xlsx"
-    return Response(
-        excel_file.getvalue(),
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={
-            "Content-Disposition": f"attachment; filename={safe_filename}",
-            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        }
-    )
 
 @dashboard_bp.route("/posts/score/<int:post_id>", methods=["POST"])
 def score_post(post_id):
@@ -212,6 +202,35 @@ def score_post(post_id):
     else:
         flash("لطفاً یک عدد معتبر وارد کنید.", "danger")
     return redirect(url_for("dashboard.posts"))
+
+@dashboard_bp.route("/posts/delete/<int:post_id>", methods=["POST"])
+def delete_post(post_id):
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    post = Post.query.get(post_id)
+    if not post:
+        flash("پست پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.posts"))
+    db.session.delete(post)
+    db.session.commit()
+    flash("پست حذف شد.", "success")
+    return redirect(url_for("dashboard.posts"))
+
+@dashboard_bp.route("/posts/export")
+def export_posts():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    posts = Post.query.order_by(Post.publish_date.desc()).all()
+    excel_file = generate_excel(posts)
+    safe_filename = "posts_export.xlsx"
+    return Response(
+        excel_file.getvalue(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename={safe_filename}",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+    )
 
 # ============== کاربران ==============
 @dashboard_bp.route("/users")
