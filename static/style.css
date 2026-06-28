@@ -37,28 +37,23 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     border: 4px solid;
     margin: 0 auto;
     position: relative;
+    transition: transform 0.2s;
 }
 
 .stat-circle .number {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
 }
 
 .stat-circle .label {
-    font-size: 11px;
+    font-size: 10px;
     color: #a0a0a0;
-    margin-top: 2px;
-}
-
-.stat-circle .sub-label {
-    font-size: 9px;
-    color: #666;
     margin-top: 2px;
 }
 
@@ -231,13 +226,24 @@ body {
     font-size: 11px;
 }
 
-/* ========== واکنش‌گرا ========== */
-@media (min-width: 481px) {
+/* ========== واکنش‌گرا (دسکتاپ) ========== */
+@media (min-width: 769px) {
     .app-container {
-        max-width: 800px;
+        max-width: 900px;
         padding: 20px;
     }
+    .stat-circle {
+        width: 100px;
+        height: 100px;
+    }
+    .stat-circle .number {
+        font-size: 24px;
+    }
     .post-card {
-        min-width: 180px;
+        min-width: 200px;
+        max-width: 220px;
+    }
+    .post-card img {
+        height: 110px;
     }
 }
