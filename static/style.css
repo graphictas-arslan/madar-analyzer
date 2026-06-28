@@ -121,6 +121,22 @@ body {
     }
 }
 /* ========== نوار پایین ========== */
+.bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: #666;
+    text-decoration: none;
+    font-size: 10px;
+    transition: color 0.2s;
+}
+
+.bottom-nav .nav-item i {
+    font-size: 22px;
+}
+
+/* حالت فعال (روشن) */
 .bottom-nav .nav-item.active {
     color: #f97316;
 }
