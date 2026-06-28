@@ -2,9 +2,7 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
     <h2 style="font-size: 18px; margin: 0;">📢 کانال‌ها</h2>
-    <button style="background: #f97316; border: none; border-radius: 8px; padding: 6px 14px; color: #fff; font-size: 12px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#createChannelModal">
-        <i class="fas fa-plus"></i> جدید
-    </button>
+    <span style="font-size: 11px; color: #a0a0a0;">{{ channels|length }} کانال</span>
 </div>
 
 <!-- لیست کانال‌ها به صورت ۲×۲ -->
@@ -22,43 +20,21 @@
                 </span>
             </div>
         </div>
-        <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <div style="display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap;">
+            <!-- دکمه اختصاص ادمین -->
+            <a href="/dashboard/channels/assign/{{ channel.id }}" style="background: #2563eb; border: none; border-radius: 6px; padding: 3px 10px; color: #fff; font-size: 10px; text-decoration: none; cursor: pointer;">
+                <i class="fas fa-user-plus"></i> ادمین
+            </a>
+            <!-- دکمه تغییر وضعیت -->
             <a href="/dashboard/channels/toggle/{{ channel.id }}" style="background: #f59e0b; border: none; border-radius: 6px; padding: 3px 10px; color: #fff; font-size: 10px; text-decoration: none; cursor: pointer;">
                 تغییر وضعیت
             </a>
+            <!-- دکمه حذف -->
             <a href="/dashboard/channels/delete/{{ channel.id }}" style="background: #ef4444; border: none; border-radius: 6px; padding: 3px 10px; color: #fff; font-size: 10px; text-decoration: none; cursor: pointer;" onclick="return confirm('حذف شود؟')">
                 حذف
             </a>
         </div>
     </div>
     {% endfor %}
-</div>
-
-<!-- مودال ایجاد کانال -->
-<div class="modal fade" id="createChannelModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background: #1a1d23; color: #fff;">
-            <div class="modal-header" style="border-bottom: 1px solid #2a2d33;">
-                <h5 class="modal-title" style="margin: 0;">کانال جدید</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="/dashboard/channels/create">
-                <div class="modal-body">
-                    <div style="margin-bottom: 8px;">
-                        <label style="display: block; color: #a0a0a0; font-size: 12px; margin-bottom: 4px;">نام کانال</label>
-                        <input type="text" class="form-control" name="channel_name" required style="width: 100%; padding: 8px 12px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 13px;">
-                    </div>
-                    <div style="margin-bottom: 8px;">
-                        <label style="display: block; color: #a0a0a0; font-size: 12px; margin-bottom: 4px;">شناسه کانال</label>
-                        <input type="text" class="form-control" name="channel_id" required style="width: 100%; padding: 8px 12px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 13px;">
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid #2a2d33; padding-top: 12px;">
-                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 6px 14px; color: #a0a0a0;">لغو</button>
-                    <button type="submit" class="btn btn-orange" style="background: #f97316; border: none; border-radius: 8px; padding: 6px 14px; color: #fff;">ذخیره</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 {% endblock %}
