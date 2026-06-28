@@ -131,19 +131,18 @@
     </div>
 </div>
 
-<!-- اسکریپت‌ها -->
 <script>
-    // داده‌های پست‌ها
+    // داده‌های پست‌ها با |tojson (ایمن برای متن‌های دارای " و \n)
     const postsData = [
         {% for post in posts %}
         {
             id: {{ post.id }},
-            text: "{{ post.text|replace('"', '\\"')|replace('\n', ' ') }}",
-            caption: "{{ post.caption|replace('"', '\\"') if post.caption else '' }}",
-            media_url: "{{ post.media_url if post.media_url else '' }}",
-            channel: "{{ post.channel.channel_name if post.channel else '-' }}",
-            score: "{{ post.score if post.score else '۰' }}",
-            date: "{{ post.publish_date.strftime('%Y/%m/%d %H:%M') if post.publish_date else '-' }}"
+            text: {{ post.text|tojson }},
+            caption: {{ post.caption|tojson if post.caption else 'null' }},
+            media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
+            channel: {{ post.channel.channel_name|tojson if post.channel else 'null' }},
+            score: {{ post.score|tojson if post.score else 'null' }},
+            date: {{ post.publish_date.strftime('%Y/%m/%d %H:%M')|tojson if post.publish_date else 'null' }}
         },
         {% endfor %}
     ];
@@ -206,7 +205,6 @@
     });
 </script>
 
-<!-- استایل واکنش‌گرا -->
 <style>
     @media (min-width: 768px) {
         .grid-posts {
