@@ -40,24 +40,24 @@
             {% endif %}
         </div>
 
-        <!-- پایین کارت -->
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; gap: 4px;">
-                <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
-                        style="background: transparent; border: none; color: #f97316; font-size: 12px; cursor: pointer;">
-                    <i class="fas fa-star"></i>
+        <!-- پایین کارت: آیکون‌های وسط با خط جداکننده -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+            <!-- ستاره (امتیازدهی) -->
+            <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
+                    style="background: transparent; border: none; color: #f97316; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                <i class="fas fa-star"></i>
+            </button>
+
+            <!-- خط جداکننده باریک -->
+            <div style="width: 1px; height: 18px; background: #2a2d33;"></div>
+
+            <!-- سطل آشغال (حذف) -->
+            <form method="POST" action="/dashboard/posts/delete/{{ post.id }}" style="display: inline;" onclick="event.stopPropagation();">
+                <button type="submit" onclick="return confirm('حذف شود؟')"
+                        style="background: transparent; border: none; color: #ef4444; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                    <i class="fas fa-trash"></i>
                 </button>
-                <form method="POST" action="/dashboard/posts/delete/{{ post.id }}" style="display: inline;" onclick="event.stopPropagation();">
-                    <button type="submit" onclick="return confirm('حذف شود؟')"
-                            style="background: transparent; border: none; color: #ef4444; font-size: 12px; cursor: pointer;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </form>
-            </div>
-            <div style="display: flex; align-items: baseline; gap: 2px;">
-                <span style="font-size: 12px; font-weight: 600; color: #fbbf24;">{{ post.score or '۰' }}</span>
-                <span style="font-size: 7px; color: #a0a0a0;">امتیاز</span>
-            </div>
+            </form>
         </div>
     </div>
     {% endfor %}
