@@ -2,26 +2,26 @@
 {% block content %}
 <!-- کارت آمار دایره‌ای -->
 <div class="card">
-    <div class="row text-center g-2 justify-content-center">
-        <div class="col-3 col-md-3">
+    <div class="row text-center g-3">
+        <div class="col-3">
             <div class="stat-circle circle-blue">
                 <div class="number">{{ total_posts }}</div>
                 <div class="label">پست‌ها</div>
             </div>
         </div>
-        <div class="col-3 col-md-3">
+        <div class="col-3">
             <div class="stat-circle circle-orange">
                 <div class="number">{{ total_channels }}</div>
                 <div class="label">کانال‌ها</div>
             </div>
         </div>
-        <div class="col-3 col-md-3">
+        <div class="col-3">
             <div class="stat-circle circle-green">
                 <div class="number">{{ scored_posts }}</div>
                 <div class="label">امتیازدار</div>
             </div>
         </div>
-        <div class="col-3 col-md-3">
+        <div class="col-3">
             <div class="stat-circle circle-purple">
                 <div class="number">{{ avg_score }}</div>
                 <div class="label">میانگین</div>
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<!-- لیست پست‌ها -->
+<!-- لیست افقی پست‌ها -->
 <div class="card">
     <div class="d-flex justify-content-between mb-2">
         <span style="font-weight: 600;">📸 آخرین پست‌ها</span>
