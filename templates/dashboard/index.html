@@ -49,7 +49,7 @@
         <a href="/dashboard/posts" style="color: #f97316; font-size: 11px;">مشاهده همه</a>
     </div>
     <div class="horizontal-scroll">
-        {% for post in posts[:10] %}
+        {% for post in posts %}
         <div class="post-card">
             {% if post.media_url %}
                 <img src="{{ post.media_url }}" alt="post image">
@@ -58,7 +58,13 @@
                     <i class="fas fa-file-alt fa-2x" style="color: #666;"></i>
                 </div>
             {% endif %}
-            <div class="title">{{ post.text[:30] }}...</div>
+            <div class="title">
+                {% if post.text %}
+                    {{ post.text[:30] }}...
+                {% else %}
+                    بدون متن
+                {% endif %}
+            </div>
             <div class="meta">
                 <span>{{ post.channel.channel_name if post.channel else '-' }}</span>
                 <span>⭐ {{ post.score or '-' }}</span>
