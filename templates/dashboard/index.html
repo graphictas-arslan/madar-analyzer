@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- ۴ کارت حلقوی کنار هم -->
-<div class="row g-2 mb-3">
-    <!-- کارت ۱: پست‌ها -->
-    <div class="col-6 col-md-3">
+<!-- ردیف ۱: پست‌ها و کانال‌ها -->
+<div class="row g-2 mb-2">
+    <div class="col-6">
         <div class="card text-center p-3" style="border-radius: 16px;">
             <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
                 <canvas id="chartPosts" width="90" height="90"></canvas>
@@ -14,9 +13,7 @@
             <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">پست‌ها</div>
         </div>
     </div>
-
-    <!-- کارت ۲: کانال‌ها -->
-    <div class="col-6 col-md-3">
+    <div class="col-6">
         <div class="card text-center p-3" style="border-radius: 16px;">
             <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
                 <canvas id="chartChannels" width="90" height="90"></canvas>
@@ -27,9 +24,11 @@
             <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">کانال‌ها</div>
         </div>
     </div>
+</div>
 
-    <!-- کارت ۳: پست‌های دارای امتیاز -->
-    <div class="col-6 col-md-3">
+<!-- ردیف ۲: پست‌های دارای امتیاز و میانگین -->
+<div class="row g-2 mb-3">
+    <div class="col-6">
         <div class="card text-center p-3" style="border-radius: 16px;">
             <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
                 <canvas id="chartScored" width="90" height="90"></canvas>
@@ -40,9 +39,7 @@
             <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">پست‌های دارای امتیاز</div>
         </div>
     </div>
-
-    <!-- کارت ۴: میانگین -->
-    <div class="col-6 col-md-3">
+    <div class="col-6">
         <div class="card text-center p-3" style="border-radius: 16px;">
             <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
                 <canvas id="chartAvg" width="90" height="90"></canvas>
@@ -92,10 +89,9 @@
     </div>
 </div>
 
-<!-- اسکریپت Chart.js برای رسم ۴ نمودار حلقوی -->
+<!-- اسکریپت Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // تابع کمکی برای رسم نمودار حلقوی
     function createDonutChart(id, percentage, color) {
         const ctx = document.getElementById(id).getContext('2d');
         new Chart(ctx, {
@@ -120,10 +116,9 @@
         });
     }
 
-    // رسم ۴ نمودار با درصدهای فرضی (می‌تونی بعداً واقعی کنی)
-    createDonutChart('chartPosts', 72, '#4ade80');    // پست‌ها
-    createDonutChart('chartChannels', 40, '#60a5fa');  // کانال‌ها
-    createDonutChart('chartScored', 72, '#fb923c');    // پست‌های دارای امتیاز
-    createDonutChart('chartAvg', 20, '#c084fc');       // میانگین
+    createDonutChart('chartPosts', 72, '#4ade80');
+    createDonutChart('chartChannels', 40, '#60a5fa');
+    createDonutChart('chartScored', 72, '#fb923c');
+    createDonutChart('chartAvg', 20, '#c084fc');
 </script>
 {% endblock %}
