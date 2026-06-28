@@ -1,95 +1,89 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- ردیف ۱: پست‌ها و کانال‌ها -->
-<div class="row g-2 mb-2">
-    <div class="col-6">
-        <div class="card text-center p-3" style="border-radius: 16px;">
-            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
-                <canvas id="chartPosts" width="90" height="90"></canvas>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
-                    {{ total_posts }}
-                </div>
+<!-- ۴ کارت حلقوی در قالب ۲×۲ (بدون بوت‌استرپ) -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+    <!-- کارت ۱ -->
+    <div style="background: #1a1d23; border-radius: 16px; padding: 12px; text-align: center;">
+        <div style="position: relative; width: 80px; height: 80px; margin: 0 auto;">
+            <canvas id="chartPosts" width="80" height="80"></canvas>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15px; font-weight: 700; color: #fff;">
+                {{ total_posts }}
             </div>
-            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">پست‌ها</div>
         </div>
+        <div style="margin-top: 6px; font-size: 11px; font-weight: 500; color: #a0a0a0;">پست‌ها</div>
     </div>
-    <div class="col-6">
-        <div class="card text-center p-3" style="border-radius: 16px;">
-            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
-                <canvas id="chartChannels" width="90" height="90"></canvas>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
-                    {{ total_channels }}
-                </div>
-            </div>
-            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">کانال‌ها</div>
-        </div>
-    </div>
-</div>
 
-<!-- ردیف ۲: پست‌های دارای امتیاز و میانگین -->
-<div class="row g-2 mb-3">
-    <div class="col-6">
-        <div class="card text-center p-3" style="border-radius: 16px;">
-            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
-                <canvas id="chartScored" width="90" height="90"></canvas>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
-                    {{ scored_posts }}
-                </div>
+    <!-- کارت ۲ -->
+    <div style="background: #1a1d23; border-radius: 16px; padding: 12px; text-align: center;">
+        <div style="position: relative; width: 80px; height: 80px; margin: 0 auto;">
+            <canvas id="chartChannels" width="80" height="80"></canvas>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15px; font-weight: 700; color: #fff;">
+                {{ total_channels }}
             </div>
-            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">پست‌های دارای امتیاز</div>
         </div>
+        <div style="margin-top: 6px; font-size: 11px; font-weight: 500; color: #a0a0a0;">کانال‌ها</div>
     </div>
-    <div class="col-6">
-        <div class="card text-center p-3" style="border-radius: 16px;">
-            <div style="position: relative; width: 90px; height: 90px; margin: 0 auto;">
-                <canvas id="chartAvg" width="90" height="90"></canvas>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #fff;">
-                    {{ avg_score }}
-                </div>
+
+    <!-- کارت ۳ -->
+    <div style="background: #1a1d23; border-radius: 16px; padding: 12px; text-align: center;">
+        <div style="position: relative; width: 80px; height: 80px; margin: 0 auto;">
+            <canvas id="chartScored" width="80" height="80"></canvas>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15px; font-weight: 700; color: #fff;">
+                {{ scored_posts }}
             </div>
-            <div style="margin-top: 8px; font-size: 12px; font-weight: 500; color: #a0a0a0;">میانگین</div>
         </div>
+        <div style="margin-top: 6px; font-size: 11px; font-weight: 500; color: #a0a0a0;">پست‌های دارای امتیاز</div>
+    </div>
+
+    <!-- کارت ۴ -->
+    <div style="background: #1a1d23; border-radius: 16px; padding: 12px; text-align: center;">
+        <div style="position: relative; width: 80px; height: 80px; margin: 0 auto;">
+            <canvas id="chartAvg" width="80" height="80"></canvas>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15px; font-weight: 700; color: #fff;">
+                {{ avg_score }}
+            </div>
+        </div>
+        <div style="margin-top: 6px; font-size: 11px; font-weight: 500; color: #a0a0a0;">میانگین</div>
     </div>
 </div>
 
 <!-- کانال‌های برتر -->
-<div class="card">
-    <div class="d-flex justify-content-between mb-2">
+<div style="background: #1a1d23; border-radius: 16px; padding: 16px; margin-bottom: 12px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
         <span style="font-weight: 600;">🏆 کانال‌های برتر</span>
         <a href="/dashboard/channels" style="color: #f97316; font-size: 11px;">مشاهده همه</a>
     </div>
     <div>
         {% for channel in top_channels %}
-        <div class="top-channel-item">
-            <div class="rank">#{{ loop.index }}</div>
-            <div class="channel-info">
-                <div class="name">{{ channel.channel_name }}</div>
-                <div class="stats">{{ channel.post_count }} پست • {{ channel.avg_score }} امتیاز</div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a2d33;">
+            <div style="width: 24px; height: 24px; border-radius: 50%; background: #2a2d33; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">#{{ loop.index }}</div>
+            <div style="flex: 1;">
+                <div style="font-size: 12px; font-weight: 500;">{{ channel.channel_name }}</div>
+                <div style="font-size: 10px; color: #666;">{{ channel.post_count }} پست • {{ channel.avg_score }} امتیاز</div>
             </div>
-            <div class="channel-score">⭐ {{ channel.avg_score }}</div>
+            <div style="font-size: 13px; font-weight: 600;">⭐ {{ channel.avg_score }}</div>
         </div>
         {% endfor %}
     </div>
 </div>
 
 <!-- آخرین فعالیت‌ها -->
-<div class="card">
-    <div class="d-flex justify-content-between mb-2">
+<div style="background: #1a1d23; border-radius: 16px; padding: 16px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
         <span style="font-weight: 600;">🕒 آخرین فعالیت‌ها</span>
         <span style="font-size: 11px; color: #666;">لحظه‌ای</span>
     </div>
     <div>
         {% for activity in recent_activities %}
-        <div class="activity-item">
-            <div class="activity-icon activity-{{ activity.color }}">{{ activity.icon }}</div>
-            <div class="activity-text">{{ activity.text }}</div>
-            <div class="activity-time">{{ activity.time }}</div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a2d33;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; background: #1a3a2a; color: #4ade80;">{{ activity.icon }}</div>
+            <div style="flex: 1; font-size: 12px;">{{ activity.text }}</div>
+            <div style="font-size: 10px; color: #666;">{{ activity.time }}</div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<!-- اسکریپت Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function createDonutChart(id, percentage, color) {
@@ -108,14 +102,10 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
-                }
+                plugins: { legend: { display: false }, tooltip: { enabled: false } }
             }
         });
     }
-
     createDonutChart('chartPosts', 72, '#4ade80');
     createDonutChart('chartChannels', 40, '#60a5fa');
     createDonutChart('chartScored', 72, '#fb923c');
