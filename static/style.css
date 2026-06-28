@@ -31,7 +31,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* ========== کارت‌های آماری (مثل تصویر) ========== */
+/* ========== کارت‌های آماری ========== */
 .stat-card {
     background: #1a1d23;
     border-radius: 12px;
@@ -220,13 +220,40 @@ body {
     font-size: 11px;
 }
 
-/* ========== واکنش‌گرا ========== */
+/* ========== دسکتاپ: نوار پایین به سمت راست ========== */
 @media (min-width: 769px) {
-    .app-container {
-        max-width: 900px;
-        padding: 20px;
+    .bottom-nav {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 64px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 16px 0;
+        border-top: none;
+        border-left: 1px solid #2a2d33;
+        background: #1a1d23;
+        z-index: 1000;
+        max-width: none;
     }
-    .stat-card .stat-number {
-        font-size: 32px;
+
+    .bottom-nav .nav-item {
+        font-size: 11px;
+        padding: 8px 0;
+    }
+
+    .bottom-nav .nav-item i {
+        font-size: 20px;
+    }
+
+    .bottom-nav .nav-item span {
+        display: block;
+        margin-top: 2px;
+    }
+
+    .app-container {
+        padding-right: 80px;
     }
 }
