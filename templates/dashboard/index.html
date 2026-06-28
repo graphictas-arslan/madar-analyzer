@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- کارت آمار دایره‌ای (دکمه‌های افقی) -->
+<!-- کارت آمار دایره‌ای (افقی) -->
 <div class="card">
-    <div class="d-flex justify-content-between align-items-center" style="gap: 4px;">
-        <div class="stat-circle circle-blue" style="flex: 1;">
+    <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
+        <div class="stat-circle circle-blue">
             <div class="number">{{ total_posts }}</div>
             <div class="label">پست‌ها</div>
         </div>
-        <div class="stat-circle circle-orange" style="flex: 1;">
+        <div class="stat-circle circle-orange">
             <div class="number">{{ total_channels }}</div>
             <div class="label">کانال‌ها</div>
         </div>
-        <div class="stat-circle circle-green" style="flex: 1;">
+        <div class="stat-circle circle-green">
             <div class="number">{{ scored_posts }}</div>
             <div class="label">امتیازدار</div>
         </div>
-        <div class="stat-circle circle-purple" style="flex: 1;">
+        <div class="stat-circle circle-purple">
             <div class="number">{{ avg_score }}</div>
             <div class="label">میانگین</div>
         </div>
