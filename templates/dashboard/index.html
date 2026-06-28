@@ -1,8 +1,6 @@
-{% extends "base.html" %}
-{% block content %}
 <!-- کارت آمار دایره‌ای -->
 <div class="card">
-    <div class="row text-center g-3">
+    <div class="row g-2 justify-content-center">
         <div class="col-3">
             <div class="stat-circle circle-blue">
                 <div class="number">{{ total_posts }}</div>
@@ -29,48 +27,3 @@
         </div>
     </div>
 </div>
-
-<!-- دکمه‌های اصلی -->
-<div class="card">
-    <div class="d-flex gap-2">
-        <button class="btn btn-orange flex-grow-1">
-            <i class="fas fa-file-excel"></i> خروجی اکسل
-        </button>
-        <button class="btn btn-outline flex-grow-1">
-            <i class="fas fa-filter"></i> فیلتر
-        </button>
-    </div>
-</div>
-
-<!-- لیست افقی پست‌ها -->
-<div class="card">
-    <div class="d-flex justify-content-between mb-2">
-        <span style="font-weight: 600;">📸 آخرین پست‌ها</span>
-        <a href="/dashboard/posts" style="color: #f97316; font-size: 11px;">مشاهده همه</a>
-    </div>
-    <div class="horizontal-scroll">
-        {% for post in posts %}
-        <div class="post-card">
-            {% if post.media_url %}
-                <img src="{{ post.media_url }}" alt="post image">
-            {% else %}
-                <div style="height: 90px; background: #2a2d33; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-file-alt fa-2x" style="color: #666;"></i>
-                </div>
-            {% endif %}
-            <div class="title">
-                {% if post.text %}
-                    {{ post.text[:30] }}...
-                {% else %}
-                    بدون متن
-                {% endif %}
-            </div>
-            <div class="meta">
-                <span>{{ post.channel.channel_name if post.channel else '-' }}</span>
-                <span>⭐ {{ post.score or '-' }}</span>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endblock %}
