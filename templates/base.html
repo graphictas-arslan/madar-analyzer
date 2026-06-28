@@ -6,8 +6,6 @@
     <title>{% block title %}Madar Analyzer{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Chart.js برای نمودارها -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -22,30 +20,30 @@
 
         <!-- محتوای اصلی -->
         {% block content %}{% endblock %}
-
-        <!-- نوار پایین با تشخیص مسیر فعال -->
-        <nav class="bottom-nav">
-            <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
-                <i class="fas fa-home"></i>
-                <span>خانه</span>
-            </a>
-            <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
-                <i class="fas fa-bullhorn"></i>
-                <span>کانال‌ها</span>
-            </a>
-            <a href="/dashboard/posts" class="nav-item {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
-                <i class="fas fa-file-alt"></i>
-                <span>پست‌ها</span>
-            </a>
-            <a href="/users" class="nav-item {% if request.path.startswith('/users') %}active{% endif %}">
-                <i class="fas fa-user"></i>
-                <span>پروفایل</span>
-            </a>
-            <a href="/auth/logout" class="nav-item">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>خروج</span>
-            </a>
-        </nav>
     </div>
+
+    <!-- نوار پایین (مستقل و ساده) -->
+    <nav class="bottom-nav">
+        <a href="/dashboard" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>خانه</span>
+        </a>
+        <a href="/dashboard/channels" class="nav-item">
+            <i class="fas fa-bullhorn"></i>
+            <span>کانال‌ها</span>
+        </a>
+        <a href="/dashboard/posts" class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <span>پست‌ها</span>
+        </a>
+        <a href="/users" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>پروفایل</span>
+        </a>
+        <a href="/auth/logout" class="nav-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>خروج</span>
+        </a>
+    </nav>
 </body>
 </html>
