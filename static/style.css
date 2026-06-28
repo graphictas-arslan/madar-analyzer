@@ -11,17 +11,16 @@ body {
     direction: rtl;
     color: #ffffff;
     font-size: 13px;
-    padding-bottom: 70px;
 }
 
-/* ========== کانتینر اصلی ========== */
+/* ========== حالت موبایل (پیش‌فرض) ========== */
 .app-container {
     max-width: 480px;
     margin: 0 auto;
     padding: 12px;
+    padding-bottom: 80px; /* فضا برای نوار پایین */
 }
 
-/* ========== کارت‌ها ========== */
 .card {
     background: #1a1d23;
     border: none;
@@ -31,142 +30,12 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* ========== کارت‌های آماری ========== */
-.stat-card {
-    background: #1a1d23;
-    border-radius: 12px;
-    padding: 16px;
-    flex: 1;
-    min-width: 100px;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.stat-card .stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.stat-card .stat-header .icon {
-    font-size: 20px;
-    color: #a0a0a0;
-}
-
-.stat-card .stat-header .change {
-    font-size: 11px;
-    color: #4ade80;
-}
-
-.stat-card .stat-number {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.stat-card .stat-label {
-    font-size: 11px;
-    color: #a0a0a0;
-}
-
-.stat-card .mini-chart {
-    height: 40px;
-    margin-top: 8px;
-}
-
-/* ========== لیست فعالیت‌ها ========== */
-.activity-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid #2a2d33;
-}
-
-.activity-item:last-child {
-    border-bottom: none;
-}
-
-.activity-item .activity-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-}
-
-.activity-item .activity-text {
-    font-size: 12px;
-    flex: 1;
-}
-
-.activity-item .activity-time {
-    font-size: 10px;
-    color: #666;
-}
-
-/* رنگ‌های آیکون فعالیت‌ها */
-.activity-green { background: #1a3a2a; color: #4ade80; }
-.activity-blue { background: #1a2a4a; color: #60a5fa; }
-.activity-orange { background: #3a2a1a; color: #fb923c; }
-.activity-red { background: #3a1a1a; color: #f87171; }
-.activity-purple { background: #2a1a3a; color: #c084fc; }
-
-/* ========== جدول کانال‌های برتر ========== */
-.top-channel-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid #2a2d33;
-}
-
-.top-channel-item:last-child {
-    border-bottom: none;
-}
-
-.top-channel-item .rank {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #2a2d33;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.top-channel-item .channel-info {
-    flex: 1;
-}
-
-.top-channel-item .channel-info .name {
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.top-channel-item .channel-info .stats {
-    font-size: 10px;
-    color: #666;
-}
-
-.top-channel-item .channel-score {
-    font-size: 13px;
-    font-weight: 600;
-}
-
-/* ========== نوار پایین ========== */
+/* نوار پایین موبایل */
 .bottom-nav {
     position: fixed;
     bottom: 0;
-    right: 0;
     left: 0;
-    max-width: 480px;
-    margin: 0 auto;
+    right: 0;
     background: #1a1d23;
     display: flex;
     justify-content: space-around;
@@ -184,7 +53,6 @@ body {
     color: #666;
     text-decoration: none;
     font-size: 10px;
-    transition: color 0.2s;
 }
 
 .bottom-nav .nav-item i {
@@ -195,39 +63,28 @@ body {
     color: #f97316;
 }
 
-/* ========== هدر ========== */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
+/* کارت‌های ۲×۲ در موبایل */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
 }
 
-.header .title {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.header .badge {
-    background: #f97316;
-    color: #fff;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-}
-
-/* ========== دسکتاپ: نوار پایین به سمت راست ========== */
+/* ========== حالت دسکتاپ ========== */
 @media (min-width: 769px) {
+    .app-container {
+        max-width: 100%;
+        padding: 20px 90px 20px 20px; /* فضا برای سایدبار */
+    }
+
+    /* سایدبار عمودی در سمت راست */
     .bottom-nav {
         position: fixed;
         right: 0;
         top: 0;
         bottom: 0;
-        width: 64px;
+        width: 70px;
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -236,7 +93,6 @@ body {
         border-left: 1px solid #2a2d33;
         background: #1a1d23;
         z-index: 1000;
-        max-width: none;
     }
 
     .bottom-nav .nav-item {
@@ -245,7 +101,7 @@ body {
     }
 
     .bottom-nav .nav-item i {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     .bottom-nav .nav-item span {
@@ -253,7 +109,14 @@ body {
         margin-top: 2px;
     }
 
-    .app-container {
-        padding-right: 80px;
+    /* کارت‌های ۴ ستونه در دسکتاپ */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .card {
+        margin-bottom: 16px;
     }
 }
