@@ -6,11 +6,11 @@
     <span style="font-size: 11px; color: #a0a0a0;">{{ posts|length }} پست</span>
 </div>
 
-<!-- گرید با عرض ۳۰٪ کوچک‌تر (۲۰٪ کمتر از ۹۰٪) -->
+<!-- گرید با عرض ۳۰٪ کوچک‌تر -->
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; max-width: 70%; margin: 0 auto;">
     {% for post in posts %}
     <!-- باکس مربعی -->
-    <div onclick="openPostModal({{ post.id }})"
+    <div onclick="openPostModal({{ loop.index0 }})"
          style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: space-between;">
         
         <!-- تصویر -->
@@ -24,7 +24,7 @@
             {% endif %}
         </div>
 
-        <!-- فقط کپشن (متن حذف شد) -->
+        <!-- فقط کپشن -->
         <div style="flex: 1; margin-top: 4px;">
             {% if post.caption %}
             <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -35,7 +35,7 @@
             {% endif %}
         </div>
 
-        <!-- امتیاز (وسط، بالای آیکون‌ها) -->
+        <!-- امتیاز -->
         <div style="display: flex; justify-content: center; margin-bottom: 4px;">
             <div style="display: flex; align-items: baseline; gap: 3px;">
                 <span style="font-size: 13px; font-weight: 600; color: #fbbf24;">
@@ -47,16 +47,11 @@
 
         <!-- پایین کارت: آیکون‌های وسط با خط جداکننده -->
         <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-            <!-- ستاره (امتیازدهی) -->
             <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
                     style="background: transparent; border: none; color: #facc15; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
                 <i class="fas fa-star"></i>
             </button>
-
-            <!-- خط جداکننده باریک -->
             <div style="width: 1px; height: 18px; background: #2a2d33;"></div>
-
-            <!-- سطل آشغال (حذف) -->
             <button onclick="event.stopPropagation(); openDeleteModal({{ post.id }})"
                     style="background: transparent; border: none; color: #ef4444; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
                 <i class="fas fa-trash"></i>
@@ -81,7 +76,7 @@
     </div>
 </div>
 
-<!-- مودال جزئیات پست (فقط کپشن) -->
+<!-- مودال جزئیات پست (با تاریخ شمسی) -->
 <div id="postModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
     <div style="background: #1a1d23; border-radius: 20px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative;">
         <button onclick="closePostModal()" style="position: absolute; top: 12px; left: 12px; background: transparent; border: none; color: #a0a0a0; font-size: 20px; cursor: pointer;">
@@ -125,6 +120,7 @@
 </div>
 
 <script>
+    // داده‌های پست‌ها از سمت سرور
     const postsData = [
         {% for post in posts %}
         {
@@ -133,13 +129,13 @@
             media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
             channel: {{ post.channel.channel_name|tojson if post.channel else 'null' }},
             score: {{ post.score|tojson if post.score else 'null' }},
-            date: {{ post.publish_date.strftime('%Y/%m/%d %H:%M')|tojson if post.publish_date else 'null' }}
+            date: {{ convert_to_jalali(post.publish_date)|tojson if post.publish_date else 'null' }}
         },
         {% endfor %}
     ];
 
-    function openPostModal(id) {
-        const post = postsData.find(p => p.id === id);
+    function openPostModal(index) {
+        const post = postsData[index];
         if (!post) return;
 
         document.getElementById('postModal').style.display = 'flex';
@@ -192,7 +188,6 @@
 </script>
 
 <style>
-    /* واکنش‌گرا: در دسکتاپ ۴ ستون */
     @media (min-width: 768px) {
         .grid-posts {
             grid-template-columns: repeat(4, 1fr) !important;
