@@ -1,48 +1,950 @@
 {% extends "base.html" %}
+{% block title %}مدیریت کانال‌ها{% endblock %}
+
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-    <h2 style="font-size: 18px; margin: 0;">📢 کانال‌ها</h2>
-    <span style="font-size: 11px; color: #a0a0a0;">{{ channels|length }} کانال</span>
+
+<style>
+    /* ===== استایل‌های صفحه کانال‌ها ===== */
+    
+    /* هدر */
+    .channels-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .channels-header h2 {
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff;
+    }
+
+    .channels-header .channel-count {
+        font-size: 12px;
+        color: #a0a0a0;
+        font-weight: 400;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-add-channel {
+        padding: 6px 16px;
+        background: #f97316;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+    .btn-add-channel:hover {
+        background: #ea580c;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    }
+
+    .btn-refresh {
+        padding: 6px 14px;
+        background: #2a2d33;
+        border: none;
+        border-radius: 8px;
+        color: #a0a0a0;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-refresh:hover {
+        background: #3a3d43;
+        color: #fff;
+    }
+
+    /* ===== فیلترها ===== */
+    .filter-container {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border: 1px solid #2a2d33;
+    }
+
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 140px;
+    }
+
+    .filter-group label {
+        font-size: 11px;
+        color: #a0a0a0;
+        font-weight: 500;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 7px 12px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        width: 100%;
+        transition: all 0.3s;
+        appearance: auto;
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .filter-group select:hover,
+    .filter-group input:hover {
+        border-color: #4a4d53;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: #f97316;
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
+    }
+
+    .filter-group select option {
+        background: #1a1d23;
+        color: #fff;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .btn-apply-filter {
+        padding: 7px 20px;
+        background: #f97316;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+        align-self: flex-end;
+        margin-bottom: 0;
+    }
+
+    .btn-apply-filter:hover {
+        background: #ea580c;
+        transform: translateY(-1px);
+    }
+
+    .btn-reset-filter {
+        padding: 7px 16px;
+        background: #2a2d33;
+        border: none;
+        border-radius: 8px;
+        color: #a0a0a0;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+        align-self: flex-end;
+        margin-bottom: 0;
+    }
+
+    .btn-reset-filter:hover {
+        background: #3a3d43;
+        color: #fff;
+    }
+
+    /* ===== گرید کانال‌ها ===== */
+    .channels-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .channel-card {
+        background: #1a1d23;
+        border-radius: 14px;
+        padding: 14px 16px;
+        transition: all 0.3s ease;
+        border: 1px solid #2a2d33;
+        position: relative;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .channel-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        background: #f97316;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 0 4px 4px 0;
+    }
+
+    .channel-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 35px rgba(0,0,0,0.4);
+        border-color: #f97316;
+    }
+
+    .channel-card:hover::before {
+        opacity: 1;
+    }
+
+    .channel-card .channel-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .channel-card .channel-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .channel-card .channel-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .channel-card .channel-name .channel-icon {
+        font-size: 16px;
+        color: #f97316;
+    }
+
+    .channel-card .channel-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 6px;
+        font-size: 11px;
+        color: #a0a0a0;
+    }
+
+    .channel-card .channel-meta .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .channel-card .channel-meta .meta-item .meta-icon {
+        font-size: 11px;
+        opacity: 0.6;
+    }
+
+    .channel-card .channel-stats {
+        display: flex;
+        gap: 16px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #2a2d33;
+    }
+
+    .channel-card .channel-stats .stat {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+    }
+
+    .channel-card .channel-stats .stat .stat-number {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fbbf24;
+    }
+
+    .channel-card .channel-stats .stat .stat-label {
+        font-size: 10px;
+        color: #888;
+    }
+
+    .channel-card .channel-actions {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .channel-card .channel-actions .action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: 1px solid #2a2d33;
+        background: transparent;
+        color: #a0a0a0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    .channel-card .channel-actions .action-btn:hover {
+        border-color: #f97316;
+        color: #f97316;
+        transform: scale(1.05);
+    }
+
+    .channel-card .channel-actions .action-btn.delete:hover {
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+    .channel-card .channel-actions .action-btn.view:hover {
+        border-color: #60a5fa;
+        color: #60a5fa;
+    }
+
+    .channel-card .channel-actions .action-btn.toggle-on {
+        color: #4ade80;
+        border-color: rgba(74, 222, 128, 0.3);
+    }
+
+    .channel-card .channel-actions .action-btn.toggle-off {
+        color: #f87171;
+        border-color: rgba(248, 113, 113, 0.3);
+    }
+
+    .channel-card .channel-actions .action-btn.toggle-on:hover {
+        background: rgba(74, 222, 128, 0.1);
+        border-color: #4ade80;
+    }
+
+    .channel-card .channel-actions .action-btn.toggle-off:hover {
+        background: rgba(248, 113, 113, 0.1);
+        border-color: #f87171;
+    }
+
+    /* برچسب وضعیت */
+    .channel-card .status-badge {
+        font-size: 9px;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-right: 4px;
+    }
+
+    .channel-card .status-badge.active {
+        background: rgba(74, 222, 128, 0.15);
+        color: #4ade80;
+        border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .channel-card .status-badge.inactive {
+        background: rgba(248, 113, 113, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .channel-card .status-badge.pending {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    /* ===== کارت خالی ===== */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #a0a0a0;
+    }
+
+    .empty-state .empty-icon {
+        font-size: 56px;
+        opacity: 0.3;
+        display: block;
+        margin-bottom: 16px;
+    }
+
+    .empty-state .empty-title {
+        font-size: 18px;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+
+    .empty-state .empty-desc {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 16px;
+    }
+
+    .empty-state .btn-add-first {
+        padding: 10px 24px;
+        background: #f97316;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .empty-state .btn-add-first:hover {
+        background: #ea580c;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(249, 115, 22, 0.3);
+    }
+
+    /* ===== مودال ایجاد کانال ===== */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #1a1d23;
+        border-radius: 20px;
+        padding: 28px 32px;
+        max-width: 480px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalIn 0.3s ease;
+        border: 1px solid #2a2d33;
+    }
+
+    @keyframes modalIn {
+        from {
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-content .modal-title {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modal-content .modal-title i {
+        color: #f97316;
+    }
+
+    .modal-content .form-group {
+        margin-bottom: 14px;
+    }
+
+    .modal-content .form-group label {
+        display: block;
+        font-size: 12px;
+        color: #a0a0a0;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .modal-content .form-group input,
+    .modal-content .form-group select,
+    .modal-content .form-group textarea {
+        width: 100%;
+        padding: 10px 14px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 13px;
+        transition: border-color 0.3s;
+        font-family: inherit;
+    }
+
+    .modal-content .form-group input:focus,
+    .modal-content .form-group select:focus,
+    .modal-content .form-group textarea:focus {
+        outline: none;
+        border-color: #f97316;
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+    }
+
+    .modal-content .form-group textarea {
+        resize: vertical;
+        min-height: 60px;
+    }
+
+    .modal-content .form-group select option {
+        background: #1a1d23;
+        color: #fff;
+    }
+
+    .modal-content .form-row {
+        display: flex;
+        gap: 12px;
+    }
+
+    .modal-content .form-row .form-group {
+        flex: 1;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .modal-actions button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .modal-actions .btn-cancel {
+        background: #2a2d33;
+        color: #a0a0a0;
+    }
+
+    .modal-actions .btn-cancel:hover {
+        background: #3a3d43;
+    }
+
+    .modal-actions .btn-create {
+        background: #f97316;
+        color: #fff;
+    }
+
+    .modal-actions .btn-create:hover {
+        background: #ea580c;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    }
+
+    /* ===== واکنش‌گرایی ===== */
+    @media (max-width: 480px) {
+        .channels-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+        }
+
+        .header-actions {
+            justify-content: flex-start;
+        }
+
+        .filter-row {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group {
+            min-width: 100%;
+        }
+
+        .btn-apply-filter,
+        .btn-reset-filter {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .channels-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .channel-card {
+            min-height: 100px;
+            padding: 12px 14px;
+        }
+
+        .modal-content {
+            padding: 20px;
+        }
+
+        .modal-content .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+        .channels-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .channels-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+    }
+</style>
+
+<!-- ===== هدر ===== -->
+<div class="channels-header">
+    <h2>
+        📢 کانال‌ها
+        <span class="channel-count">{{ channels|length }} کانال</span>
+    </h2>
+    <div class="header-actions">
+        <button class="btn-add-channel" onclick="openCreateModal()">
+            <i class="fas fa-plus"></i> کانال جدید
+        </button>
+        <button class="btn-refresh" onclick="location.reload()">
+            <i class="fas fa-sync"></i> بروزرسانی
+        </button>
+    </div>
 </div>
 
-<!-- لیست کانال‌ها به صورت ۲×۲ -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+<!-- ===== فیلترها ===== -->
+<div class="filter-container">
+    <form id="filterForm" method="GET" action="/dashboard/channels">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>جستجو</label>
+                <input type="text" id="searchInput" name="search" placeholder="نام کانال..." value="{{ request.args.get('search', '') }}">
+            </div>
+            
+            <div class="filter-group">
+                <label>وضعیت</label>
+                <select id="statusFilter" name="status">
+                    <option value="">همه</option>
+                    <option value="active" {% if request.args.get('status') == 'active' %}selected{% endif %}>فعال</option>
+                    <option value="inactive" {% if request.args.get('status') == 'inactive' %}selected{% endif %}>غیرفعال</option>
+                    <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>در انتظار</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>پلتفرم</label>
+                <select id="platformFilter" name="platform">
+                    <option value="">همه</option>
+                    {% for platform in platforms %}
+                    <option value="{{ platform.id }}" {% if request.args.get('platform')|int == platform.id %}selected{% endif %}>
+                        {{ platform.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn-apply-filter">اعمال فیلتر</button>
+            <button type="button" class="btn-reset-filter" onclick="resetFilters()">بازنشانی</button>
+        </div>
+    </form>
+</div>
+
+<!-- ===== تعداد نتایج ===== -->
+<div class="filtered-count" style="font-size: 12px; color: #a0a0a0; margin-bottom: 12px; text-align: center;">
+    نمایش <span id="countDisplay">{{ channels|length }}</span> کانال
+</div>
+
+<!-- ===== گرید کانال‌ها ===== -->
+<div class="channels-grid" id="channelsGrid">
     {% for channel in channels %}
-    <!-- کل کادر لینک به صفحه پست‌ها -->
-    <a href="/dashboard/channels/{{ channel.id }}/posts" 
-       style="background: #1a1d23; border-radius: 12px; padding: 20px 12px; text-decoration: none; display: block; position: relative; transition: 0.2s;"
-       onmouseover="this.style.background='#2a2d33'"
-       onmouseout="this.style.background='#1a1d23'">
+    <div class="channel-card">
         
-        <!-- نام کانال در وسط -->
-        <div style="text-align: center; margin-bottom: 16px;">
-            <div style="font-size: 18px; font-weight: 600; color: #ffffff;">{{ channel.channel_name }}</div>
+        <!-- ردیف اول: نام و دکمه‌ها -->
+        <div class="channel-header-row">
+            <div class="channel-info">
+                <div class="channel-name">
+                    <span class="channel-icon">📢</span>
+                    {{ channel.channel_name }}
+                    <span class="status-badge 
+                        {% if channel.is_active %}active
+                        {% elif channel.status == 'pending' %}pending
+                        {% else %}inactive{% endif %}">
+                        {% if channel.is_active %}● فعال
+                        {% elif channel.status == 'pending' %}● در انتظار
+                        {% else %}● غیرفعال{% endif %}
+                    </span>
+                </div>
+                
+                <div class="channel-meta">
+                    <span class="meta-item">
+                        <span class="meta-icon">🏷️</span>
+                        {{ channel.channel_id }}
+                    </span>
+                    {% if channel.username %}
+                    <span class="meta-item">
+                        <span class="meta-icon">@</span>
+                        {{ channel.username }}
+                    </span>
+                    {% endif %}
+                    <span class="meta-item">
+                        <span class="meta-icon">📱</span>
+                        {{ channel.platform.title if channel.platform else 'نامشخص' }}
+                    </span>
+                    {% if channel.organization %}
+                    <span class="meta-item">
+                        <span class="meta-icon">🏢</span>
+                        {{ channel.organization.name }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="channel-actions">
+                <!-- دکمه مشاهده پست‌ها -->
+                <a href="/dashboard/channels/{{ channel.id }}/posts" class="action-btn view" title="مشاهده پست‌ها">
+                    <i class="fas fa-eye"></i>
+                </a>
+                
+                <!-- دکمه تغییر وضعیت -->
+                <button class="action-btn toggle-{% if channel.is_active %}on{% else %}off{% endif %}" 
+                        onclick="event.stopPropagation(); toggleChannel({{ channel.id }})" 
+                        title="تغییر وضعیت">
+                    <i class="fas fa-{% if channel.is_active %}toggle-on{% else %}toggle-off{% endif %}"></i>
+                </button>
+                
+                <!-- دکمه حذف -->
+                <button class="action-btn delete" onclick="event.stopPropagation(); deleteChannel({{ channel.id }}, '{{ channel.channel_name }}')" 
+                        title="حذف کانال">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </div>
-
-        <!-- آیکون‌های عملیات (پایین) -->
-        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px;">
-            <!-- تغییر وضعیت -->
-            <a href="/dashboard/channels/toggle/{{ channel.id }}" 
-               onclick="event.stopPropagation()"
-               style="color: #f59e0b; font-size: 18px; text-decoration: none;">
-                <i class="fas {% if channel.is_active %}fa-toggle-on{% else %}fa-toggle-off{% endif %}"></i>
-            </a>
-
-            <!-- اختصاص ادمین -->
-            <a href="/dashboard/channels/assign/{{ channel.id }}" 
-               onclick="event.stopPropagation()"
-               style="color: #3b82f6; font-size: 18px; text-decoration: none;">
-                <i class="fas fa-user-plus"></i>
-            </a>
-
-            <!-- حذف -->
-            <a href="/dashboard/channels/delete/{{ channel.id }}" 
-               onclick="event.stopPropagation(); return confirm('حذف شود؟')"
-               style="color: #ef4444; font-size: 18px; text-decoration: none;">
-                <i class="fas fa-trash"></i>
-            </a>
+        
+        <!-- آمار -->
+        <div class="channel-stats">
+            <div class="stat">
+                <span class="stat-number">{{ channel.posts_count or 0 }}</span>
+                <span class="stat-label">پست</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">{{ channel.avg_score or 0 }}</span>
+                <span class="stat-label">میانگین امتیاز</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">{{ channel.scored_posts or 0 }}</span>
+                <span class="stat-label">امتیازدار</span>
+            </div>
         </div>
-    </a>
+        
+    </div>
     {% endfor %}
 </div>
+
+<!-- ===== پیام خالی ===== -->
+{% if channels|length == 0 %}
+<div class="empty-state">
+    <span class="empty-icon">📢</span>
+    <div class="empty-title">هیچ کانالی یافت نشد</div>
+    <div class="empty-desc">هنوز کانالی به سیستم اضافه نشده است. اولین کانال را ایجاد کنید.</div>
+    <button class="btn-add-first" onclick="openCreateModal()">
+        <i class="fas fa-plus"></i> ایجاد کانال جدید
+    </button>
+</div>
+{% endif %}
+
+<!-- ===== مودال ایجاد کانال ===== -->
+<div id="createChannelModal" class="modal-overlay" onclick="if(event.target===this) closeCreateModal()">
+    <div class="modal-content">
+        <div class="modal-title">
+            <i class="fas fa-plus-circle"></i> کانال جدید
+        </div>
+        <form id="createChannelForm" method="POST" action="/dashboard/channels/create">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>نام کانال</label>
+                    <input type="text" name="channel_name" placeholder="مثال: اخبار فوری" required>
+                </div>
+                <div class="form-group">
+                    <label>شناسه کانال</label>
+                    <input type="text" name="channel_id" placeholder="مثال: @news_channel" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>پلتفرم</label>
+                    <select name="platform_id" required>
+                        <option value="">انتخاب پلتفرم...</option>
+                        {% for platform in platforms %}
+                        <option value="{{ platform.id }}">{{ platform.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>سازمان (اختیاری)</label>
+                    <select name="organization_id">
+                        <option value="">بدون سازمان</option>
+                        {% for org in organizations %}
+                        <option value="{{ org.id }}">{{ org.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>نام کاربری (اختیاری)</label>
+                <input type="text" name="username" placeholder="نام کاربری در پلتفرم">
+            </div>
+            
+            <div class="form-group">
+                <label>توضیحات (اختیاری)</label>
+                <textarea name="description" placeholder="توضیحات کانال..."></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeCreateModal()">لغو</button>
+                <button type="submit" class="btn-create">ایجاد کانال</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== مودال حذف ===== -->
+<div id="deleteChannelModal" class="modal-overlay" onclick="if(event.target===this) closeDeleteModal()">
+    <div class="modal-content" style="max-width: 380px; text-align: center;">
+        <div style="font-size: 48px; color: #ef4444; margin-bottom: 8px;">⚠️</div>
+        <h3 style="color: #fff; margin: 0 0 4px;">آیا مطمئن هستید؟</h3>
+        <p style="color: #a0a0a0; font-size: 13px; margin: 0 0 16px;">
+            کانال <span id="deleteChannelName" style="color: #f97316; font-weight: 600;"></span> به همراه تمام پست‌هایش حذف می‌شود.
+        </p>
+        <div class="modal-actions" style="margin-top: 0;">
+            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">لغو</button>
+            <form id="deleteChannelForm" method="POST" style="display: inline; flex:1;">
+                <button type="submit" class="btn-create" style="background: #ef4444; width:100%;">حذف</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== اسکریپت‌ها ===== -->
+<script>
+    // ===== باز کردن مودال ایجاد کانال =====
+    function openCreateModal() {
+        document.getElementById('createChannelModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCreateModal() {
+        document.getElementById('createChannelModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ===== حذف کانال =====
+    let deleteChannelId = null;
+
+    function deleteChannel(id, name) {
+        deleteChannelId = id;
+        document.getElementById('deleteChannelName').textContent = name;
+        document.getElementById('deleteChannelForm').action = '/dashboard/channels/delete/' + id;
+        document.getElementById('deleteChannelModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteChannelModal').classList.remove('active');
+        document.body.style.overflow = '';
+        deleteChannelId = null;
+    }
+
+    // ===== تغییر وضعیت =====
+    function toggleChannel(id) {
+        // استفاده از fetch برای تغییر وضعیت بدون رفرش
+        fetch('/dashboard/channels/toggle/' + id)
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('خطا در تغییر وضعیت کانال!');
+                }
+            })
+            .catch(error => {
+                alert('خطا در ارتباط با سرور!');
+            });
+    }
+
+    // ===== بازنشانی فیلترها =====
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('platformFilter').value = '';
+        document.getElementById('filterForm').submit();
+    }
+
+    // ===== کلید ESC =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCreateModal();
+            closeDeleteModal();
+        }
+    });
+
+    // ===== به‌روزرسانی تعداد =====
+    document.addEventListener('DOMContentLoaded', function() {
+        const channels = document.querySelectorAll('.channel-card');
+        document.getElementById('countDisplay').textContent = channels.length;
+    });
+</script>
+
 {% endblock %}
