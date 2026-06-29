@@ -10,20 +10,43 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- هدر -->
-        <div class="header">
-            <div class="title">🚀 مادر آنالیزر</div>
-            <div>
-                <span class="badge">۳</span>
+        <!-- ===== هدر جدید ===== -->
+        <header style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 12px; border-bottom: 1px solid #2a2d33;">
+            
+            <!-- سمت چپ: لوگو و نام برنامه -->
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="background: #f97316; border-radius: 8px; padding: 6px 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-chart-line" style="color: #fff; font-size: 16px;"></i>
+                </div>
+                <span style="font-size: 16px; font-weight: 700; color: #ffffff;">مادر آنالیزر</span>
             </div>
-        </div>
+
+            <!-- سمت راست: دکمه بازگشت + نام ادمین -->
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <!-- دکمه بازگشت -->
+                <button onclick="history.back()" 
+                        style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 4px 10px; color: #a0a0a0; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <i class="fas fa-arrow-right"></i> بازگشت
+                </button>
+
+                <!-- نام ادمین -->
+                <div style="display: flex; align-items: center; gap: 6px; color: #a0a0a0; font-size: 13px;">
+                    <i class="fas fa-user-circle fa-lg" style="color: #f97316;"></i>
+                    <span>{{ session.get('user_full_name', 'ادمین') }}</span>
+                </div>
+            </div>
+        </header>
 
         <!-- محتوای اصلی -->
         {% block content %}{% endblock %}
     </div>
 
-    <!-- نوار پایین (با ترتیب صحیح) -->
+    <!-- نوار پایین -->
     <nav class="bottom-nav">
+        <a href="/dashboard" class="nav-item {% if request.path.startswith('/dashboard') and not request.path.startswith('/dashboard/channels') and not request.path.startswith('/dashboard/posts') %}active{% endif %}">
+            <i class="fas fa-home"></i>
+            <span>خانه</span>
+        </a>
         <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
             <i class="fas fa-bullhorn"></i>
             <span>کانال‌ها</span>
@@ -31,10 +54,6 @@
         <a href="/dashboard/posts" class="nav-item {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
             <i class="fas fa-file-alt"></i>
             <span>پست‌ها</span>
-        </a>
-        <a href="/dashboard" class="nav-item {% if request.path.startswith('/dashboard') and not request.path.startswith('/dashboard/channels') and not request.path.startswith('/dashboard/posts') %}active{% endif %}">
-            <i class="fas fa-home"></i>
-            <span>خانه</span>
         </a>
         <a href="/users" class="nav-item {% if request.path.startswith('/users') %}active{% endif %}">
             <i class="fas fa-user"></i>
