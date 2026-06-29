@@ -38,7 +38,9 @@
         <!-- امتیاز (وسط، بالای آیکون‌ها) -->
         <div style="display: flex; justify-content: center; margin-bottom: 4px;">
             <div style="display: flex; align-items: baseline; gap: 3px;">
-                <span style="font-size: 13px; font-weight: 600; color: #fbbf24;">{{ post.score or '۰' }}</span>
+                <span style="font-size: 13px; font-weight: 600; color: #fbbf24;">
+                    {{ post.score|int if post.score is not none else '۰' }}
+                </span>
                 <span style="font-size: 8px; color: #a0a0a0;">امتیاز</span>
             </div>
         </div>
