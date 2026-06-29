@@ -204,7 +204,7 @@ def score_post(post_id):
         return redirect(url_for("dashboard.posts"))
     score = request.form.get("score")
     if score and score.isdigit():
-        post.score = int(score)
+        post.score = int(score)  # ← این خط مهم است
         db.session.commit()
         flash(f"امتیاز {score} برای پست ثبت شد.", "success")
     else:
