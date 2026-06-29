@@ -20,23 +20,24 @@ def dashboard():
     total_channels = Channel.query.count()
     scored_posts = Post.query.filter(Post.score.isnot(None)).count()
     avg_score = db.session.query(func.avg(Post.score)).filter(Post.score.isnot(None)).scalar() or 0
-    # کانال‌های برتر (۵ کانال با بالاترین میانگین امتیاز)
+    
     top_channels = db.session.query(
         Channel.channel_name,
         Channel.id,
         func.count(Post.id).label('post_count'),
         func.avg(Post.score).label('avg_score')
     ).join(Post).filter(Post.score.isnot(None)).group_by(Channel.id).order_by(func.avg(Post.score).desc()).limit(5).all()
-    # تبدیل avg_score به عدد صحیح برای نمایش
-top_channels = [
-    {
-        'channel_name': c.channel_name,
-        'id': c.id,
-        'post_count': c.post_count,
-        'avg_score': int(c.avg_score) if c.avg_score else 0
-    }
-    for c in top_channels
-]
+    
+    top_channels = [
+        {
+            'channel_name': c.channel_name,
+            'id': c.id,
+            'post_count': c.post_count,
+            'avg_score': int(c.avg_score) if c.avg_score else 0
+        }
+        for c in top_channels
+    ]
+    
     daily_labels = []
     daily_data = []
     for i in range(6, -1, -1):
@@ -169,15 +170,12 @@ def channel_posts(channel_id):
     if not channel:
         flash("کانال پیدا نشد!", "danger")
         return redirect(url_for("dashboard.channels"))
-    
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
-    
     stats = {
         'total': len(posts),
         'scored': Post.query.filter(Post.channel_id == channel_id, Post.score.isnot(None)).count(),
         'avg_score': db.session.query(func.avg(Post.score)).filter(Post.channel_id == channel_id, Post.score.isnot(None)).scalar() or 0
     }
-    
     return render_template(
         "dashboard/channel_posts.html",
         channel=channel,
@@ -213,7 +211,7 @@ def score_post(post_id):
         return redirect(url_for("dashboard.posts"))
     score = request.form.get("score")
     if score and score.isdigit():
-        post.score = int(score)  # ← این خط مهم است
+        post.score = int(score)
         db.session.commit()
         flash(f"امتیاز {score} برای پست ثبت شد.", "success")
     else:
@@ -261,14 +259,12 @@ def users():
 def create_user():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    
     if request.method == "POST":
         full_name = request.form.get("full_name")
         username = request.form.get("username")
         mobile = request.form.get("mobile")
         password = request.form.get("password")
         role = request.form.get("role")
-        
         new_user = User(
             full_name=full_name,
             username=username,
@@ -279,10 +275,8 @@ def create_user():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        
         flash(f"کاربر {username} با نقش {role} ایجاد شد.", "success")
         return redirect(url_for("dashboard.users"))
-    
     return render_template("dashboard/create_user.html", roles=["admin", "channel_admin", "manager"])
 
 @dashboard_bp.route("/users/delete/<int:user_id>")
