@@ -30,6 +30,7 @@
             id: {{ post.id }},
             caption: {{ post.caption|tojson if post.caption else 'null' }},
             media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
+            post_type: {{ post.post_type|tojson if post.post_type else 'null' }},
             channel: {{ channel.channel_name|tojson }},
             score: {{ post.score|tojson if post.score else 'null' }},
             date: {{ post.publish_date|tojson }}
@@ -46,7 +47,41 @@
         currentPostId = post.id;
 
         document.getElementById('postModal').style.display = 'flex';
-        document.getElementById('postDetailImage').src = post.media_url || '';
+        
+        // نمایش مدیا بر اساس نوع
+        const mediaContainer = document.getElementById('postMediaContainer');
+        mediaContainer.innerHTML = '';
+        
+        if (post.media_url) {
+            if (post.post_type === 'video') {
+                // نمایش ویدیو با پلیر
+                const video = document.createElement('video');
+                video.src = post.media_url;
+                video.controls = true;
+                video.autoplay = false;
+                video.style.width = '100%';
+                video.style.height = '100%';
+                video.style.objectFit = 'contain';
+                video.style.background = '#000';
+                mediaContainer.appendChild(video);
+            } else {
+                // نمایش تصویر
+                const img = document.createElement('img');
+                img.src = post.media_url;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'contain';
+                img.style.background = '#0f1115';
+                mediaContainer.appendChild(img);
+            }
+        } else {
+            // بدون مدیا
+            const div = document.createElement('div');
+            div.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0;';
+            div.innerHTML = '<i class="fas fa-file-alt fa-3x"></i><p style="margin-top: 8px;">این پست مدیا ندارد</p>';
+            mediaContainer.appendChild(div);
+        }
+        
         document.getElementById('postDetailChannel').textContent = '📢 کانال: ' + post.channel;
         document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + (post.score || 'بدون امتیاز');
         document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
@@ -67,6 +102,11 @@
     }
 
     function closePostModal() {
+        // توقف پخش ویدیو
+        const video = document.querySelector('#postMediaContainer video');
+        if (video) {
+            video.pause();
+        }
         document.getElementById('postModal').style.display = 'none';
     }
 
@@ -109,7 +149,11 @@
         <!-- تصویر -->
         <div style="height: 45%; border-radius: 8px; overflow: hidden; background: #0f1115;">
             {% if post.media_url %}
-                <img src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% if post.post_type == 'video' %}
+                    <video src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;" muted></video>
+                {% else %}
+                    <img src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% endif %}
             {% else %}
                 <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0;">
                     <i class="fas fa-file-alt fa-2x"></i>
@@ -169,18 +213,19 @@
     </div>
 </div>
 
-<!-- مودال جزئیات پست با فیلد امتیاز -->
-<div id="postModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #1a1d23; border-radius: 20px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative;">
-        <button onclick="closePostModal()" style="position: absolute; top: 12px; left: 12px; background: transparent; border: none; color: #a0a0a0; font-size: 20px; cursor: pointer;">
+<!-- مودال جزئیات پست با تصویر کامل و پلیر ویدیو -->
+<div id="postModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #1a1d23; border-radius: 20px; padding: 24px; max-width: 800px; width: 95%; max-height: 95vh; overflow-y: auto; position: relative;">
+        <button onclick="closePostModal()" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; width: 36px; height: 36px; color: #fff; font-size: 20px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;">
             ✕
         </button>
 
         <div id="postDetailContent">
-            <h3 style="margin-top: 0; color: #fff;">📄 جزئیات پست</h3>
+            <h3 style="margin-top: 0; color: #fff; padding-left: 40px;">📄 جزئیات پست</h3>
             
-            <div style="width: 100%; height: 250px; border-radius: 12px; overflow: hidden; background: #0f1115; margin: 12px 0;">
-                <img id="postDetailImage" src="" style="width: 100%; height: 100%; object-fit: cover;">
+            <!-- کانتینر مدیا با اندازه بزرگتر -->
+            <div id="postMediaContainer" style="width: 100%; height: 400px; border-radius: 12px; overflow: hidden; background: #0f1115; margin: 12px 0;">
+                <!-- محتوای مدیا توسط جاوااسکریپت پر می‌شود -->
             </div>
 
             <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
@@ -189,18 +234,18 @@
                 <span id="postDetailDate" style="color: #a0a0a0; font-size: 12px;">🕒 تاریخ: -</span>
             </div>
 
-            <div id="postDetailCaption" style="color: #a0a0a0; font-size: 13px; margin-top: 4px; display: none;">
-                📌 کپشن: <span id="postDetailCaptionText"></span>
+            <div id="postDetailCaption" style="color: #e0e0e0; font-size: 14px; margin-top: 4px; display: none; background: #0f1115; padding: 12px; border-radius: 8px; max-height: 150px; overflow-y: auto;">
+                📌 کپشن: <span id="postDetailCaptionText" style="display: block; margin-top: 4px; line-height: 1.6;"></span>
             </div>
 
             <!-- فیلد امتیاز در پاپ‌آپ -->
             <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a2d33;">
                 <form id="scoreFromModalForm" method="POST">
-                    <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <input type="number" id="scoreInput" name="score" min="0" max="100" 
                                placeholder="امتیاز ۰ تا ۱۰۰"
-                               style="flex: 1; padding: 8px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff;">
-                        <button type="submit" style="background: #f97316; border: none; border-radius: 8px; padding: 8px 16px; color: #fff; cursor: pointer; white-space: nowrap;">
+                               style="flex: 1; min-width: 150px; padding: 10px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 14px;">
+                        <button type="submit" style="background: #f97316; border: none; border-radius: 8px; padding: 10px 20px; color: #fff; cursor: pointer; white-space: nowrap; font-size: 14px; font-weight: 600;">
                             ثبت امتیاز
                         </button>
                     </div>
@@ -231,6 +276,33 @@
         .grid-posts {
             grid-template-columns: repeat(3, 1fr) !important;
         }
+    }
+    
+    /* استایل اسکرول بار */
+    #postDetailCaption::-webkit-scrollbar {
+        width: 4px;
+    }
+    #postDetailCaption::-webkit-scrollbar-track {
+        background: #1a1d23;
+    }
+    #postDetailCaption::-webkit-scrollbar-thumb {
+        background: #f97316;
+        border-radius: 4px;
+    }
+    
+    /* استایل پلیر ویدیو */
+    #postMediaContainer video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+    }
+    
+    #postMediaContainer img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #0f1115;
     }
 </style>
 
