@@ -3,7 +3,11 @@
 {% block content %}
 
 <style>
-    /* استایل‌های صفحه پست‌ها */
+    /* ===== استایل‌های پایه ===== */
+    * {
+        box-sizing: border-box;
+    }
+
     .posts-header {
         display: flex;
         justify-content: space-between;
@@ -19,6 +23,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        color: #fff;
     }
 
     .posts-header .post-count {
@@ -27,11 +32,59 @@
         font-weight: 400;
     }
 
-    /* فیلترها */
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-export {
+        padding: 6px 14px;
+        background: #2563eb;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-export:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .btn-reset {
+        padding: 6px 14px;
+        background: #2a2d33;
+        border: none;
+        border-radius: 8px;
+        color: #a0a0a0;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-reset:hover {
+        background: #3a3d43;
+        color: #fff;
+    }
+
+    /* ===== فیلترها ===== */
     .filter-container {
         background: #1a1d23;
         border-radius: 12px;
-        padding: 12px 16px;
+        padding: 14px 16px;
         margin-bottom: 16px;
         border: 1px solid #2a2d33;
     }
@@ -45,59 +98,72 @@
 
     .filter-group {
         display: flex;
-        align-items: center;
-        gap: 6px;
+        flex-direction: column;
+        gap: 4px;
         flex: 1;
-        min-width: 120px;
+        min-width: 130px;
     }
 
     .filter-group label {
         font-size: 11px;
         color: #a0a0a0;
-        white-space: nowrap;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     .filter-group select,
     .filter-group input {
-        padding: 6px 10px;
+        padding: 8px 12px;
         background: #0f1115;
         border: 1px solid #2a2d33;
         border-radius: 8px;
         color: #fff;
         font-size: 12px;
         width: 100%;
-        transition: border-color 0.3s;
+        transition: all 0.3s;
         appearance: auto;
         -webkit-appearance: auto;
         -moz-appearance: auto;
+        cursor: pointer;
+    }
+
+    .filter-group select:hover,
+    .filter-group input:hover {
+        border-color: #4a4d53;
     }
 
     .filter-group select:focus,
     .filter-group input:focus {
         outline: none;
         border-color: #f97316;
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
     }
 
     .filter-group select option {
         background: #1a1d23;
         color: #fff;
+        padding: 8px;
     }
 
-    /* استایل سفارشی برای انتخابگر تاریخ */
+    /* استایل تاریخ شمسی */
     .filter-group input[type="date"] {
         color-scheme: dark;
-        padding: 6px 10px;
+        padding: 8px 12px;
         background: #0f1115;
         border: 1px solid #2a2d33;
         border-radius: 8px;
         color: #fff;
         font-size: 12px;
         width: 100%;
+        cursor: pointer;
     }
 
     .filter-group input[type="date"]::-webkit-calendar-picker-indicator {
         filter: invert(1);
         cursor: pointer;
+        padding: 4px;
     }
 
     .filter-group input[type="date"]::-webkit-datetime-edit {
@@ -110,6 +176,7 @@
 
     .filter-group input[type="date"]::-webkit-datetime-edit-text {
         color: #a0a0a0;
+        padding: 0 2px;
     }
 
     .filter-group input[type="date"]::-webkit-datetime-edit-month-field,
@@ -118,8 +185,12 @@
         color: #fff;
     }
 
-    .btn-filter {
-        padding: 6px 16px;
+    .filter-group input[type="date"]:hover::-webkit-calendar-picker-indicator {
+        opacity: 1;
+    }
+
+    .btn-apply-filter {
+        padding: 8px 20px;
         background: #f97316;
         border: none;
         border-radius: 8px;
@@ -127,52 +198,45 @@
         font-size: 12px;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.3s;
+        transition: all 0.3s;
         white-space: nowrap;
+        margin-top: 18px;
+        align-self: flex-end;
     }
 
-    .btn-filter:hover {
+    .btn-apply-filter:hover {
         background: #ea580c;
+        transform: translateY(-1px);
     }
 
-    .btn-filter.reset {
-        background: #2a2d33;
+    .btn-apply-filter i {
+        margin-left: 4px;
     }
 
-    .btn-filter.reset:hover {
-        background: #3a3d43;
-    }
-
-    .btn-export {
-        padding: 6px 14px;
-        background: #2563eb;
-        border: none;
-        border-radius: 8px;
-        color: #fff;
+    /* ===== تعداد نتایج ===== */
+    .filtered-count {
         font-size: 12px;
+        color: #a0a0a0;
+        margin-bottom: 12px;
+        text-align: center;
+        padding: 4px 0;
+    }
+
+    .filtered-count span {
+        color: #f97316;
         font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
     }
 
-    .btn-export:hover {
-        background: #1d4ed8;
-    }
-
-    /* گرید پست‌ها */
+    /* ===== گرید پست‌ها ===== */
     .posts-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        gap: 12px;
     }
 
     .post-card {
         background: #1a1d23;
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 8px;
         cursor: pointer;
         aspect-ratio: 1 / 1;
@@ -183,19 +247,20 @@
         overflow: hidden;
         min-height: 180px;
         max-height: 280px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: all 0.25s ease;
         border: 1px solid transparent;
     }
 
     .post-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 35px rgba(0,0,0,0.4);
         border-color: #f97316;
     }
 
+    /* ===== مدیا ===== */
     .post-card .media-container {
         height: 50%;
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: hidden;
         background: #0f1115;
         position: relative;
@@ -214,72 +279,77 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        opacity: 0.5;
+        opacity: 0.4;
         pointer-events: none;
         color: #fff;
-        font-size: 32px;
+        font-size: 36px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    /* ===== برچسب‌های روی تصویر (اصلاح شده) ===== */
+    /* ===== برچسب‌ها ===== */
     .post-card .badges-container {
         position: absolute;
-        top: 6px;
-        right: 6px;
+        top: 8px;
+        right: 8px;
         display: flex;
         flex-direction: column;
         gap: 4px;
         align-items: flex-end;
+        z-index: 2;
     }
 
-    .post-card .post-type-badge {
-        background: rgba(0,0,0,0.7);
-        border-radius: 4px;
-        padding: 2px 8px;
+    .post-card .badge {
+        padding: 3px 10px;
+        border-radius: 6px;
         font-size: 9px;
+        font-weight: 600;
         color: #fff;
-        backdrop-filter: blur(4px);
-        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        letter-spacing: 0.3px;
+        white-space: nowrap;
     }
 
-    .post-card .post-status-badge {
-        background: rgba(0,0,0,0.7);
-        border-radius: 4px;
-        padding: 2px 8px;
-        font-size: 9px;
-        color: #a0a0a0;
-        backdrop-filter: blur(4px);
-        border: 1px solid rgba(255,255,255,0.1);
+    .post-card .badge-type {
+        background: rgba(249, 115, 22, 0.25);
+        border-color: rgba(249, 115, 22, 0.2);
     }
 
-    .post-card .post-status-badge.active {
+    .post-card .badge-status-active {
         color: #4ade80;
-        border-color: rgba(74, 222, 128, 0.3);
+        border-color: rgba(74, 222, 128, 0.2);
+        background: rgba(74, 222, 128, 0.1);
     }
 
-    .post-card .post-status-badge.pending {
+    .post-card .badge-status-pending {
         color: #fbbf24;
-        border-color: rgba(251, 191, 36, 0.3);
+        border-color: rgba(251, 191, 36, 0.2);
+        background: rgba(251, 191, 36, 0.1);
     }
 
-    .post-card .post-status-badge.inactive {
+    .post-card .badge-status-inactive {
         color: #f87171;
-        border-color: rgba(248, 113, 113, 0.3);
+        border-color: rgba(248, 113, 113, 0.2);
+        background: rgba(248, 113, 113, 0.1);
     }
 
+    /* ===== کپشن ===== */
     .post-card .post-caption {
         flex: 1;
-        margin-top: 4px;
+        margin-top: 6px;
         overflow: hidden;
-        min-height: 35px;
-        max-height: 55px;
+        min-height: 32px;
+        max-height: 50px;
+        padding: 0 2px;
     }
 
     .post-card .post-caption-text {
         font-size: 11px;
         font-weight: 500;
-        color: #fff;
+        color: #e8e8e8;
         white-space: normal;
-        line-height: 1.4;
+        line-height: 1.5;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -288,9 +358,11 @@
     }
 
     .post-card .post-caption-text.empty {
-        color: #a0a0a0;
+        color: #666;
+        font-style: italic;
     }
 
+    /* ===== امتیاز ===== */
     .post-card .post-score {
         display: flex;
         justify-content: center;
@@ -299,35 +371,37 @@
     }
 
     .post-card .post-score .number {
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 700;
         color: #fbbf24;
     }
 
     .post-card .post-score .label {
-        font-size: 7px;
-        color: #a0a0a0;
+        font-size: 8px;
+        color: #888;
+        margin-right: 2px;
     }
 
+    /* ===== دکمه‌های اقدام ===== */
     .post-card .post-actions {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 12px;
+        gap: 14px;
         flex-shrink: 0;
-        padding-top: 2px;
+        padding-top: 3px;
     }
 
     .post-card .post-actions button {
         background: transparent;
         border: none;
-        font-size: 14px;
+        font-size: 15px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        padding: 2px 4px;
+        padding: 4px 6px;
         border-radius: 6px;
-        transition: background 0.2s;
+        transition: all 0.2s;
     }
 
     .post-card .post-actions .btn-star {
@@ -336,6 +410,7 @@
 
     .post-card .post-actions .btn-star:hover {
         background: rgba(250, 204, 21, 0.15);
+        transform: scale(1.1);
     }
 
     .post-card .post-actions .btn-trash {
@@ -344,15 +419,35 @@
 
     .post-card .post-actions .btn-trash:hover {
         background: rgba(239, 68, 68, 0.15);
+        transform: scale(1.1);
     }
 
     .post-card .post-actions .divider {
         width: 1px;
-        height: 18px;
+        height: 20px;
         background: #2a2d33;
     }
 
-    /* مودال‌ها */
+    /* ===== پیام خالی ===== */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #a0a0a0;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        opacity: 0.3;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    /* ===== مودال‌ها ===== */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -381,11 +476,12 @@
         overflow-y: auto;
         position: relative;
         animation: modalIn 0.3s ease;
+        border: 1px solid #2a2d33;
     }
 
     @keyframes modalIn {
         from {
-            transform: scale(0.9) translateY(20px);
+            transform: scale(0.92) translateY(20px);
             opacity: 0;
         }
         to {
@@ -404,17 +500,18 @@
         width: 36px;
         height: 36px;
         color: #fff;
-        font-size: 20px;
+        font-size: 18px;
         cursor: pointer;
         z-index: 10;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.3s;
+        transition: all 0.3s;
     }
 
     .modal-close:hover {
         background: rgba(255,255,255,0.15);
+        transform: rotate(90deg);
     }
 
     .modal-title {
@@ -422,6 +519,7 @@
         color: #fff;
         padding-left: 40px;
         font-size: 18px;
+        font-weight: 600;
     }
 
     .modal-media {
@@ -452,7 +550,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 
     .modal-info-item {
@@ -471,13 +569,14 @@
         margin-top: 4px;
         display: none;
         background: #0f1115;
-        padding: 12px;
-        border-radius: 8px;
+        padding: 14px 16px;
+        border-radius: 10px;
         max-height: 150px;
         overflow-y: auto;
         white-space: pre-wrap;
         word-wrap: break-word;
         line-height: 1.8;
+        border: 1px solid #2a2d33;
     }
 
     .modal-caption.show {
@@ -500,37 +599,44 @@
     .modal-score-form input {
         flex: 1;
         min-width: 150px;
-        padding: 10px;
+        padding: 10px 14px;
         background: #0f1115;
         border: 1px solid #2a2d33;
         border-radius: 8px;
         color: #fff;
         font-size: 14px;
+        transition: border-color 0.3s;
     }
 
     .modal-score-form input:focus {
         outline: none;
         border-color: #f97316;
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+    }
+
+    .modal-score-form input::placeholder {
+        color: #555;
     }
 
     .modal-score-form button {
         background: #f97316;
         border: none;
         border-radius: 8px;
-        padding: 10px 20px;
+        padding: 10px 24px;
         color: #fff;
         cursor: pointer;
         white-space: nowrap;
         font-size: 14px;
         font-weight: 600;
-        transition: background 0.3s;
+        transition: all 0.3s;
     }
 
     .modal-score-form button:hover {
         background: #ea580c;
+        transform: translateY(-1px);
     }
 
-    /* اسکرول بار */
+    /* ===== اسکرول بار ===== */
     .modal-caption::-webkit-scrollbar {
         width: 4px;
     }
@@ -542,64 +648,94 @@
         border-radius: 4px;
     }
 
-    /* واکنش‌گرا */
+    /* ===== واکنش‌گرایی ===== */
     @media (max-width: 480px) {
         .posts-header {
             flex-direction: column;
             align-items: stretch;
             gap: 8px;
         }
-        
+
+        .header-actions {
+            justify-content: flex-start;
+        }
+
         .filter-row {
             flex-direction: column;
+            gap: 8px;
         }
-        
+
         .filter-group {
             min-width: 100%;
         }
-        
+
+        .btn-apply-filter {
+            width: 100%;
+            justify-content: center;
+            margin-top: 4px;
+        }
+
         .posts-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
         }
-        
+
         .post-card {
-            min-height: 160px;
-            max-height: 220px;
-        }
-        
-        .modal-media {
-            height: 250px;
+            min-height: 150px;
+            max-height: 210px;
+            padding: 6px;
         }
 
         .post-card .badges-container {
-            top: 4px;
-            right: 4px;
+            top: 5px;
+            right: 5px;
             gap: 3px;
         }
 
-        .post-card .post-type-badge,
-        .post-card .post-status-badge {
+        .post-card .badge {
             font-size: 8px;
-            padding: 1px 6px;
+            padding: 2px 7px;
+        }
+
+        .post-card .play-icon {
+            font-size: 28px;
+        }
+
+        .modal-media {
+            height: 220px;
+        }
+
+        .modal-content {
+            padding: 16px;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            padding-left: 35px;
         }
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 768px) and (max-width: 1199px) {
         .posts-grid {
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
-        
+
         .post-card {
-            min-height: 220px;
-            max-height: 300px;
+            min-height: 200px;
+            max-height: 280px;
         }
     }
 
     @media (min-width: 1200px) {
         .posts-grid {
             grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .post-card {
+            min-height: 220px;
+            max-height: 300px;
         }
     }
 </style>
@@ -610,11 +746,11 @@
         📊 پست‌ها
         <span class="post-count">{{ posts|length }} پست</span>
     </h2>
-    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+    <div class="header-actions">
         <a href="/dashboard/posts/export" class="btn-export">
             <i class="fas fa-file-excel"></i> خروجی اکسل
         </a>
-        <button class="btn-filter reset" onclick="resetFilters()">
+        <button class="btn-reset" onclick="resetFilters()">
             <i class="fas fa-undo"></i> بازنشانی
         </button>
     </div>
@@ -652,19 +788,19 @@
             </div>
             
             <div class="filter-group">
-                <label><i class="fas fa-calendar"></i> تاریخ (شمسی)</label>
+                <label><i class="fas fa-calendar-alt"></i> تاریخ (شمسی)</label>
                 <input type="date" id="dateFilter" name="date" value="{{ request.args.get('date', '') }}">
             </div>
             
-            <button type="submit" class="btn-filter">
+            <button type="submit" class="btn-apply-filter">
                 <i class="fas fa-filter"></i> اعمال فیلتر
             </button>
         </div>
     </form>
 </div>
 
-<!-- ===== نمایش تعداد پست‌های فیلتر شده ===== -->
-<div id="filteredCount" style="font-size: 12px; color: #a0a0a0; margin-bottom: 12px; text-align: center;">
+<!-- ===== تعداد نتایج ===== -->
+<div class="filtered-count">
     نمایش <span id="countDisplay">{{ posts|length }}</span> پست
 </div>
 
@@ -685,28 +821,29 @@
                     <img src="{{ post.media_url }}" alt="پست">
                 {% endif %}
             {% else %}
-                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0;">
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; flex-direction: column;">
                     <i class="fas fa-file-alt fa-2x"></i>
+                    <span style="font-size: 9px; margin-top: 4px;">بدون مدیا</span>
                 </div>
             {% endif %}
             
-            <!-- ===== برچسب‌ها (نوع و وضعیت در دو خط مجزا) ===== -->
+            <!-- برچسب‌ها -->
             <div class="badges-container">
-                <!-- برچسب نوع پست -->
-                <div class="post-type-badge">
+                <span class="badge badge-type">
                     {% if post.post_type == 'video' %}🎬 ویدیو
                     {% elif post.post_type == 'photo' %}📸 عکس
                     {% elif post.post_type == 'document' %}📄 سند
                     {% elif post.post_type == 'text' %}📝 متن
                     {% else %}{{ post.post_type }}{% endif %}
-                </div>
-                
-                <!-- برچسب وضعیت پست -->
-                <div class="post-status-badge {% if post.status == 'active' %}active{% elif post.status == 'pending' %}pending{% else %}inactive{% endif %}">
+                </span>
+                <span class="badge 
+                    {% if post.status == 'active' %}badge-status-active
+                    {% elif post.status == 'pending' %}badge-status-pending
+                    {% else %}badge-status-inactive{% endif %}">
                     {% if post.status == 'active' %}✅ فعال
                     {% elif post.status == 'pending' %}⏳ در انتظار
                     {% else %}❌ غیرفعال{% endif %}
-                </div>
+                </span>
             </div>
         </div>
 
@@ -723,19 +860,17 @@
 
         <!-- امتیاز -->
         <div class="post-score">
-            <div style="display: flex; align-items: baseline; gap: 3px;">
-                <span class="number">{{ post.score|int if post.score is not none else '۰' }}</span>
-                <span class="label">امتیاز</span>
-            </div>
+            <span class="number">{{ post.score|int if post.score is not none else '۰' }}</span>
+            <span class="label">امتیاز</span>
         </div>
 
         <!-- آیکون‌ها -->
         <div class="post-actions">
-            <button class="btn-star" onclick="event.stopPropagation(); openScoreModal({{ post.id }})">
+            <button class="btn-star" onclick="event.stopPropagation(); openScoreModal({{ post.id }})" title="امتیازدهی">
                 <i class="fas fa-star"></i>
             </button>
             <div class="divider"></div>
-            <button class="btn-trash" onclick="event.stopPropagation(); openDeleteModal({{ post.id }})">
+            <button class="btn-trash" onclick="event.stopPropagation(); openDeleteModal({{ post.id }})" title="حذف">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
@@ -743,12 +878,12 @@
     {% endfor %}
 </div>
 
-<!-- ===== پیام بدون پست ===== -->
+<!-- ===== پیام خالی ===== -->
 {% if posts|length == 0 %}
-<div style="text-align: center; padding: 60px 20px; color: #a0a0a0;">
-    <i class="fas fa-inbox" style="font-size: 48px; opacity: 0.3;"></i>
-    <p style="margin-top: 12px; font-size: 14px;">هیچ پستی با این فیلترها یافت نشد</p>
-    <button class="btn-filter reset" onclick="resetFilters()" style="margin-top: 8px;">
+<div class="empty-state">
+    <i class="fas fa-inbox"></i>
+    <p>هیچ پستی با این فیلترها یافت نشد</p>
+    <button class="btn-reset" onclick="resetFilters()">
         <i class="fas fa-undo"></i> بازنشانی فیلترها
     </button>
 </div>
@@ -757,15 +892,18 @@
 <!-- ===== مودال امتیازدهی ===== -->
 <div id="scoreModal" class="modal-overlay" onclick="if(event.target===this) closeScoreModal()">
     <div class="modal-content" style="max-width: 400px;">
-        <h3 style="color: #fff; margin: 0 0 12px;">⭐ امتیازدهی</h3>
+        <h3 style="color: #fff; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-star" style="color: #fbbf24;"></i> امتیازدهی
+        </h3>
         <form id="scoreForm" method="POST">
             <input type="number" name="score" min="0" max="100" required
-                   style="width: 100%; padding: 10px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 14px;">
-            <div style="display: flex; gap: 10px; margin-top: 12px;">
+                   placeholder="امتیاز ۰ تا ۱۰۰"
+                   style="width: 100%; padding: 10px 14px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 14px;">
+            <div style="display: flex; gap: 10px; margin-top: 14px;">
                 <button type="button" onclick="closeScoreModal()" 
-                        style="flex:1; padding:10px; background:#2a2d33; border:none; border-radius:8px; color:#a0a0a0; cursor:pointer;">لغو</button>
+                        style="flex:1; padding:10px; background:#2a2d33; border:none; border-radius:8px; color:#a0a0a0; cursor:pointer; font-weight:500;">لغو</button>
                 <button type="submit" 
-                        style="flex:1; padding:10px; background:#f97316; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600;">ثبت</button>
+                        style="flex:1; padding:10px; background:#f97316; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600;">ثبت امتیاز</button>
             </div>
         </form>
     </div>
@@ -783,9 +921,9 @@
         </div>
 
         <div class="modal-info">
-            <span class="modal-info-item" id="postDetailChannel">📢 کانال: -</span>
+            <span class="modal-info-item" id="postDetailChannel">📢 کانال: <span style="color:#fff;">-</span></span>
             <span class="modal-info-item" id="postDetailScore">⭐ امتیاز: <span class="highlight">-</span></span>
-            <span class="modal-info-item" id="postDetailDate">🕒 تاریخ: -</span>
+            <span class="modal-info-item" id="postDetailDate">🕒 تاریخ: <span style="color:#fff;">-</span></span>
         </div>
 
         <div class="modal-caption" id="postDetailCaption">
@@ -802,7 +940,7 @@
     </div>
 </div>
 
-<!-- ===== مودال تایید حذف ===== -->
+<!-- ===== مودال حذف ===== -->
 <div id="deleteModal" class="modal-overlay" onclick="if(event.target===this) closeDeleteModal()">
     <div class="modal-content" style="max-width: 380px; text-align: center;">
         <div style="font-size: 48px; color: #ef4444; margin-bottom: 8px;">⚠️</div>
@@ -811,7 +949,7 @@
         
         <div style="display: flex; gap: 12px; justify-content: center;">
             <button onclick="closeDeleteModal()" 
-                    style="padding: 8px 24px; background: #2a2d33; border: none; border-radius: 8px; color: #a0a0a0; cursor: pointer;">لغو</button>
+                    style="padding: 8px 24px; background: #2a2d33; border: none; border-radius: 8px; color: #a0a0a0; cursor: pointer; font-weight:500;">لغو</button>
             <form id="deleteForm" method="POST" style="display: inline;">
                 <button type="submit" 
                         style="padding: 8px 24px; background: #ef4444; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-weight:600;">حذف</button>
@@ -838,7 +976,6 @@
     ];
 
     let currentPostId = null;
-    let currentPostIndex = null;
 
     // ===== باز کردن مودال جزئیات =====
     function openPostModal(index) {
@@ -846,7 +983,6 @@
         if (!post) return;
         
         currentPostId = post.id;
-        currentPostIndex = index;
 
         document.getElementById('postModal').classList.add('active');
         
@@ -875,14 +1011,14 @@
             }
         } else {
             const div = document.createElement('div');
-            div.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0; flex-direction: column;';
-            div.innerHTML = '<i class="fas fa-file-alt fa-3x"></i><p style="margin-top: 8px;">این پست مدیا ندارد</p>';
+            div.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #666; flex-direction: column;';
+            div.innerHTML = '<i class="fas fa-file-alt fa-3x"></i><p style="margin-top: 8px; font-size: 14px;">این پست مدیا ندارد</p>';
             mediaContainer.appendChild(div);
         }
         
-        document.getElementById('postDetailChannel').textContent = '📢 کانال: ' + (post.channel || 'نامشخص');
+        document.getElementById('postDetailChannel').innerHTML = '📢 کانال: <span style="color:#fff;">' + (post.channel || 'نامشخص') + '</span>';
         document.getElementById('postDetailScore').innerHTML = '⭐ امتیاز: <span class="highlight">' + (post.score || 'بدون امتیاز') + '</span>';
-        document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
+        document.getElementById('postDetailDate').innerHTML = '🕒 تاریخ: <span style="color:#fff;">' + post.date + '</span>';
 
         const captionDiv = document.getElementById('postDetailCaption');
         const captionText = document.getElementById('postDetailCaptionText');
@@ -896,15 +1032,12 @@
         document.getElementById('scoreInput').value = '';
         document.getElementById('scoreFromModalForm').action = '/dashboard/posts/score/' + post.id;
         
-        // جلوگیری از اسکرول بدنه
         document.body.style.overflow = 'hidden';
     }
 
     function closePostModal() {
         const video = document.querySelector('#postMediaContainer video');
-        if (video) {
-            video.pause();
-        }
+        if (video) video.pause();
         document.getElementById('postModal').classList.remove('active');
         document.body.style.overflow = '';
     }
@@ -942,7 +1075,7 @@
         document.getElementById('filterForm').submit();
     }
 
-    // ===== کلید ESC برای بستن مودال‌ها =====
+    // ===== کلید ESC =====
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closePostModal();
@@ -951,7 +1084,7 @@
         }
     });
 
-    // ===== به‌روزرسانی تعداد پست‌های نمایش داده شده =====
+    // ===== تعداد پست‌ها =====
     document.addEventListener('DOMContentLoaded', function() {
         const posts = document.querySelectorAll('.post-card');
         document.getElementById('countDisplay').textContent = posts.length;
