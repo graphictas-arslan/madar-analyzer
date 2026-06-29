@@ -99,7 +99,8 @@ def dashboard():
     # ۱. پست‌های جدید (۳ مورد آخر)
     new_posts = Post.query.order_by(Post.created_at.desc()).limit(3).all()
     for post in new_posts:
-        channel_name = Channel.query.get(post.channel_id).channel_name if Channel.query.get(post.channel_id) else 'Unknown'
+        channel = Channel.query.get(post.channel_id)
+        channel_name = channel.channel_name if channel else 'Unknown'
         recent_activities.append({
             'icon': '📄',
             'text': f'پست جدید در کانال {channel_name}',
@@ -110,7 +111,8 @@ def dashboard():
     # ۲. امتیازدهی‌های اخیر (۳ مورد آخر)
     recent_scores = Post.query.filter(Post.score.isnot(None), Post.score >= 1).order_by(Post.updated_at.desc()).limit(3).all()
     for post in recent_scores:
-        channel_name = Channel.query.get(post.channel_id).channel_name if Channel.query.get(post.channel_id) else 'Unknown'
+        channel = Channel.query.get(post.channel_id)
+        channel_name = channel.channel_name if channel else 'Unknown'
         recent_activities.append({
             'icon': '⭐',
             'text': f'امتیاز {post.score} به پست در کانال {channel_name}',
@@ -318,11 +320,15 @@ def posts():
     # تبدیل تاریخ‌ها به شمسی برای نمایش در تمپلیت
     posts_data = []
     for post in posts:
+        # دریافت اطلاعات کانال با استفاده از channel_id
+        channel = Channel.query.get(post.channel_id)
+        channel_name = channel.channel_name if channel else None
+        
         posts_data.append({
             'id': post.id,
             'caption': post.caption,
             'media_url': post.media_url,
-            'channel': post.channel.channel_name if post.channel else None,
+            'channel': channel_name,
             'score': post.score,
             'publish_date': convert_to_jalali(post.publish_date),
             'views': post.views or 0,
