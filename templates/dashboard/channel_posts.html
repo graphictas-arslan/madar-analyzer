@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<!-- گرید پست‌ها: موبایل ۲ ستون، دسکتاپ ۳ ستون با اندازه دقیق -->
+<!-- گرید پست‌ها -->
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; max-width: 90%; margin: 0 auto;">
     {% for post in posts %}
     <div onclick="openPostModal({{ post.id }})"
@@ -39,10 +39,10 @@
             {% endif %}
         </div>
 
-        <!-- فقط کپشن -->
-        <div style="flex: 1; margin-top: 4px;">
+        <!-- جایگاه متن/کپشن (با ارتفاع ثابت) -->
+        <div style="flex: 1; margin-top: 4px; min-height: 40px; display: flex; align-items: center;">
             {% if post.caption %}
-            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">
                 {{ post.caption[:35] }}{% if post.caption|length > 35 %}...{% endif %}
             </div>
             {% else %}
