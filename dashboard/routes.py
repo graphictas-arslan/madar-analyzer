@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import requests
 import io
 import jdatetime
+import pytz  # اضافه کردن pytz
 
 from .excel_exporter import generate_excel
 
@@ -42,14 +43,36 @@ def sort_key(item):
 
 
 def convert_to_jalali(dt):
-    """تبدیل تاریخ میلادی به هجری شمسی"""
+    """تبدیل تاریخ میلادی به هجری شمسی با وقت ایران"""
     if dt is None:
         return '-'
     try:
-        jalali_date = jdatetime.datetime.fromgregorian(datetime=dt)
+        # تبدیل به وقت ایران
+        iran_tz = pytz.timezone('Asia/Tehran')
+        if dt.tzinfo is None:
+            dt = pytz.UTC.localize(dt)
+        iran_time = dt.astimezone(iran_tz)
+        
+        # تبدیل به شمسی
+        jalali_date = jdatetime.datetime.fromgregorian(datetime=iran_time)
         return jalali_date.strftime('%Y/%m/%d %H:%M')
     except:
         return dt.strftime('%Y/%m/%d %H:%M')
+
+
+def convert_to_jalali_date_only(dt):
+    """تبدیل تاریخ میلادی به هجری شمسی (فقط تاریخ)"""
+    if dt is None:
+        return '-'
+    try:
+        iran_tz = pytz.timezone('Asia/Tehran')
+        if dt.tzinfo is None:
+            dt = pytz.UTC.localize(dt)
+        iran_time = dt.astimezone(iran_tz)
+        jalali_date = jdatetime.datetime.fromgregorian(datetime=iran_time)
+        return jalali_date.strftime('%Y/%m/%d')
+    except:
+        return dt.strftime('%Y/%m/%d')
 
 
 # ============== صفحه اصلی (داشبورد) ==============
@@ -267,7 +290,7 @@ def channel_posts(channel_id):
         return redirect(url_for("dashboard.channels"))
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
     
-    # تبدیل تاریخ‌ها به شمسی برای نمایش در تمپلیت
+    # تبدیل تاریخ‌ها به شمسی با وقت ایران برای نمایش در تمپلیت
     posts_data = []
     for post in posts:
         posts_data.append({
@@ -276,6 +299,7 @@ def channel_posts(channel_id):
             'media_url': post.media_url,
             'score': post.score,
             'publish_date': convert_to_jalali(post.publish_date),
+            'publish_date_only': convert_to_jalali_date_only(post.publish_date),
             'views': post.views or 0,
             'likes': post.likes or 0,
             'comments': post.comments or 0,
@@ -317,7 +341,7 @@ def posts():
         return redirect(url_for("auth.login"))
     posts = Post.query.order_by(Post.publish_date.desc()).all()
     
-    # تبدیل تاریخ‌ها به شمسی برای نمایش در تمپلیت
+    # تبدیل تاریخ‌ها به شمسی با وقت ایران برای نمایش در تمپلیت
     posts_data = []
     for post in posts:
         # دریافت اطلاعات کانال با استفاده از channel_id
