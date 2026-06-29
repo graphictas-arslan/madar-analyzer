@@ -10,6 +10,36 @@ import io
 
 from .excel_exporter import generate_excel
 
+
+def format_time_ago(dt):
+    """تبدیل زمان به فرمت دقیقه:ثانیه قبل"""
+    if dt is None:
+        return "0s"
+    
+    diff = datetime.utcnow() - dt
+    total_seconds = int(diff.total_seconds())
+    
+    if total_seconds < 0:
+        return "0s"
+    
+    if total_seconds < 60:
+        return f"{total_seconds}s"
+    
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    return f"{minutes}:{seconds:02d}"
+
+
+def sort_key(item):
+    """کلید مرتب‌سازی برای فعالیت‌ها بر اساس زمان"""
+    time_str = item['time']
+    if time_str.endswith('s'):
+        return int(time_str[:-1])
+    else:
+        parts = time_str.split(':')
+        return int(parts[0]) * 60 + int(parts[1])
+
+
 # ============== صفحه اصلی (داشبورد) ==============
 @dashboard_bp.route("/")
 def dashboard():
@@ -51,7 +81,7 @@ def dashboard():
     type_labels = [t[0] for t in types]
     type_data = [t[1] for t in types]
     
-    # ============== آخرین فعالیت‌ها (واقعی از دیتابیس) ==============
+    # ============== آخرین فعالیت‌ها (با فرمت دقیقه:ثانیه) ==============
     recent_activities = []
     
     # ۱. پست‌های جدید (۳ مورد آخر)
@@ -61,7 +91,7 @@ def dashboard():
         recent_activities.append({
             'icon': '📄',
             'text': f'پست جدید در کانال {channel_name}',
-            'time': (datetime.utcnow() - post.created_at).total_seconds() // 60,
+            'time': format_time_ago(post.created_at),
             'color': 'green'
         })
     
@@ -72,7 +102,7 @@ def dashboard():
         recent_activities.append({
             'icon': '⭐',
             'text': f'امتیاز {post.score} به پست در کانال {channel_name}',
-            'time': (datetime.utcnow() - post.updated_at).total_seconds() // 60,
+            'time': format_time_ago(post.updated_at),
             'color': 'blue'
         })
     
@@ -82,7 +112,7 @@ def dashboard():
         recent_activities.append({
             'icon': '📢',
             'text': f'کانال «{channel.channel_name}» اضافه شد',
-            'time': (datetime.utcnow() - channel.created_at).total_seconds() // 60,
+            'time': format_time_ago(channel.created_at),
             'color': 'orange'
         })
     
@@ -92,12 +122,12 @@ def dashboard():
         recent_activities.append({
             'icon': '👤',
             'text': f'کاربر «{user.full_name}» ثبت‌نام کرد',
-            'time': (datetime.utcnow() - user.created_at).total_seconds() // 60,
+            'time': format_time_ago(user.created_at),
             'color': 'purple'
         })
     
     # مرتب‌سازی بر اساس زمان (جدیدترین اول)
-    recent_activities.sort(key=lambda x: x['time'])
+    recent_activities.sort(key=sort_key)
     recent_activities = recent_activities[:10]  # فقط ۱۰ مورد آخر
     
     return render_template(
@@ -114,20 +144,6 @@ def dashboard():
         recent_activities=recent_activities
     )
 
-    
-    return render_template(
-        "dashboard/index.html",
-        total_posts=total_posts,
-        total_channels=total_channels,
-        scored_posts=scored_posts,
-        avg_score=round(avg_score, 1),
-        top_channels=top_channels,
-        daily_labels=daily_labels,
-        daily_data=daily_data,
-        type_labels=type_labels,
-        type_data=type_data,
-        recent_activities=recent_activities
-    )
 
 # ============== سازمان‌ها ==============
 @dashboard_bp.route("/organizations")
@@ -136,6 +152,7 @@ def organizations():
         return redirect(url_for("auth.login"))
     orgs = Organization.query.order_by(Organization.id.desc()).all()
     return render_template("dashboard/organizations.html", organizations=orgs)
+
 
 @dashboard_bp.route("/organizations/create", methods=["POST"])
 def create_organization():
@@ -152,6 +169,7 @@ def create_organization():
     flash("سازمان با موفقیت ایجاد شد.", "success")
     return redirect(url_for("dashboard.organizations"))
 
+
 @dashboard_bp.route("/organizations/toggle/<int:org_id>")
 def toggle_organization(org_id):
     if "user_id" not in session:
@@ -163,6 +181,7 @@ def toggle_organization(org_id):
         flash("وضعیت سازمان تغییر کرد.", "success")
     return redirect(url_for("dashboard.organizations"))
 
+
 @dashboard_bp.route("/organizations/delete/<int:org_id>")
 def delete_organization(org_id):
     if "user_id" not in session:
@@ -173,6 +192,7 @@ def delete_organization(org_id):
         db.session.commit()
         flash("سازمان حذف شد.", "success")
     return redirect(url_for("dashboard.organizations"))
+
 
 @dashboard_bp.route("/organizations/<int:org_id>/channels")
 def organization_channels(org_id):
@@ -189,6 +209,7 @@ def organization_channels(org_id):
         channels=channels
     )
 
+
 # ============== کانال‌ها ==============
 @dashboard_bp.route("/channels")
 def channels():
@@ -196,6 +217,7 @@ def channels():
         return redirect(url_for("auth.login"))
     channels = Channel.query.order_by(Channel.id.desc()).all()
     return render_template("dashboard/channels.html", channels=channels)
+
 
 @dashboard_bp.route("/channels/toggle/<int:channel_id>")
 def toggle_channel(channel_id):
@@ -208,6 +230,7 @@ def toggle_channel(channel_id):
         flash("وضعیت کانال تغییر کرد.", "success")
     return redirect(url_for("dashboard.channels"))
 
+
 @dashboard_bp.route("/channels/delete/<int:channel_id>")
 def delete_channel(channel_id):
     if "user_id" not in session:
@@ -218,6 +241,7 @@ def delete_channel(channel_id):
         db.session.commit()
         flash("کانال حذف شد.", "success")
     return redirect(url_for("dashboard.channels"))
+
 
 @dashboard_bp.route("/channels/<int:channel_id>/posts")
 def channel_posts(channel_id):
@@ -240,6 +264,7 @@ def channel_posts(channel_id):
         stats=stats
     )
 
+
 @dashboard_bp.route("/channels/assign/<int:channel_id>")
 def assign_channel_admins(channel_id):
     if "user_id" not in session:
@@ -250,6 +275,7 @@ def assign_channel_admins(channel_id):
         return redirect(url_for("dashboard.channels"))
     return redirect(url_for("dashboard.channels"))
 
+
 # ============== پست‌ها ==============
 @dashboard_bp.route("/posts")
 def posts():
@@ -257,6 +283,7 @@ def posts():
         return redirect(url_for("auth.login"))
     posts = Post.query.order_by(Post.publish_date.desc()).all()
     return render_template("dashboard/posts.html", posts=posts)
+
 
 @dashboard_bp.route("/posts/score/<int:post_id>", methods=["POST"])
 def score_post(post_id):
@@ -275,6 +302,7 @@ def score_post(post_id):
         flash("لطفاً یک عدد معتبر وارد کنید.", "danger")
     return redirect(url_for("dashboard.posts"))
 
+
 @dashboard_bp.route("/posts/delete/<int:post_id>", methods=["POST"])
 def delete_post(post_id):
     if "user_id" not in session:
@@ -287,6 +315,7 @@ def delete_post(post_id):
     db.session.commit()
     flash("پست حذف شد.", "success")
     return redirect(url_for("dashboard.posts"))
+
 
 @dashboard_bp.route("/posts/export")
 def export_posts():
@@ -304,6 +333,7 @@ def export_posts():
         }
     )
 
+
 # ============== کاربران ==============
 @dashboard_bp.route("/users")
 def users():
@@ -311,6 +341,7 @@ def users():
         return redirect(url_for("auth.login"))
     users = User.query.all()
     return render_template("dashboard/users.html", users=users)
+
 
 @dashboard_bp.route("/users/create", methods=["GET", "POST"])
 def create_user():
@@ -336,6 +367,7 @@ def create_user():
         return redirect(url_for("dashboard.users"))
     return render_template("dashboard/create_user.html", roles=["admin", "channel_admin", "manager"])
 
+
 @dashboard_bp.route("/users/delete/<int:user_id>")
 def delete_user(user_id):
     if "user_id" not in session:
@@ -346,6 +378,7 @@ def delete_user(user_id):
         db.session.commit()
         flash("کاربر حذف شد.", "success")
     return redirect(url_for("dashboard.users"))
+
 
 @dashboard_bp.route("/users/toggle/<int:user_id>")
 def toggle_user(user_id):
@@ -358,6 +391,7 @@ def toggle_user(user_id):
         flash("وضعیت کاربر تغییر کرد.", "success")
     return redirect(url_for("dashboard.users"))
 
+
 # ============== ربات‌ها ==============
 @dashboard_bp.route("/bots")
 def bots():
@@ -365,6 +399,7 @@ def bots():
         return redirect(url_for("auth.login"))
     bots = Bot.query.order_by(Bot.id.desc()).all()
     return render_template("dashboard/bots.html", bots=bots)
+
 
 @dashboard_bp.route("/bots/create", methods=["POST"])
 def create_bot():
@@ -382,6 +417,7 @@ def create_bot():
     flash("ربات با موفقیت ثبت شد.", "success")
     return redirect(url_for("dashboard.bots"))
 
+
 @dashboard_bp.route("/bots/toggle/<int:bot_id>")
 def toggle_bot(bot_id):
     if "user_id" not in session:
@@ -393,6 +429,7 @@ def toggle_bot(bot_id):
         flash("وضعیت ربات تغییر کرد.", "success")
     return redirect(url_for("dashboard.bots"))
 
+
 @dashboard_bp.route("/bots/delete/<int:bot_id>")
 def delete_bot(bot_id):
     if "user_id" not in session:
@@ -403,6 +440,7 @@ def delete_bot(bot_id):
         db.session.commit()
         flash("ربات حذف شد.", "success")
     return redirect(url_for("dashboard.bots"))
+
 
 @dashboard_bp.route("/bots/set-webhook/<int:bot_id>")
 def set_webhook(bot_id):
@@ -437,6 +475,7 @@ def set_webhook(bot_id):
         flash(f"خطا در اتصال به سرور {bot.platform}: {str(e)}", "danger")
     return redirect(url_for("dashboard.bots"))
 
+
 # ============== پلتفرم‌ها ==============
 @dashboard_bp.route("/platforms")
 def platforms():
@@ -444,6 +483,7 @@ def platforms():
         return redirect(url_for("auth.login"))
     platforms = Platform.query.order_by(Platform.id.desc()).all()
     return render_template("dashboard/platforms.html", platforms=platforms)
+
 
 @dashboard_bp.route("/platforms/create", methods=["POST"])
 def create_platform():
@@ -460,6 +500,7 @@ def create_platform():
     flash("پلتفرم با موفقیت ایجاد شد.", "success")
     return redirect(url_for("dashboard.platforms"))
 
+
 @dashboard_bp.route("/platforms/toggle/<int:platform_id>")
 def toggle_platform(platform_id):
     if "user_id" not in session:
@@ -470,6 +511,7 @@ def toggle_platform(platform_id):
         db.session.commit()
         flash("وضعیت پلتفرم تغییر کرد.", "success")
     return redirect(url_for("dashboard.platforms"))
+
 
 @dashboard_bp.route("/platforms/delete/<int:platform_id>")
 def delete_platform(platform_id):
@@ -482,6 +524,7 @@ def delete_platform(platform_id):
         flash("پلتفرم حذف شد.", "success")
     return redirect(url_for("dashboard.platforms"))
 
+
 # ============== اینستاگرام ==============
 @dashboard_bp.route("/instagram")
 def instagram_pages():
@@ -489,6 +532,7 @@ def instagram_pages():
         return redirect(url_for("auth.login"))
     pages = InstagramPage.query.order_by(InstagramPage.id.desc()).all()
     return render_template("dashboard/instagram.html", pages=pages)
+
 
 @dashboard_bp.route("/instagram/add", methods=["POST"])
 def add_instagram_page():
@@ -520,6 +564,7 @@ def add_instagram_page():
         flash(f"خطا در دریافت اطلاعات پیج: {str(e)}", "danger")
     return redirect(url_for("dashboard.instagram_pages"))
 
+
 @dashboard_bp.route("/instagram/toggle/<int:page_id>")
 def toggle_instagram_page(page_id):
     if "user_id" not in session:
@@ -531,6 +576,7 @@ def toggle_instagram_page(page_id):
         flash("وضعیت پیج تغییر کرد.", "success")
     return redirect(url_for("dashboard.instagram_pages"))
 
+
 @dashboard_bp.route("/instagram/delete/<int:page_id>")
 def delete_instagram_page(page_id):
     if "user_id" not in session:
@@ -541,6 +587,7 @@ def delete_instagram_page(page_id):
         db.session.commit()
         flash("پیج حذف شد.", "success")
     return redirect(url_for("dashboard.instagram_pages"))
+
 
 @dashboard_bp.route("/instagram/sync/<int:page_id>")
 def sync_instagram_page(page_id):
@@ -576,6 +623,7 @@ def sync_instagram_page(page_id):
         flash(f"خطا در همگام‌سازی: {str(e)}", "danger")
     return redirect(url_for("dashboard.instagram_pages"))
 
+
 @dashboard_bp.route("/instagram/posts/<int:page_id>")
 def instagram_posts(page_id):
     if "user_id" not in session:
@@ -586,6 +634,7 @@ def instagram_posts(page_id):
         return redirect(url_for("dashboard.instagram_pages"))
     posts = InstagramPost.query.filter_by(page_id=page_id).order_by(InstagramPost.timestamp.desc()).all()
     return render_template("dashboard/instagram_posts.html", page=page, posts=posts)
+
 
 @dashboard_bp.route("/instagram/score/<int:post_id>", methods=["POST"])
 def score_instagram_post(post_id):
@@ -604,6 +653,7 @@ def score_instagram_post(post_id):
         flash("لطفاً یک عدد معتبر وارد کنید.", "danger")
     return redirect(url_for("dashboard.instagram_posts", page_id=post.page_id))
 
+
 # ============== مدیریت دیتابیس ==============
 @dashboard_bp.route("/db-manage", methods=["GET", "POST"])
 def db_manage():
@@ -616,11 +666,15 @@ def db_manage():
             if action == "create_tables":
                 db.create_all()
                 message = "✅ جدول‌ها با موفقیت ایجاد شدند!"
+            elif action == "fix_all":
+                db.create_all()
+                message = "✅ همه جدول‌ها با موفقیت ایجاد/تعمیر شدند!"
             else:
                 message = "⚠️ عملیات نامعتبر است."
         except Exception as e:
             message = f"❌ خطا: {str(e)}"
     return render_template("dashboard/db_manage.html", message=message)
+
 
 # ============== تنظیمات ==============
 @dashboard_bp.route("/settings")
