@@ -18,15 +18,16 @@ def dashboard():
     
     total_posts = Post.query.count()
     total_channels = Channel.query.count()
-    scored_posts = Post.query.filter(Post.score.isnot(None)).count()
-    avg_score = db.session.query(func.avg(Post.score)).filter(Post.score.isnot(None)).scalar() or 0
+    # فقط پست‌هایی که امتیاز ۱ یا بیشتر دارند
+    scored_posts = Post.query.filter(Post.score >= 1).count()
+    avg_score = db.session.query(func.avg(Post.score)).filter(Post.score >= 1).scalar() or 0
     
     top_channels = db.session.query(
         Channel.channel_name,
         Channel.id,
         func.count(Post.id).label('post_count'),
         func.avg(Post.score).label('avg_score')
-    ).join(Post).filter(Post.score.isnot(None)).group_by(Channel.id).order_by(func.avg(Post.score).desc()).limit(5).all()
+    ).join(Post).filter(Post.score >= 1).group_by(Channel.id).order_by(func.avg(Post.score).desc()).limit(5).all()
     
     top_channels = [
         {
@@ -173,8 +174,8 @@ def channel_posts(channel_id):
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
     stats = {
         'total': len(posts),
-        'scored': Post.query.filter(Post.channel_id == channel_id, Post.score.isnot(None)).count(),
-        'avg_score': db.session.query(func.avg(Post.score)).filter(Post.channel_id == channel_id, Post.score.isnot(None)).scalar() or 0
+        'scored': Post.query.filter(Post.channel_id == channel_id, Post.score >= 1).count(),
+        'avg_score': db.session.query(func.avg(Post.score)).filter(Post.channel_id == channel_id, Post.score >= 1).scalar() or 0
     }
     return render_template(
         "dashboard/channel_posts.html",
