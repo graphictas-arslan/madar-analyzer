@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from extensions import db
 from models import User
-from auth.utils import hash_password
+from werkzeug.security import check_password_hash
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -53,3 +53,40 @@ def toggle_user(user_id):
         db.session.commit()
         flash("وضعیت کاربر تغییر کرد.", "success")
     return redirect(url_for("users.users"))
+
+# ============== تغییر رمز عبور ==============
+@users_bp.route("/change-password", methods=["POST"])
+def change_password():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    user = User.query.get(session["user_id"])
+    if not user:
+        flash("کاربر پیدا نشد!", "danger")
+        return redirect(url_for("dashboard.dashboard"))
+    
+    current_password = request.form.get("current_password")
+    new_password = request.form.get("new_password")
+    confirm_password = request.form.get("confirm_password")
+    
+    # بررسی رمز فعلی
+    if not user.check_password(current_password):
+        flash("رمز عبور فعلی اشتباه است!", "danger")
+        return redirect(url_for("dashboard.profile"))
+    
+    # بررسی تطابق رمز جدید
+    if new_password != confirm_password:
+        flash("رمز عبور جدید و تکرار آن مطابقت ندارند!", "danger")
+        return redirect(url_for("dashboard.profile"))
+    
+    # بررسی طول رمز
+    if len(new_password) < 6:
+        flash("رمز عبور باید حداقل ۶ کاراکتر باشد!", "danger")
+        return redirect(url_for("dashboard.profile"))
+    
+    # تغییر رمز
+    user.set_password(new_password)
+    db.session.commit()
+    
+    flash("✅ رمز عبور با موفقیت تغییر کرد!", "success")
+    return redirect(url_for("dashboard.profile"))
