@@ -6,7 +6,7 @@
     <a href="/dashboard/channels" class="btn btn-outline btn-sm">بازگشت</a>
 </div>
 
-<!-- آمار کانال (دسکتاپ ۳ ستونه) -->
+<!-- آمار کانال -->
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
     <div style="background: #1a1d23; border-radius: 12px; padding: 12px; text-align: center;">
         <div style="font-size: 20px; font-weight: 700;">{{ stats.total }}</div>
@@ -22,8 +22,8 @@
     </div>
 </div>
 
-<!-- گرید پست‌ها (موبایل ۲ ستون، دسکتاپ ۳ ستون) -->
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; max-width: 100%; margin: 0 auto;">
+<!-- گرید پست‌ها: موبایل ۲ ستون، دسکتاپ ۳ ستون با اندازه دقیق -->
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; max-width: 90%; margin: 0 auto;">
     {% for post in posts %}
     <div onclick="openPostModal({{ post.id }})"
          style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -194,35 +194,33 @@
 </script>
 
 <style>
-    /* ========== دسکتاپ: ۳ ستون + متن‌ها و المان‌ها ۵۰٪ بزرگ‌تر ========== */
+    /* ========== دسکتاپ: ۳ ستون + اندازه دقیق (مثل باکس‌های آمار) ========== */
     @media (min-width: 768px) {
-        /* گرید ۳ ستونه */
         .grid-posts {
             grid-template-columns: repeat(3, 1fr) !important;
             max-width: 85% !important;
         }
-        /* متن‌ها و المان‌ها ۵۰٪ بزرگ‌تر */
-        .grid-posts div {
-            font-size: 1.5rem !important;
-        }
-        .grid-posts img {
-            height: 80px !important;
-        }
-        .grid-posts i {
-            font-size: 2.5rem !important;
-        }
-        .grid-posts span {
-            font-size: 1.5rem !important;
-        }
-        .grid-posts button {
-            font-size: 2rem !important;
-        }
-        /* فاصله‌ها */
-        .grid-posts {
-            gap: 16px !important;
-        }
         .grid-posts > div {
             padding: 16px !important;
+            border-radius: 16px !important;
+        }
+        .grid-posts img {
+            height: 120px !important;
+        }
+        .grid-posts .caption-text {
+            font-size: 18px !important;
+        }
+        .grid-posts .score-text {
+            font-size: 20px !important;
+        }
+        .grid-posts i {
+            font-size: 28px !important;
+        }
+        .grid-posts button {
+            font-size: 28px !important;
+        }
+        .grid-posts .separator {
+            height: 24px !important;
         }
     }
 </style>
