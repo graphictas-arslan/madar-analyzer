@@ -20,14 +20,23 @@ def dashboard():
     total_channels = Channel.query.count()
     scored_posts = Post.query.filter(Post.score.isnot(None)).count()
     avg_score = db.session.query(func.avg(Post.score)).filter(Post.score.isnot(None)).scalar() or 0
-    
+    # کانال‌های برتر (۵ کانال با بالاترین میانگین امتیاز)
     top_channels = db.session.query(
         Channel.channel_name,
         Channel.id,
         func.count(Post.id).label('post_count'),
         func.avg(Post.score).label('avg_score')
     ).join(Post).filter(Post.score.isnot(None)).group_by(Channel.id).order_by(func.avg(Post.score).desc()).limit(5).all()
-    
+    # تبدیل avg_score به عدد صحیح برای نمایش
+top_channels = [
+    {
+        'channel_name': c.channel_name,
+        'id': c.id,
+        'post_count': c.post_count,
+        'avg_score': int(c.avg_score) if c.avg_score else 0
+    }
+    for c in top_channels
+]
     daily_labels = []
     daily_data = []
     for i in range(6, -1, -1):
