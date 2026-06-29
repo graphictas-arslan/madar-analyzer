@@ -15,6 +15,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password) and user.is_active:
             session["user_id"] = user.id
+            session["user_full_name"] = user.full_name  # این خط را اضافه کنید
             flash("خوش آمدید!", "success")
             
             # هدایت بر اساس نقش کاربر
