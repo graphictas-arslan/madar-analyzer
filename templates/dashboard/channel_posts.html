@@ -6,7 +6,7 @@
     <a href="/dashboard/channels" class="btn btn-outline btn-sm" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 4px 12px; color: #a0a0a0; text-decoration: none; font-size: 12px;">بازگشت</a>
 </div>
 
-<!-- آمار کانال -->
+<!-- آمار کانال با میانگین یک عدد اعشاری -->
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
     <div style="background: #1a1d23; border-radius: 12px; padding: 12px; text-align: center;">
         <div style="font-size: 20px; font-weight: 700;">{{ stats.total }}</div>
@@ -17,7 +17,7 @@
         <div style="font-size: 11px; color: #a0a0a0;">امتیازدار</div>
     </div>
     <div style="background: #1a1d23; border-radius: 12px; padding: 12px; text-align: center;">
-        <div style="font-size: 20px; font-weight: 700;">{{ stats.avg_score }}</div>
+        <div style="font-size: 20px; font-weight: 700;">{{ "%.1f"|format(stats.avg_score) }}</div>
         <div style="font-size: 11px; color: #a0a0a0;">میانگین</div>
     </div>
 </div>
@@ -37,9 +37,13 @@
         {% endfor %}
     ];
 
+    let currentPostId = null;
+
     function openPostModal(index) {
         const post = postsData[index];
         if (!post) return;
+        
+        currentPostId = post.id;
 
         document.getElementById('postModal').style.display = 'flex';
         document.getElementById('postDetailImage').src = post.media_url || '';
@@ -55,6 +59,11 @@
         } else {
             captionDiv.style.display = 'none';
         }
+        
+        // پاک کردن فیلد امتیاز
+        document.getElementById('scoreInput').value = '';
+        // تنظیم action فرم امتیاز
+        document.getElementById('scoreFromModalForm').action = '/dashboard/posts/score/' + post.id;
     }
 
     function closePostModal() {
@@ -160,7 +169,7 @@
     </div>
 </div>
 
-<!-- مودال جزئیات پست -->
+<!-- مودال جزئیات پست با فیلد امتیاز -->
 <div id="postModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
     <div style="background: #1a1d23; border-radius: 20px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative;">
         <button onclick="closePostModal()" style="position: absolute; top: 12px; left: 12px; background: transparent; border: none; color: #a0a0a0; font-size: 20px; cursor: pointer;">
@@ -182,6 +191,20 @@
 
             <div id="postDetailCaption" style="color: #a0a0a0; font-size: 13px; margin-top: 4px; display: none;">
                 📌 کپشن: <span id="postDetailCaptionText"></span>
+            </div>
+
+            <!-- فیلد امتیاز در پاپ‌آپ -->
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a2d33;">
+                <form id="scoreFromModalForm" method="POST">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="number" id="scoreInput" name="score" min="0" max="100" 
+                               placeholder="امتیاز ۰ تا ۱۰۰"
+                               style="flex: 1; padding: 8px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff;">
+                        <button type="submit" style="background: #f97316; border: none; border-radius: 8px; padding: 8px 16px; color: #fff; cursor: pointer; white-space: nowrap;">
+                            ثبت امتیاز
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
