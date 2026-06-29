@@ -51,13 +51,69 @@ def dashboard():
     type_labels = [t[0] for t in types]
     type_data = [t[1] for t in types]
     
-    recent_activities = [
-        {'icon': '📄', 'text': 'پست جدید در کانال دیجی‌کالا', 'time': '۲ دقیقه پیش', 'color': 'green'},
-        {'icon': '⭐', 'text': 'امتیاز ۸۵ به پست #۱۲۳', 'time': '۱۵ دقیقه پیش', 'color': 'blue'},
-        {'icon': '📢', 'text': 'کانال «هایپر مارکت مادر» اضافه شد', 'time': '۱ ساعت پیش', 'color': 'orange'},
-        {'icon': '👤', 'text': 'کاربر جدید ثبت‌نام کرد', 'time': '۳ ساعت پیش', 'color': 'purple'},
-        {'icon': '📄', 'text': 'پست جدید در کانال تست۲', 'time': '۵ ساعت پیش', 'color': 'green'},
-    ]
+    # ============== آخرین فعالیت‌ها (واقعی از دیتابیس) ==============
+    recent_activities = []
+    
+    # ۱. پست‌های جدید (۳ مورد آخر)
+    new_posts = Post.query.order_by(Post.created_at.desc()).limit(3).all()
+    for post in new_posts:
+        channel_name = Channel.query.get(post.channel_id).channel_name if Channel.query.get(post.channel_id) else 'Unknown'
+        recent_activities.append({
+            'icon': '📄',
+            'text': f'پست جدید در کانال {channel_name}',
+            'time': (datetime.utcnow() - post.created_at).total_seconds() // 60,
+            'color': 'green'
+        })
+    
+    # ۲. امتیازدهی‌های اخیر (۳ مورد آخر)
+    recent_scores = Post.query.filter(Post.score.isnot(None), Post.score >= 1).order_by(Post.updated_at.desc()).limit(3).all()
+    for post in recent_scores:
+        channel_name = Channel.query.get(post.channel_id).channel_name if Channel.query.get(post.channel_id) else 'Unknown'
+        recent_activities.append({
+            'icon': '⭐',
+            'text': f'امتیاز {post.score} به پست در کانال {channel_name}',
+            'time': (datetime.utcnow() - post.updated_at).total_seconds() // 60,
+            'color': 'blue'
+        })
+    
+    # ۳. کانال‌های جدید (۳ مورد آخر)
+    new_channels = Channel.query.order_by(Channel.created_at.desc()).limit(3).all()
+    for channel in new_channels:
+        recent_activities.append({
+            'icon': '📢',
+            'text': f'کانال «{channel.channel_name}» اضافه شد',
+            'time': (datetime.utcnow() - channel.created_at).total_seconds() // 60,
+            'color': 'orange'
+        })
+    
+    # ۴. کاربران جدید (۳ مورد آخر)
+    new_users = User.query.order_by(User.created_at.desc()).limit(3).all()
+    for user in new_users:
+        recent_activities.append({
+            'icon': '👤',
+            'text': f'کاربر «{user.full_name}» ثبت‌نام کرد',
+            'time': (datetime.utcnow() - user.created_at).total_seconds() // 60,
+            'color': 'purple'
+        })
+    
+    # مرتب‌سازی بر اساس زمان (جدیدترین اول)
+    recent_activities.sort(key=lambda x: x['time'])
+    recent_activities = recent_activities[:10]  # فقط ۱۰ مورد آخر
+    
+    return render_template(
+        "dashboard/index.html",
+        total_posts=total_posts,
+        total_channels=total_channels,
+        scored_posts=scored_posts,
+        avg_score=round(avg_score, 1),
+        top_channels=top_channels,
+        daily_labels=daily_labels,
+        daily_data=daily_data,
+        type_labels=type_labels,
+        type_data=type_data,
+        recent_activities=recent_activities
+    )
+
     
     return render_template(
         "dashboard/index.html",
