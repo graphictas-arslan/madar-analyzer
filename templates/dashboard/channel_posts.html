@@ -90,7 +90,6 @@
         const captionText = document.getElementById('postDetailCaptionText');
         if (post.caption) {
             captionDiv.style.display = 'block';
-            // حفظ پاراگراف‌بندی با innerHTML و replace
             captionText.innerHTML = post.caption.replace(/\n/g, '<br>');
         } else {
             captionDiv.style.display = 'none';
@@ -141,14 +140,29 @@
     });
 </script>
 
-<!-- لیست پست‌ها -->
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+<!-- لیست پست‌ها با سایز ثابت -->
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 100%; margin: 0 auto;">
     {% for post in posts %}
     <div onclick="openPostModal({{ loop.index0 }})"
-         style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+         style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; 
+                aspect-ratio: 1 / 1; 
+                width: 100%; 
+                height: auto;
+                display: flex; 
+                flex-direction: column; 
+                justify-content: space-between; 
+                position: relative;
+                overflow: hidden;
+                min-height: 180px;
+                max-height: 280px;">
         
-        <!-- تصویر با علامت پلی برای ویدیو -->
-        <div style="height: 45%; border-radius: 8px; overflow: hidden; background: #0f1115; position: relative;">
+        <!-- بخش تصویر با ارتفاع ثابت -->
+        <div style="height: 50%; 
+                    border-radius: 8px; 
+                    overflow: hidden; 
+                    background: #0f1115; 
+                    position: relative;
+                    flex-shrink: 0;">
             {% if post.media_url %}
                 {% if post.post_type == 'video' %}
                     <video src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;" muted></video>
@@ -176,19 +190,35 @@
             {% endif %}
         </div>
 
-        <!-- کپشن با حفظ پاراگراف‌بندی -->
-        <div style="flex: 1; margin-top: 4px; overflow: hidden;">
-            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: normal; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+        <!-- بخش کپشن با ارتفاع ثابت -->
+        <div style="flex: 1; 
+                    margin-top: 4px; 
+                    overflow: hidden;
+                    min-height: 35px;
+                    max-height: 55px;">
+            <div style="font-size: 11px; 
+                        font-weight: 500; 
+                        color: #fff; 
+                        white-space: normal; 
+                        line-height: 1.4; 
+                        display: -webkit-box; 
+                        -webkit-line-clamp: 2; 
+                        -webkit-box-orient: vertical; 
+                        overflow: hidden;
+                        word-break: break-word;">
                 {% if post.caption %}
-                    {{ post.caption|replace('\n', '<br>')|safe }}
+                    {{ post.caption|replace('\n', ' ') }}
                 {% else %}
                     <span style="color: #a0a0a0;">بدون کپشن</span>
                 {% endif %}
             </div>
         </div>
 
-        <!-- امتیاز -->
-        <div style="display: flex; justify-content: center; margin-top: 2px;">
+        <!-- بخش امتیاز -->
+        <div style="display: flex; 
+                    justify-content: center; 
+                    margin-top: 2px;
+                    flex-shrink: 0;">
             <div style="display: flex; align-items: baseline; gap: 3px;">
                 <span style="font-size: 12px; font-weight: 600; color: #fbbf24;">
                     {{ post.score|int if post.score is not none else '۰' }}
@@ -197,8 +227,13 @@
             </div>
         </div>
 
-        <!-- آیکون‌ها -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+        <!-- بخش آیکون‌ها -->
+        <div style="display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    gap: 12px;
+                    flex-shrink: 0;
+                    padding-top: 2px;">
             <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
                     style="background: transparent; border: none; color: #facc15; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
                 <i class="fas fa-star"></i>
@@ -249,7 +284,6 @@
                 <span id="postDetailDate" style="color: #a0a0a0; font-size: 12px;">🕒 تاریخ: -</span>
             </div>
 
-            <!-- کپشن با حفظ پاراگراف‌بندی -->
             <div id="postDetailCaption" style="color: #e0e0e0; font-size: 14px; margin-top: 4px; display: none; background: #0f1115; padding: 12px; border-radius: 8px; max-height: 150px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; line-height: 1.8;">
                 📌 کپشن: <span id="postDetailCaptionText" style="display: block; margin-top: 4px;"></span>
             </div>
@@ -288,9 +322,29 @@
 </div>
 
 <style>
+    /* ========== نسخه دسکتاپ ========== */
     @media (min-width: 768px) {
         .grid-posts {
             grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px !important;
+        }
+        
+        .post-card {
+            min-height: 220px !important;
+            max-height: 320px !important;
+        }
+    }
+    
+    /* ========== نسخه موبایل ========== */
+    @media (max-width: 767px) {
+        .grid-posts {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+        }
+        
+        .post-card {
+            min-height: 160px !important;
+            max-height: 240px !important;
         }
     }
     
@@ -319,15 +373,6 @@
         height: 100%;
         object-fit: contain;
         background: #0f1115;
-    }
-    
-    /* انیمیشن ملایم برای علامت پلی */
-    .play-icon {
-        transition: transform 0.2s ease;
-    }
-    
-    .play-icon:hover {
-        transform: translate(-50%, -50%) scale(1.1);
     }
 </style>
 
