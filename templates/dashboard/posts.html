@@ -113,9 +113,6 @@
         font-size: 11px;
         color: #a0a0a0;
         font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 4px;
     }
 
     .filter-group select,
@@ -147,17 +144,11 @@
         box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
     }
 
-    /* استایل آپشن‌های کشویی */
     .filter-group select option {
         background: #1a1d23;
         color: #fff;
         padding: 8px 12px;
         font-size: 12px;
-    }
-
-    .filter-group select optgroup {
-        background: #1a1d23;
-        color: #a0a0a0;
     }
 
     /* ===== استایل فیلد تاریخ با flatpickr ===== */
@@ -169,6 +160,8 @@
     .filter-group .date-input-wrapper input {
         padding-right: 32px;
         cursor: pointer;
+        direction: ltr;
+        text-align: right;
     }
 
     .filter-group .date-input-wrapper .date-icon {
@@ -181,41 +174,58 @@
         pointer-events: none;
     }
 
-    /* استایل flatpickr با تم تیره */
+    /* ===== استایل کامل flatpickr با تم نارنجی ===== */
     .flatpickr-calendar {
         background: #1a1d23 !important;
         border: 1px solid #2a2d33 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 8px 40px rgba(0,0,0,0.5) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 50px rgba(0,0,0,0.6) !important;
+        padding: 4px !important;
+        width: 320px !important;
+        font-family: inherit !important;
     }
 
     .flatpickr-calendar .flatpickr-months {
         background: #0f1115 !important;
         border-radius: 12px 12px 0 0 !important;
+        padding: 8px 0 !important;
+        border-bottom: 1px solid #2a2d33 !important;
     }
 
     .flatpickr-calendar .flatpickr-months .flatpickr-prev-month,
     .flatpickr-calendar .flatpickr-months .flatpickr-next-month {
         fill: #a0a0a0 !important;
+        padding: 8px !important;
+        border-radius: 8px !important;
+        transition: all 0.3s !important;
     }
 
     .flatpickr-calendar .flatpickr-months .flatpickr-prev-month:hover,
     .flatpickr-calendar .flatpickr-months .flatpickr-next-month:hover {
         fill: #f97316 !important;
+        background: rgba(249, 115, 22, 0.1) !important;
     }
 
     .flatpickr-calendar .flatpickr-current-month {
         color: #fff !important;
-        font-size: 14px !important;
+        font-size: 15px !important;
         font-weight: 600 !important;
+        padding: 4px 0 !important;
     }
 
     .flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
         background: #0f1115 !important;
         color: #fff !important;
-        border: none !important;
-        border-radius: 6px !important;
-        padding: 4px 8px !important;
+        border: 1px solid #2a2d33 !important;
+        border-radius: 8px !important;
+        padding: 4px 12px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        outline: none !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months:focus {
+        border-color: #f97316 !important;
     }
 
     .flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months option {
@@ -225,54 +235,79 @@
 
     .flatpickr-calendar .flatpickr-current-month .numInputWrapper {
         background: #0f1115 !important;
-        border-radius: 6px !important;
-        padding: 0 6px !important;
+        border-radius: 8px !important;
+        padding: 0 8px !important;
+        border: 1px solid #2a2d33 !important;
+        margin: 0 4px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month .numInputWrapper:focus-within {
+        border-color: #f97316 !important;
     }
 
     .flatpickr-calendar .flatpickr-current-month .numInputWrapper input {
         color: #fff !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
     }
 
     .flatpickr-calendar .flatpickr-weekdays {
         background: #0f1115 !important;
+        padding: 8px 0 !important;
+        border-bottom: 1px solid #2a2d33 !important;
     }
 
     .flatpickr-calendar .flatpickr-weekday {
         color: #a0a0a0 !important;
-        font-weight: 500 !important;
-        font-size: 11px !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-days {
+        padding: 4px 0 !important;
     }
 
     .flatpickr-calendar .flatpickr-day {
         color: #e0e0e0 !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
         transition: all 0.2s !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        margin: 2px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        border: none !important;
     }
 
     .flatpickr-calendar .flatpickr-day:hover {
         background: #2a2d33 !important;
-        border-color: #2a2d33 !important;
+        color: #fff !important;
+        transform: scale(1.05) !important;
     }
 
     .flatpickr-calendar .flatpickr-day.selected {
         background: #f97316 !important;
         border-color: #f97316 !important;
         color: #fff !important;
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3) !important;
+        transform: scale(1.05) !important;
     }
 
     .flatpickr-calendar .flatpickr-day.selected:hover {
         background: #ea580c !important;
         border-color: #ea580c !important;
+        box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4) !important;
     }
 
     .flatpickr-calendar .flatpickr-day.today {
-        border-color: #f97316 !important;
+        border: 2px solid #f97316 !important;
         color: #f97316 !important;
+        background: transparent !important;
     }
 
     .flatpickr-calendar .flatpickr-day.today.selected {
         color: #fff !important;
+        border-color: #f97316 !important;
     }
 
     .flatpickr-calendar .flatpickr-day.inRange {
@@ -285,6 +320,7 @@
         background: #f97316 !important;
         border-color: #f97316 !important;
         color: #fff !important;
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3) !important;
     }
 
     .flatpickr-calendar .flatpickr-day.flatpickr-disabled {
@@ -299,24 +335,23 @@
     .flatpickr-calendar .flatpickr-day.prevMonthDay:hover,
     .flatpickr-calendar .flatpickr-day.nextMonthDay:hover {
         background: #1a1d23 !important;
-        border-color: #1a1d23 !important;
+        color: #777 !important;
     }
 
-    .flatpickr-calendar .flatpickr-rContainer {
-        padding: 4px 8px 8px 8px !important;
-    }
-
-    .flatpickr-calendar .flatpickr-day.flatpickr-disabled {
-        color: #333 !important;
+    .flatpickr-calendar .flatpickr-day.selected.startRange,
+    .flatpickr-calendar .flatpickr-day.selected.endRange {
+        background: #f97316 !important;
     }
 
     /* دکمه Clear در flatpickr */
     .flatpickr-calendar .flatpickr-clear-day {
         color: #fff !important;
         background: rgba(239, 68, 68, 0.2) !important;
-        border-radius: 6px !important;
-        padding: 2px 8px !important;
+        border-radius: 8px !important;
+        padding: 2px 10px !important;
         font-size: 12px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s !important;
     }
 
     .flatpickr-calendar .flatpickr-clear-day:hover {
@@ -388,7 +423,6 @@
         border-color: #f97316;
     }
 
-    /* ===== مدیا ===== */
     .post-card .media-container {
         height: 50%;
         border-radius: 10px;
@@ -417,7 +451,6 @@
         text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    /* ===== برچسب نوع (فقط نوع، بدون وضعیت) ===== */
     .post-card .badge-type {
         position: absolute;
         top: 8px;
@@ -435,7 +468,6 @@
         z-index: 2;
     }
 
-    /* ===== کپشن ===== */
     .post-card .post-caption {
         flex: 1;
         margin-top: 6px;
@@ -463,7 +495,6 @@
         font-style: italic;
     }
 
-    /* ===== امتیاز ===== */
     .post-card .post-score {
         display: flex;
         justify-content: center;
@@ -483,7 +514,6 @@
         margin-right: 2px;
     }
 
-    /* ===== دکمه‌های اقدام ===== */
     .post-card .post-actions {
         display: flex;
         align-items: center;
@@ -529,7 +559,6 @@
         background: #2a2d33;
     }
 
-    /* ===== پیام خالی ===== */
     .empty-state {
         text-align: center;
         padding: 60px 20px;
@@ -548,7 +577,9 @@
         margin-bottom: 12px;
     }
 
-    /* ===== مودال‌ها ===== */
+    /* ============================================
+       ===== مودال اطلاعات تکمیلی پست (دیزاین جدید) =====
+       ============================================ */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -567,22 +598,23 @@
         display: flex;
     }
 
-    .modal-content {
+    .post-detail-modal {
         background: #1a1d23;
-        border-radius: 20px;
-        padding: 24px;
-        max-width: 800px;
+        border-radius: 24px;
+        max-width: 900px;
         width: 95%;
-        max-height: 95vh;
-        overflow-y: auto;
+        max-height: 92vh;
         position: relative;
-        animation: modalIn 0.3s ease;
+        animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         border: 1px solid #2a2d33;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
     @keyframes modalIn {
         from {
-            transform: scale(0.92) translateY(20px);
+            transform: scale(0.85) translateY(30px);
             opacity: 0;
         }
         to {
@@ -591,115 +623,320 @@
         }
     }
 
-    .modal-close {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: rgba(0,0,0,0.5);
-        border: none;
-        border-radius: 50%;
+    .post-detail-modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        background: #0f1115;
+        border-bottom: 1px solid #2a2d33;
+        flex-shrink: 0;
+    }
+
+    .post-detail-modal .modal-header .modal-title {
+        margin: 0;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .post-detail-modal .modal-header .modal-title .post-id-badge {
+        font-size: 11px;
+        background: #2a2d33;
+        padding: 2px 12px;
+        border-radius: 20px;
+        color: #a0a0a0;
+        font-weight: 400;
+    }
+
+    .post-detail-modal .modal-close {
         width: 36px;
         height: 36px;
-        color: #fff;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid #2a2d33;
+        border-radius: 50%;
+        color: #a0a0a0;
         font-size: 18px;
         cursor: pointer;
-        z-index: 10;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s;
     }
 
-    .modal-close:hover {
-        background: rgba(255,255,255,0.15);
+    .post-detail-modal .modal-close:hover {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border-color: #ef4444;
         transform: rotate(90deg);
     }
 
-    .modal-title {
-        margin-top: 0;
-        color: #fff;
-        padding-left: 40px;
-        font-size: 18px;
-        font-weight: 600;
-    }
-
-    .modal-media {
-        width: 100%;
-        height: 400px;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #0f1115;
-        margin: 12px 0;
-    }
-
-    .modal-media video {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: #000;
-    }
-
-    .modal-media img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: #0f1115;
-    }
-
-    .modal-info {
+    .post-detail-modal .modal-body {
         display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
-
-    .modal-info-item {
-        color: #a0a0a0;
-        font-size: 13px;
-    }
-
-    .modal-info-item .highlight {
-        color: #fbbf24;
-        font-weight: 600;
-    }
-
-    .modal-caption {
-        color: #e0e0e0;
-        font-size: 14px;
-        margin-top: 4px;
-        display: none;
-        background: #0f1115;
-        padding: 14px 16px;
-        border-radius: 10px;
-        max-height: 150px;
+        flex-direction: row;
+        padding: 20px 24px;
+        gap: 20px;
         overflow-y: auto;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        line-height: 1.8;
+        flex: 1;
+    }
+
+    /* بخش چپ - مدیا */
+    .post-detail-modal .media-section {
+        flex: 1.2;
+        min-height: 350px;
+        background: #0f1115;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
         border: 1px solid #2a2d33;
     }
 
-    .modal-caption.show {
-        display: block;
+    .post-detail-modal .media-section .media-container {
+        width: 100%;
+        height: 100%;
+        min-height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .modal-score-section {
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid #2a2d33;
+    .post-detail-modal .media-section .media-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
-    .modal-score-form {
+    .post-detail-modal .media-section .media-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .post-detail-modal .media-section .no-media {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #555;
+        gap: 8px;
+    }
+
+    .post-detail-modal .media-section .no-media i {
+        font-size: 48px;
+        opacity: 0.3;
+    }
+
+    .post-detail-modal .media-section .no-media span {
+        font-size: 13px;
+    }
+
+    /* برچسب نوع روی مدیا */
+    .post-detail-modal .media-section .media-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 4px 14px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #fff;
+    }
+
+    /* بخش راست - اطلاعات */
+    .post-detail-modal .info-section {
+        flex: 0.8;
+        min-width: 240px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .post-detail-modal .info-section .info-card {
+        background: #0f1115;
+        border-radius: 12px;
+        padding: 14px 16px;
+        border: 1px solid #2a2d33;
+        transition: border-color 0.3s;
+    }
+
+    .post-detail-modal .info-section .info-card:hover {
+        border-color: #3a3d43;
+    }
+
+    .post-detail-modal .info-section .info-card .info-label {
+        font-size: 10px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .post-detail-modal .info-section .info-card .info-value {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        word-break: break-word;
+    }
+
+    .post-detail-modal .info-section .info-card .info-value .highlight {
+        color: #fbbf24;
+    }
+
+    .post-detail-modal .info-section .info-card .info-value .channel-name {
+        color: #60a5fa;
+    }
+
+    /* کارت امتیازدهی */
+    .post-detail-modal .info-section .score-card {
+        background: linear-gradient(135deg, #0f1115, #1a1d23);
+        border-radius: 12px;
+        padding: 14px 16px;
+        border: 1px solid #2a2d33;
+        margin-top: auto;
+    }
+
+    .post-detail-modal .info-section .score-card .score-label {
+        font-size: 10px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .post-detail-modal .info-section .score-card .score-input-wrapper {
         display: flex;
         gap: 10px;
         align-items: center;
-        flex-wrap: wrap;
     }
 
-    .modal-score-form input {
+    .post-detail-modal .info-section .score-card .score-input-wrapper input {
         flex: 1;
-        min-width: 150px;
+        padding: 8px 14px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 13px;
+        transition: all 0.3s;
+        min-width: 80px;
+    }
+
+    .post-detail-modal .info-section .score-card .score-input-wrapper input:focus {
+        outline: none;
+        border-color: #f97316;
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+    }
+
+    .post-detail-modal .info-section .score-card .score-input-wrapper input::placeholder {
+        color: #555;
+        font-size: 12px;
+    }
+
+    .post-detail-modal .info-section .score-card .score-input-wrapper .btn-score-submit {
+        padding: 8px 20px;
+        background: #f97316;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+
+    .post-detail-modal .info-section .score-card .score-input-wrapper .btn-score-submit:hover {
+        background: #ea580c;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    }
+
+    /* کارت کپشن */
+    .post-detail-modal .info-section .caption-card {
+        background: #0f1115;
+        border-radius: 12px;
+        padding: 14px 16px;
+        border: 1px solid #2a2d33;
+        max-height: 120px;
+        overflow-y: auto;
+    }
+
+    .post-detail-modal .info-section .caption-card .caption-label {
+        font-size: 10px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .post-detail-modal .info-section .caption-card .caption-text {
+        color: #c0c0c0;
+        font-size: 13px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .post-detail-modal .info-section .caption-card .caption-text.empty {
+        color: #555;
+        font-style: italic;
+    }
+
+    .post-detail-modal .info-section .caption-card::-webkit-scrollbar {
+        width: 3px;
+    }
+    .post-detail-modal .info-section .caption-card::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .post-detail-modal .info-section .caption-card::-webkit-scrollbar-thumb {
+        background: #f97316;
+        border-radius: 4px;
+    }
+
+    /* آیکون‌های اطلاعات */
+    .info-icon {
+        color: #f97316;
+        margin-left: 6px;
+        font-size: 13px;
+    }
+
+    /* ===== مودال‌های کوچک (امتیاز و حذف) ===== */
+    .mini-modal {
+        background: #1a1d23;
+        border-radius: 20px;
+        padding: 28px 32px;
+        max-width: 420px;
+        width: 90%;
+        position: relative;
+        animation: modalIn 0.3s ease;
+        border: 1px solid #2a2d33;
+    }
+
+    .mini-modal .mini-title {
+        color: #fff;
+        margin: 0 0 16px;
+        font-size: 17px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mini-modal .mini-title i {
+        color: #fbbf24;
+    }
+
+    .mini-modal input {
+        width: 100%;
         padding: 10px 14px;
         background: #0f1115;
         border: 1px solid #2a2d33;
@@ -709,44 +946,70 @@
         transition: border-color 0.3s;
     }
 
-    .modal-score-form input:focus {
+    .mini-modal input:focus {
         outline: none;
         border-color: #f97316;
-        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
     }
 
-    .modal-score-form input::placeholder {
-        color: #555;
+    .mini-modal .mini-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
     }
 
-    .modal-score-form button {
-        background: #f97316;
+    .mini-modal .mini-actions button {
+        flex: 1;
+        padding: 10px;
         border: none;
         border-radius: 8px;
-        padding: 10px 24px;
-        color: #fff;
-        cursor: pointer;
-        white-space: nowrap;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
+        cursor: pointer;
         transition: all 0.3s;
     }
 
-    .modal-score-form button:hover {
+    .mini-modal .mini-actions .btn-cancel {
+        background: #2a2d33;
+        color: #a0a0a0;
+    }
+
+    .mini-modal .mini-actions .btn-cancel:hover {
+        background: #3a3d43;
+    }
+
+    .mini-modal .mini-actions .btn-confirm {
+        background: #f97316;
+        color: #fff;
+    }
+
+    .mini-modal .mini-actions .btn-confirm:hover {
         background: #ea580c;
         transform: translateY(-1px);
     }
 
-    /* ===== اسکرول بار ===== */
-    .modal-caption::-webkit-scrollbar {
-        width: 4px;
+    .mini-modal .mini-actions .btn-danger {
+        background: #ef4444;
+        color: #fff;
     }
-    .modal-caption::-webkit-scrollbar-track {
-        background: #1a1d23;
+
+    .mini-modal .mini-actions .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
     }
-    .modal-caption::-webkit-scrollbar-thumb {
-        background: #f97316;
-        border-radius: 4px;
+
+    .mini-modal .delete-icon {
+        font-size: 48px;
+        color: #ef4444;
+        display: block;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    .mini-modal .delete-text {
+        text-align: center;
+        color: #a0a0a0;
+        font-size: 13px;
+        margin: 0 0 16px;
     }
 
     /* ===== واکنش‌گرایی ===== */
@@ -798,17 +1061,47 @@
             font-size: 28px;
         }
 
-        .modal-media {
-            height: 220px;
+        /* مودال موبایل */
+        .post-detail-modal .modal-body {
+            flex-direction: column;
+            padding: 12px 16px;
         }
 
-        .modal-content {
-            padding: 16px;
+        .post-detail-modal .media-section {
+            min-height: 200px;
         }
 
-        .modal-title {
-            font-size: 16px;
-            padding-left: 35px;
+        .post-detail-modal .media-section .media-container {
+            min-height: 200px;
+        }
+
+        .post-detail-modal .info-section {
+            min-width: unset;
+        }
+
+        .post-detail-modal .modal-header {
+            padding: 12px 16px;
+        }
+
+        .post-detail-modal .modal-header .modal-title {
+            font-size: 14px;
+        }
+
+        .post-detail-modal .info-section .score-card .score-input-wrapper {
+            flex-wrap: wrap;
+        }
+
+        .post-detail-modal .info-section .score-card .score-input-wrapper input {
+            min-width: 100%;
+        }
+
+        .post-detail-modal .info-section .score-card .score-input-wrapper .btn-score-submit {
+            width: 100%;
+            text-align: center;
+        }
+
+        .mini-modal {
+            padding: 20px;
         }
     }
 
@@ -821,6 +1114,18 @@
         .post-card {
             min-height: 200px;
             max-height: 280px;
+        }
+
+        .post-detail-modal .modal-body {
+            flex-direction: column;
+        }
+
+        .post-detail-modal .media-section {
+            min-height: 280px;
+        }
+
+        .post-detail-modal .media-section .media-container {
+            min-height: 280px;
         }
     }
 
@@ -907,9 +1212,8 @@
 <!-- ===== گرید پست‌ها ===== -->
 <div class="posts-grid" id="postsGrid">
     {% for post in posts %}
-    <div class="post-card" onclick="openPostModal({{ loop.index0 }})" data-post-id="{{ post.id }}">
+    <div class="post-card" onclick="openPostDetail({{ loop.index0 }})" data-post-id="{{ post.id }}">
         
-        <!-- مدیا -->
         <div class="media-container">
             {% if post.media_url %}
                 {% if post.post_type == 'video' %}
@@ -927,7 +1231,6 @@
                 </div>
             {% endif %}
             
-            <!-- فقط برچسب نوع (بدون وضعیت) -->
             <span class="badge-type">
                 {% if post.post_type == 'video' %}🎬 ویدیو
                 {% elif post.post_type == 'photo' %}📸 عکس
@@ -937,7 +1240,6 @@
             </span>
         </div>
 
-        <!-- کپشن -->
         <div class="post-caption">
             <div class="post-caption-text {% if not post.caption %}empty{% endif %}">
                 {% if post.caption %}
@@ -948,13 +1250,11 @@
             </div>
         </div>
 
-        <!-- امتیاز -->
         <div class="post-score">
             <span class="number">{{ post.score|int if post.score is not none else '۰' }}</span>
             <span class="label">امتیاز</span>
         </div>
 
-        <!-- آیکون‌ها -->
         <div class="post-actions">
             <button class="btn-star" onclick="event.stopPropagation(); openScoreModal({{ post.id }})" title="امتیازدهی">
                 <i class="fas fa-star"></i>
@@ -979,70 +1279,102 @@
 </div>
 {% endif %}
 
-<!-- ===== مودال امتیازدهی ===== -->
+<!-- ============================================
+     ===== مودال اطلاعات تکمیلی پست (دیزاین جدید) =====
+     ============================================ -->
+<div id="postDetailModal" class="modal-overlay" onclick="if(event.target===this) closePostDetail()">
+    <div class="post-detail-modal">
+        
+        <!-- هدر مودال -->
+        <div class="modal-header">
+            <div class="modal-title">
+                📄 جزئیات پست
+                <span class="post-id-badge" id="detailPostId">#--</span>
+            </div>
+            <button class="modal-close" onclick="closePostDetail()">✕</button>
+        </div>
+        
+        <!-- بدنه مودال -->
+        <div class="modal-body">
+            
+            <!-- بخش چپ: مدیا -->
+            <div class="media-section">
+                <div class="media-container" id="detailMediaContainer">
+                    <!-- محتوای مدیا توسط جاوااسکریپت پر می‌شود -->
+                </div>
+                <span class="media-badge" id="detailMediaBadge">📸 عکس</span>
+            </div>
+            
+            <!-- بخش راست: اطلاعات -->
+            <div class="info-section">
+                
+                <!-- کارت کانال -->
+                <div class="info-card">
+                    <div class="info-label">📢 کانال</div>
+                    <div class="info-value" id="detailChannel">---</div>
+                </div>
+                
+                <!-- کارت تاریخ -->
+                <div class="info-card">
+                    <div class="info-label">🕒 تاریخ انتشار</div>
+                    <div class="info-value" id="detailDate">---</div>
+                </div>
+                
+                <!-- کارت امتیاز -->
+                <div class="info-card">
+                    <div class="info-label">⭐ امتیاز</div>
+                    <div class="info-value" id="detailScore">
+                        <span class="highlight">---</span>
+                    </div>
+                </div>
+                
+                <!-- کارت کپشن -->
+                <div class="caption-card" id="detailCaptionContainer">
+                    <div class="caption-label">📌 کپشن</div>
+                    <div class="caption-text" id="detailCaption">---</div>
+                </div>
+                
+                <!-- کارت امتیازدهی -->
+                <div class="score-card">
+                    <div class="score-label">✏️ ثبت امتیاز جدید</div>
+                    <form id="detailScoreForm" method="POST" class="score-input-wrapper">
+                        <input type="number" id="detailScoreInput" name="score" min="0" max="100" 
+                               placeholder="امتیاز ۰ تا ۱۰۰">
+                        <button type="submit" class="btn-score-submit">ثبت</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== مودال امتیازدهی (ساده) ===== -->
 <div id="scoreModal" class="modal-overlay" onclick="if(event.target===this) closeScoreModal()">
-    <div class="modal-content" style="max-width: 400px;">
-        <h3 style="color: #fff; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-star" style="color: #fbbf24;"></i> امتیازدهی
-        </h3>
+    <div class="mini-modal">
+        <div class="mini-title">
+            <i class="fas fa-star"></i> امتیازدهی
+        </div>
         <form id="scoreForm" method="POST">
-            <input type="number" name="score" min="0" max="100" required
-                   placeholder="امتیاز ۰ تا ۱۰۰"
-                   style="width: 100%; padding: 10px 14px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff; font-size: 14px;">
-            <div style="display: flex; gap: 10px; margin-top: 14px;">
-                <button type="button" onclick="closeScoreModal()" 
-                        style="flex:1; padding:10px; background:#2a2d33; border:none; border-radius:8px; color:#a0a0a0; cursor:pointer; font-weight:500;">لغو</button>
-                <button type="submit" 
-                        style="flex:1; padding:10px; background:#f97316; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600;">ثبت امتیاز</button>
+            <input type="number" name="score" min="0" max="100" required placeholder="امتیاز ۰ تا ۱۰۰">
+            <div class="mini-actions">
+                <button type="button" class="btn-cancel" onclick="closeScoreModal()">لغو</button>
+                <button type="submit" class="btn-confirm">ثبت امتیاز</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ===== مودال جزئیات پست ===== -->
-<div id="postModal" class="modal-overlay" onclick="if(event.target===this) closePostModal()">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closePostModal()">✕</button>
-
-        <h3 class="modal-title">📄 جزئیات پست</h3>
-        
-        <div class="modal-media" id="postMediaContainer">
-            <!-- محتوای مدیا توسط جاوااسکریپت پر می‌شود -->
-        </div>
-
-        <div class="modal-info">
-            <span class="modal-info-item" id="postDetailChannel">📢 کانال: <span style="color:#fff;">-</span></span>
-            <span class="modal-info-item" id="postDetailScore">⭐ امتیاز: <span class="highlight">-</span></span>
-            <span class="modal-info-item" id="postDetailDate">🕒 تاریخ: <span style="color:#fff;">-</span></span>
-        </div>
-
-        <div class="modal-caption" id="postDetailCaption">
-            📌 کپشن: <span id="postDetailCaptionText" style="display: block; margin-top: 4px;"></span>
-        </div>
-
-        <div class="modal-score-section">
-            <form id="scoreFromModalForm" method="POST" class="modal-score-form">
-                <input type="number" id="scoreInput" name="score" min="0" max="100" 
-                       placeholder="امتیاز ۰ تا ۱۰۰">
-                <button type="submit">ثبت امتیاز</button>
-            </form>
-        </div>
-    </div>
-</div>
-
 <!-- ===== مودال حذف ===== -->
 <div id="deleteModal" class="modal-overlay" onclick="if(event.target===this) closeDeleteModal()">
-    <div class="modal-content" style="max-width: 380px; text-align: center;">
-        <div style="font-size: 48px; color: #ef4444; margin-bottom: 8px;">⚠️</div>
-        <h3 style="color: #fff; margin: 0 0 8px;">آیا مطمئن هستید؟</h3>
-        <p style="color: #a0a0a0; font-size: 13px; margin: 0 0 16px;">این عمل قابل بازگشت نیست.</p>
-        
-        <div style="display: flex; gap: 12px; justify-content: center;">
-            <button onclick="closeDeleteModal()" 
-                    style="padding: 8px 24px; background: #2a2d33; border: none; border-radius: 8px; color: #a0a0a0; cursor: pointer; font-weight:500;">لغو</button>
-            <form id="deleteForm" method="POST" style="display: inline;">
-                <button type="submit" 
-                        style="padding: 8px 24px; background: #ef4444; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-weight:600;">حذف</button>
+    <div class="mini-modal" style="text-align: center;">
+        <span class="delete-icon">⚠️</span>
+        <h3 style="color: #fff; margin: 0 0 4px;">آیا مطمئن هستید؟</h3>
+        <p class="delete-text">این عمل قابل بازگشت نیست و پست به طور کامل حذف می‌شود.</p>
+        <div class="mini-actions">
+            <button class="btn-cancel" onclick="closeDeleteModal()">لغو</button>
+            <form id="deleteForm" method="POST" style="display: inline; flex:1;">
+                <button type="submit" class="btn-danger" style="width:100%;">حذف</button>
             </form>
         </div>
     </div>
@@ -1078,27 +1410,31 @@
                 allowInput: true,
                 disableMobile: true,
                 onChange: function(selectedDates, dateStr, instance) {
-                    // مقدار انتخاب شده را تنظیم می‌کنیم
                     instance.input.value = dateStr;
                 }
             });
         }
 
-        // به‌روزرسانی تعداد پست‌ها
         const posts = document.querySelectorAll('.post-card');
         document.getElementById('countDisplay').textContent = posts.length;
     });
 
-    // ===== باز کردن مودال جزئیات =====
-    function openPostModal(index) {
+    // ===== باز کردن مودال جزئیات (دیزاین جدید) =====
+    function openPostDetail(index) {
         const post = postsData[index];
         if (!post) return;
         
         currentPostId = post.id;
 
-        document.getElementById('postModal').classList.add('active');
-        
-        const mediaContainer = document.getElementById('postMediaContainer');
+        const modal = document.getElementById('postDetailModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // تنظیم ID پست
+        document.getElementById('detailPostId').textContent = '#' + post.id;
+
+        // تنظیم مدیا
+        const mediaContainer = document.getElementById('detailMediaContainer');
         mediaContainer.innerHTML = '';
         
         if (post.media_url) {
@@ -1112,6 +1448,7 @@
                 video.style.objectFit = 'contain';
                 video.style.background = '#000';
                 mediaContainer.appendChild(video);
+                document.getElementById('detailMediaBadge').textContent = '🎬 ویدیو';
             } else {
                 const img = document.createElement('img');
                 img.src = post.media_url;
@@ -1120,37 +1457,42 @@
                 img.style.objectFit = 'contain';
                 img.style.background = '#0f1115';
                 mediaContainer.appendChild(img);
+                document.getElementById('detailMediaBadge').textContent = 
+                    post.post_type === 'photo' ? '📸 عکس' : '📄 سند';
             }
         } else {
             const div = document.createElement('div');
-            div.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #666; flex-direction: column;';
-            div.innerHTML = '<i class="fas fa-file-alt fa-3x"></i><p style="margin-top: 8px; font-size: 14px;">این پست مدیا ندارد</p>';
+            div.className = 'no-media';
+            div.innerHTML = '<i class="fas fa-file-alt"></i><span>این پست مدیا ندارد</span>';
             mediaContainer.appendChild(div);
+            document.getElementById('detailMediaBadge').textContent = '📝 متن';
         }
-        
-        document.getElementById('postDetailChannel').innerHTML = '📢 کانال: <span style="color:#fff;">' + (post.channel || 'نامشخص') + '</span>';
-        document.getElementById('postDetailScore').innerHTML = '⭐ امتیاز: <span class="highlight">' + (post.score || 'بدون امتیاز') + '</span>';
-        document.getElementById('postDetailDate').innerHTML = '🕒 تاریخ: <span style="color:#fff;">' + post.date + '</span>';
 
-        const captionDiv = document.getElementById('postDetailCaption');
-        const captionText = document.getElementById('postDetailCaptionText');
+        // تنظیم اطلاعات
+        document.getElementById('detailChannel').textContent = post.channel || 'نامشخص';
+        document.getElementById('detailDate').textContent = post.date || 'نامشخص';
+        document.getElementById('detailScore').innerHTML = 
+            post.score ? `<span class="highlight">${post.score}</span>` : 'بدون امتیاز';
+
+        // تنظیم کپشن
+        const captionEl = document.getElementById('detailCaption');
         if (post.caption) {
-            captionDiv.classList.add('show');
-            captionText.innerHTML = post.caption.replace(/\n/g, '<br>');
+            captionEl.textContent = post.caption;
+            captionEl.className = 'caption-text';
         } else {
-            captionDiv.classList.remove('show');
+            captionEl.textContent = 'بدون کپشن';
+            captionEl.className = 'caption-text empty';
         }
-        
-        document.getElementById('scoreInput').value = '';
-        document.getElementById('scoreFromModalForm').action = '/dashboard/posts/score/' + post.id;
-        
-        document.body.style.overflow = 'hidden';
+
+        // تنظیم فرم امتیاز
+        document.getElementById('detailScoreInput').value = '';
+        document.getElementById('detailScoreForm').action = '/dashboard/posts/score/' + post.id;
     }
 
-    function closePostModal() {
-        const video = document.querySelector('#postMediaContainer video');
+    function closePostDetail() {
+        const video = document.querySelector('#detailMediaContainer video');
         if (video) video.pause();
-        document.getElementById('postModal').classList.remove('active');
+        document.getElementById('postDetailModal').classList.remove('active');
         document.body.style.overflow = '';
     }
 
@@ -1186,11 +1528,8 @@
         const dateInput = document.getElementById('dateFilter');
         if (dateInput) {
             dateInput.value = '';
-            // پاک کردن مقدار flatpickr
             const fp = dateInput._flatpickr;
-            if (fp) {
-                fp.clear();
-            }
+            if (fp) fp.clear();
         }
         document.getElementById('filterForm').submit();
     }
@@ -1198,7 +1537,7 @@
     // ===== کلید ESC =====
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            closePostModal();
+            closePostDetail();
             closeScoreModal();
             closeDeleteModal();
         }
