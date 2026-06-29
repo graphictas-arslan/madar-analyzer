@@ -6,3 +6,4 @@ requests
 gunicorn
 Flask-Migrate
 openpyxl
+jdatetime
