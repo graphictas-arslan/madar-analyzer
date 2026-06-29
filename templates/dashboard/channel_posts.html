@@ -3,7 +3,7 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
     <h2 style="font-size: 18px; margin: 0;">📸 پست‌های {{ channel.channel_name }}</h2>
-    <a href="/dashboard/channels" class="btn btn-outline btn-sm">بازگشت</a>
+    <a href="/dashboard/channels" class="btn btn-outline btn-sm" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 4px 12px; color: #a0a0a0; text-decoration: none; font-size: 12px;">بازگشت</a>
 </div>
 
 <!-- آمار کانال -->
@@ -23,15 +23,16 @@
 </div>
 
 <script>
+    // داده‌های پست‌ها از سمت سرور (با تاریخ شمسی)
     const postsData = [
-        {% for post in posts %}
+        {% for post in posts_data %}
         {
             id: {{ post.id }},
             caption: {{ post.caption|tojson if post.caption else 'null' }},
             media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
             channel: {{ channel.channel_name|tojson }},
             score: {{ post.score|tojson if post.score else 'null' }},
-            date: {{ convert_to_jalali(post.publish_date)|tojson if post.publish_date else 'null' }}
+            date: {{ post.publish_date|tojson }}
         },
         {% endfor %}
     ];
@@ -43,150 +44,7 @@
         document.getElementById('postModal').style.display = 'flex';
         document.getElementById('postDetailImage').src = post.media_url || '';
         document.getElementById('postDetailChannel').textContent = '📢 کانال: ' + post.channel;
-        document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + post.score;
-        document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
-
-        const captionDiv = document.getElementById('postDetailCaption');
-        const captionText = document.getElementById('postDetailCaptionText');
-        if (post.caption) {
-            captionDiv.style.display = 'block';
-            captionText.textContent = post.caption;
-        } else {
-            captionDiv.style.display = 'none';
-        }
-    }
-
-    // ... بقیه توابع جاوااسکریپت مثل قبل ...
-</script>
-
-<!-- لیست پست‌ها -->
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-    {% for post in posts %}
-    <div onclick="openPostModal({{ loop.index0 }})"
-         style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: space-between;">
-        
-        <!-- تصویر -->
-        <div style="height: 45%; border-radius: 8px; overflow: hidden; background: #0f1115;">
-            {% if post.media_url %}
-                <img src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;">
-            {% else %}
-                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0;">
-                    <i class="fas fa-file-alt fa-2x"></i>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- کپشن -->
-        <div style="flex: 1; margin-top: 4px; overflow: hidden;">
-            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: normal; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                {% if post.caption %}
-                    {{ post.caption }}
-                {% else %}
-                    بدون کپشن
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- امتیاز -->
-        <div style="display: flex; justify-content: center; margin-top: 2px;">
-            <div style="display: flex; align-items: baseline; gap: 3px;">
-                <span style="font-size: 12px; font-weight: 600; color: #fbbf24;">
-                    {{ post.score|int if post.score is not none else '۰' }}
-                </span>
-                <span style="font-size: 7px; color: #a0a0a0;">امتیاز</span>
-            </div>
-        </div>
-
-        <!-- آیکون‌ها -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-            <button onclick="event.stopPropagation(); openScoreModal({{ post.id }})"
-                    style="background: transparent; border: none; color: #facc15; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
-                <i class="fas fa-star"></i>
-            </button>
-            <div style="width: 1px; height: 18px; background: #2a2d33;"></div>
-            <button onclick="event.stopPropagation(); openDeleteModal({{ post.id }})"
-                    style="background: transparent; border: none; color: #ef4444; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-<!-- مودال امتیازدهی -->
-<div id="scoreModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #1a1d23; border-radius: 16px; padding: 20px; max-width: 400px; width: 90%;">
-        <h3 style="margin: 0 0 12px;">⭐ امتیازدهی</h3>
-        <form id="scoreForm" method="POST" action="/dashboard/posts/score/">
-            <input type="number" name="score" min="0" max="100" required
-                   style="width: 100%; padding: 8px; background: #0f1115; border: 1px solid #2a2d33; border-radius: 8px; color: #fff;">
-            <div style="display: flex; gap: 8px; margin-top: 12px;">
-                <button type="button" onclick="closeScoreModal()" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 6px 14px; color: #a0a0a0;">لغو</button>
-                <button type="submit" style="background: #f97316; border: none; border-radius: 8px; padding: 6px 14px; color: #fff;">ثبت</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- مودال جزئیات پست -->
-<div id="postModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #1a1d23; border-radius: 20px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative;">
-        <button onclick="closePostModal()" style="position: absolute; top: 12px; left: 12px; background: transparent; border: none; color: #a0a0a0; font-size: 20px; cursor: pointer;">
-            ✕
-        </button>
-        <div id="postDetailContent">
-            <h3 style="margin-top: 0; color: #fff;">📄 جزئیات پست</h3>
-            <div style="width: 100%; height: 250px; border-radius: 12px; overflow: hidden; background: #0f1115; margin: 12px 0;">
-                <img id="postDetailImage" src="" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
-                <span id="postDetailChannel" style="color: #a0a0a0; font-size: 13px;">📢 کانال: -</span>
-                <span id="postDetailScore" style="color: #fbbf24; font-size: 13px; font-weight: 600;">⭐ امتیاز: -</span>
-                <span id="postDetailDate" style="color: #a0a0a0; font-size: 12px;">🕒 تاریخ: -</span>
-            </div>
-            <div id="postDetailCaption" style="color: #a0a0a0; font-size: 13px; margin-top: 4px; display: none;">
-                📌 کپشن: <span id="postDetailCaptionText"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- مودال تایید حذف -->
-<div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
-    <div style="background: #1a1d23; border-radius: 16px; padding: 24px; max-width: 380px; width: 90%; text-align: center;">
-        <div style="font-size: 48px; color: #ef4444; margin-bottom: 8px;">⚠️</div>
-        <h3 style="color: #fff; margin: 0 0 8px;">آیا مطمئن هستید؟</h3>
-        <p style="color: #a0a0a0; font-size: 13px; margin: 0 0 16px;">این عمل قابل بازگشت نیست.</p>
-        <div style="display: flex; gap: 12px; justify-content: center;">
-            <button onclick="closeDeleteModal()" style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 8px 20px; color: #a0a0a0; cursor: pointer;">لغو</button>
-            <form id="deleteForm" method="POST" style="display: inline;">
-                <button type="submit" style="background: #ef4444; border: none; border-radius: 8px; padding: 8px 20px; color: #fff; cursor: pointer;">حذف</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    const postsData = [
-        {% for post in posts %}
-        {
-            id: {{ post.id }},
-            caption: {{ post.caption|tojson if post.caption else 'null' }},
-            media_url: {{ post.media_url|tojson if post.media_url else 'null' }},
-            channel: {{ channel.channel_name|tojson }},
-            score: {{ post.score|tojson if post.score else 'null' }},
-            date: {{ post.publish_date.strftime('%Y/%m/%d %H:%M')|tojson if post.publish_date else 'null' }}
-        },
-        {% endfor %}
-    ];
-
-    function openPostModal(id) {
-        const post = postsData.find(p => p.id === id);
-        if (!post) return;
-
-        document.getElementById('postModal').style.display = 'flex';
-        document.getElementById('postDetailImage').src = post.media_url || '';
-        document.getElementById('postDetailChannel').textContent = '📢 کانال: ' + post.channel;
-        document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + post.score;
+        document.getElementById('postDetailScore').textContent = '⭐ امتیاز: ' + (post.score || 'بدون امتیاز');
         document.getElementById('postDetailDate').textContent = '🕒 تاریخ: ' + post.date;
 
         const captionDiv = document.getElementById('postDetailCaption');
@@ -221,6 +79,7 @@
         document.getElementById('deleteModal').style.display = 'none';
     }
 
+    // بستن مودال‌ها با کلیک خارج از آنها
     document.getElementById('postModal').addEventListener('click', function(e) {
         if (e.target === this) closePostModal();
     });
@@ -232,34 +91,33 @@
     });
 </script>
 
-<style>
-    /* ========== دسکتاپ: کپشن کامل + ۳ ستون ========== */
-    @media (min-width: 768px) {
-        .grid-posts {
-            grid-template-columns: repeat(3, 1fr) !important;
-        }
-        .grid-posts > div {
-            padding: 16px !important;
-        }
-        /* کپشن کامل در دسکتاپ */
-        .grid-posts .caption-text {
-            font-size: 14px !important;
-            white-space: normal !important;
-            overflow: visible !important;
-            text-overflow: clip !important;
-        }
-        .grid-posts img {
-            height: 120px !important;
-        }
-        .grid-posts i {
-            font-size: 28px !important;
-        }
-        .grid-posts button {
-            font-size: 28px !important;
-        }
-        .grid-posts .separator {
-            height: 24px !important;
-        }
-    }
-</style>
-{% endblock %}
+<!-- لیست پست‌ها -->
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+    {% for post in posts %}
+    <div onclick="openPostModal({{ loop.index0 }})"
+         style="background: #1a1d23; border-radius: 12px; padding: 8px; cursor: pointer; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: space-between;">
+        
+        <!-- تصویر -->
+        <div style="height: 45%; border-radius: 8px; overflow: hidden; background: #0f1115;">
+            {% if post.media_url %}
+                <img src="{{ post.media_url }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #a0a0a0;">
+                    <i class="fas fa-file-alt fa-2x"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- کپشن -->
+        <div style="flex: 1; margin-top: 4px; overflow: hidden;">
+            <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: normal; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                {% if post.caption %}
+                    {{ post.caption }}
+                {% else %}
+                    <span style="color: #a0a0a0;">بدون کپشن</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- امتیاز -->
+        <div style="display: flex; justify-content: center; margin-top: 2
