@@ -7,10 +7,110 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- پیام‌های فلش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <style>
+                .flash-container {
+                    position: fixed;
+                    top: 70px;
+                    right: 50%;
+                    transform: translateX(50%);
+                    z-index: 9999;
+                    width: 90%;
+                    max-width: 400px;
+                    direction: rtl;
+                }
+                .flash-message {
+                    padding: 12px 16px;
+                    border-radius: 12px;
+                    font-size: 13px;
+                    font-weight: 500;
+                    margin-bottom: 8px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    animation: slideDown 0.4s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .flash-message.success {
+                    background: #1a3a2a;
+                    color: #4ade80;
+                    border: 1px solid #2a5a3a;
+                }
+                .flash-message.danger {
+                    background: #3a1a1a;
+                    color: #f87171;
+                    border: 1px solid #5a2a2a;
+                }
+                .flash-message.warning {
+                    background: #3a2a1a;
+                    color: #fbbf24;
+                    border: 1px solid #5a4a2a;
+                }
+                .flash-message.info {
+                    background: #1a2a3a;
+                    color: #60a5fa;
+                    border: 1px solid #2a4a5a;
+                }
+                .flash-close {
+                    background: transparent;
+                    border: none;
+                    color: inherit;
+                    font-size: 16px;
+                    cursor: pointer;
+                    margin-right: auto;
+                    opacity: 0.6;
+                    transition: opacity 0.2s;
+                }
+                .flash-close:hover {
+                    opacity: 1;
+                }
+                @keyframes slideDown {
+                    from {
+                        transform: translateY(-20px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                }
+            </style>
+            <div class="flash-container" id="flashContainer">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <span>
+                            {% if category == 'success' %}✅
+                            {% elif category == 'danger' %}❌
+                            {% elif category == 'warning' %}⚠️
+                            {% else %}ℹ️{% endif %}
+                            {{ message }}
+                        </span>
+                        <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+            <script>
+                // حذف خودکار پیام‌ها بعد از 5 ثانیه
+                setTimeout(function() {
+                    const container = document.getElementById('flashContainer');
+                    if (container) {
+                        container.style.opacity = '0';
+                        container.style.transition = 'opacity 0.5s';
+                        setTimeout(function() {
+                            container.remove();
+                        }, 500);
+                    }
+                }, 5000);
+            </script>
+        {% endif %}
+    {% endwith %}
 </head>
 <body>
     <div class="app-container">
-        <!-- ===== هدر جدید ===== -->
+        <!-- ===== هدر ===== -->
         <header style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 12px; border-bottom: 1px solid #2a2d33;">
             
             <!-- سمت چپ: لوگو و نام برنامه -->
@@ -29,11 +129,13 @@
                     <i class="fas fa-arrow-right"></i> بازگشت
                 </button>
 
-                <!-- نام ادمین -->
-                <div style="display: flex; align-items: center; gap: 6px; color: #a0a0a0; font-size: 13px;">
-                    <i class="fas fa-user-circle fa-lg" style="color: #f97316;"></i>
+                <!-- نام کاربر -->
+                <a href="/dashboard/profile" style="display: flex; align-items: center; gap: 6px; color: #a0a0a0; font-size: 13px; text-decoration: none; transition: color 0.3s;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #f97316; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600;">
+                        {{ session.get('user_full_name', 'A')[0]|upper if session.get('user_full_name') else 'A' }}
+                    </div>
                     <span>{{ session.get('user_full_name', 'ادمین') }}</span>
-                </div>
+                </a>
             </div>
         </header>
 
@@ -43,7 +145,7 @@
 
     <!-- نوار پایین -->
     <nav class="bottom-nav">
-        <a href="/dashboard" class="nav-item {% if request.path.startswith('/dashboard') and not request.path.startswith('/dashboard/channels') and not request.path.startswith('/dashboard/posts') %}active{% endif %}">
+        <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
             <i class="fas fa-home"></i>
             <span>خانه</span>
         </a>
@@ -51,11 +153,11 @@
             <i class="fas fa-bullhorn"></i>
             <span>کانال‌ها</span>
         </a>
-        <a href="/dashboard/posts" class="nav-item {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
+        <a href="/dashboard/posts" class="nav-item {% if request.path.startswith('/dashboard/posts') and not request.path.startswith('/dashboard/posts/export') %}active{% endif %}">
             <i class="fas fa-file-alt"></i>
             <span>پست‌ها</span>
         </a>
-        <a href="/users" class="nav-item {% if request.path.startswith('/users') %}active{% endif %}">
+        <a href="/dashboard/profile" class="nav-item {% if request.path.startswith('/dashboard/profile') %}active{% endif %}">
             <i class="fas fa-user"></i>
             <span>پروفایل</span>
         </a>
