@@ -357,7 +357,10 @@ def score_post(post_id):
         flash(f"امتیاز {score} برای پست ثبت شد.", "success")
     else:
         flash("لطفاً یک عدد معتبر وارد کنید.", "danger")
-    return redirect(url_for("dashboard.posts"))
+    
+    # دریافت channel_id از پست و هدایت به همان صفحه کانال
+    channel_id = post.channel_id
+    return redirect(url_for("dashboard.channel_posts", channel_id=channel_id))
 
 
 @dashboard_bp.route("/posts/delete/<int:post_id>", methods=["POST"])
@@ -368,10 +371,16 @@ def delete_post(post_id):
     if not post:
         flash("پست پیدا نشد!", "danger")
         return redirect(url_for("dashboard.posts"))
+    
+    # دریافت channel_id قبل از حذف
+    channel_id = post.channel_id
+    
     db.session.delete(post)
     db.session.commit()
     flash("پست حذف شد.", "success")
-    return redirect(url_for("dashboard.posts"))
+    
+    # هدایت به همان صفحه کانال
+    return redirect(url_for("dashboard.channel_posts", channel_id=channel_id))
 
 
 @dashboard_bp.route("/posts/export")
