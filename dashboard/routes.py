@@ -34,7 +34,7 @@ def dashboard():
             'channel_name': c.channel_name,
             'id': c.id,
             'post_count': c.post_count,
-            'avg_score': int(c.avg_score) if c.avg_score else 0
+            'avg_score': round(c.avg_score, 1) if c.avg_score else 0
         }
         for c in top_channels
     ]
