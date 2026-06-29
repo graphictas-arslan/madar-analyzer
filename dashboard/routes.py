@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import requests
 import io
 import jdatetime
-import pytz  # اضافه کردن pytz
+import pytz
 
 from .excel_exporter import generate_excel
 
@@ -47,13 +47,10 @@ def convert_to_jalali(dt):
     if dt is None:
         return '-'
     try:
-        # تبدیل به وقت ایران
         iran_tz = pytz.timezone('Asia/Tehran')
         if dt.tzinfo is None:
             dt = pytz.UTC.localize(dt)
         iran_time = dt.astimezone(iran_tz)
-        
-        # تبدیل به شمسی
         jalali_date = jdatetime.datetime.fromgregorian(datetime=iran_time)
         return jalali_date.strftime('%Y/%m/%d %H:%M')
     except:
@@ -480,6 +477,31 @@ def toggle_user(user_id):
         db.session.commit()
         flash("وضعیت کاربر تغییر کرد.", "success")
     return redirect(url_for("dashboard.users"))
+
+
+# ============== پروفایل کاربری ==============
+@dashboard_bp.route("/profile")
+def profile():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    
+    user = User.query.get(session["user_id"])
+    if not user:
+        flash("کاربر پیدا نشد!", "danger")
+        return redirect(url_for("auth.login"))
+    
+    # آمار کاربر
+    total_posts = Post.query.count()
+    total_channels = Channel.query.count()
+    total_scored = Post.query.filter(Post.score.isnot(None), Post.score >= 1).count()
+    
+    return render_template(
+        "dashboard/profile.html",
+        user=user,
+        total_posts=total_posts,
+        total_channels=total_channels,
+        total_scored=total_scored
+    )
 
 
 # ============== ربات‌ها ==============
