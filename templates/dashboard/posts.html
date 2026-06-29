@@ -6,537 +6,602 @@
     /* استایل‌های صفحه پست‌ها */
     .posts-header {
         display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.posts-header h2 {
-    font-size: 18px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.posts-header .post-count {
-    font-size: 12px;
-    color: #a0a0a0;
-    font-weight: 400;
-}
-
-/* فیلترها */
-.filter-container {
-    background: #1a1d23;
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    border: 1px solid #2a2d33;
-}
-
-.filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-
-.filter-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 120px;
-}
-
-.filter-group label {
-    font-size: 11px;
-    color: #a0a0a0;
-    white-space: nowrap;
-}
-
-.filter-group select,
-.filter-group input {
-    padding: 6px 10px;
-    background: #0f1115;
-    border: 1px solid #2a2d33;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 12px;
-    width: 100%;
-    transition: border-color 0.3s;
-}
-
-.filter-group select:focus,
-.filter-group input:focus {
-    outline: none;
-    border-color: #f97316;
-}
-
-.filter-group select option {
-    background: #1a1d23;
-    color: #fff;
-}
-
-.btn-filter {
-    padding: 6px 16px;
-    background: #f97316;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-    white-space: nowrap;
-}
-
-.btn-filter:hover {
-    background: #ea580c;
-}
-
-.btn-filter.reset {
-    background: #2a2d33;
-}
-
-.btn-filter.reset:hover {
-    background: #3a3d43;
-}
-
-.btn-export {
-    padding: 6px 14px;
-    background: #2563eb;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-export:hover {
-    background: #1d4ed8;
-}
-
-/* گرید پست‌ها */
-.posts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.post-card {
-    background: #1a1d23;
-    border-radius: 12px;
-    padding: 8px;
-    cursor: pointer;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-    min-height: 180px;
-    max-height: 280px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid transparent;
-}
-
-.post-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    border-color: #f97316;
-}
-
-.post-card .media-container {
-    height: 50%;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #0f1115;
-    position: relative;
-    flex-shrink: 0;
-}
-
-.post-card .media-container img,
-.post-card .media-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.post-card .play-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.5;
-    pointer-events: none;
-    color: #fff;
-    font-size: 32px;
-}
-
-.post-card .post-type-badge {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: rgba(0,0,0,0.6);
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 9px;
-    color: #fff;
-}
-
-.post-card .post-caption {
-    flex: 1;
-    margin-top: 4px;
-    overflow: hidden;
-    min-height: 35px;
-    max-height: 55px;
-}
-
-.post-card .post-caption-text {
-    font-size: 11px;
-    font-weight: 500;
-    color: #fff;
-    white-space: normal;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-}
-
-.post-card .post-caption-text.empty {
-    color: #a0a0a0;
-}
-
-.post-card .post-score {
-    display: flex;
-    justify-content: center;
-    margin-top: 2px;
-    flex-shrink: 0;
-}
-
-.post-card .post-score .number {
-    font-size: 12px;
-    font-weight: 600;
-    color: #fbbf24;
-}
-
-.post-card .post-score .label {
-    font-size: 7px;
-    color: #a0a0a0;
-}
-
-.post-card .post-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-shrink: 0;
-    padding-top: 2px;
-}
-
-.post-card .post-actions button {
-    background: transparent;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 2px 4px;
-    border-radius: 6px;
-    transition: background 0.2s;
-}
-
-.post-card .post-actions .btn-star {
-    color: #facc15;
-}
-
-.post-card .post-actions .btn-star:hover {
-    background: rgba(250, 204, 21, 0.15);
-}
-
-.post-card .post-actions .btn-trash {
-    color: #ef4444;
-}
-
-.post-card .post-actions .btn-trash:hover {
-    background: rgba(239, 68, 68, 0.15);
-}
-
-.post-card .post-actions .divider {
-    width: 1px;
-    height: 18px;
-    background: #2a2d33;
-}
-
-/* وضعیت پست */
-.post-status {
-    position: absolute;
-    bottom: 50px;
-    right: 6px;
-    font-size: 8px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.6);
-    color: #a0a0a0;
-}
-
-.post-status.active {
-    color: #4ade80;
-}
-
-.post-status.pending {
-    color: #fbbf24;
-}
-
-/* مودال‌ها */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.modal-content {
-    background: #1a1d23;
-    border-radius: 20px;
-    padding: 24px;
-    max-width: 800px;
-    width: 95%;
-    max-height: 95vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalIn 0.3s ease;
-}
-
-@keyframes modalIn {
-    from {
-        transform: scale(0.9) translateY(20px);
-        opacity: 0;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
     }
-    to {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
-}
 
-.modal-close {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(0,0,0,0.5);
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s;
-}
-
-.modal-close:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-.modal-title {
-    margin-top: 0;
-    color: #fff;
-    padding-left: 40px;
-    font-size: 18px;
-}
-
-.modal-media {
-    width: 100%;
-    height: 400px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #0f1115;
-    margin: 12px 0;
-}
-
-.modal-media video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: #000;
-}
-
-.modal-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: #0f1115;
-}
-
-.modal-info {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-.modal-info-item {
-    color: #a0a0a0;
-    font-size: 13px;
-}
-
-.modal-info-item .highlight {
-    color: #fbbf24;
-    font-weight: 600;
-}
-
-.modal-caption {
-    color: #e0e0e0;
-    font-size: 14px;
-    margin-top: 4px;
-    display: none;
-    background: #0f1115;
-    padding: 12px;
-    border-radius: 8px;
-    max-height: 150px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    line-height: 1.8;
-}
-
-.modal-caption.show {
-    display: block;
-}
-
-.modal-score-section {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #2a2d33;
-}
-
-.modal-score-form {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.modal-score-form input {
-    flex: 1;
-    min-width: 150px;
-    padding: 10px;
-    background: #0f1115;
-    border: 1px solid #2a2d33;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 14px;
-}
-
-.modal-score-form input:focus {
-    outline: none;
-    border-color: #f97316;
-}
-
-.modal-score-form button {
-    background: #f97316;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    color: #fff;
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background 0.3s;
-}
-
-.modal-score-form button:hover {
-    background: #ea580c;
-}
-
-/* اسکرول بار */
-.modal-caption::-webkit-scrollbar {
-    width: 4px;
-}
-.modal-caption::-webkit-scrollbar-track {
-    background: #1a1d23;
-}
-.modal-caption::-webkit-scrollbar-thumb {
-    background: #f97316;
-    border-radius: 4px;
-}
-
-/* واکنش‌گرا */
-@media (max-width: 480px) {
-    .posts-header {
-        flex-direction: column;
-        align-items: stretch;
+    .posts-header h2 {
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
         gap: 8px;
     }
-    
+
+    .posts-header .post-count {
+        font-size: 12px;
+        color: #a0a0a0;
+        font-weight: 400;
+    }
+
+    /* فیلترها */
+    .filter-container {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border: 1px solid #2a2d33;
+    }
+
     .filter-row {
-        flex-direction: column;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
     }
-    
+
     .filter-group {
-        min-width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 120px;
     }
-    
+
+    .filter-group label {
+        font-size: 11px;
+        color: #a0a0a0;
+        white-space: nowrap;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 6px 10px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        width: 100%;
+        transition: border-color 0.3s;
+        appearance: auto;
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: #f97316;
+    }
+
+    .filter-group select option {
+        background: #1a1d23;
+        color: #fff;
+    }
+
+    /* استایل سفارشی برای انتخابگر تاریخ */
+    .filter-group input[type="date"] {
+        color-scheme: dark;
+        padding: 6px 10px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        width: 100%;
+    }
+
+    .filter-group input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
+
+    .filter-group input[type="date"]::-webkit-datetime-edit {
+        color: #fff;
+    }
+
+    .filter-group input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+        color: #fff;
+    }
+
+    .filter-group input[type="date"]::-webkit-datetime-edit-text {
+        color: #a0a0a0;
+    }
+
+    .filter-group input[type="date"]::-webkit-datetime-edit-month-field,
+    .filter-group input[type="date"]::-webkit-datetime-edit-day-field,
+    .filter-group input[type="date"]::-webkit-datetime-edit-year-field {
+        color: #fff;
+    }
+
+    .btn-filter {
+        padding: 6px 16px;
+        background: #f97316;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+
+    .btn-filter:hover {
+        background: #ea580c;
+    }
+
+    .btn-filter.reset {
+        background: #2a2d33;
+    }
+
+    .btn-filter.reset:hover {
+        background: #3a3d43;
+    }
+
+    .btn-export {
+        padding: 6px 14px;
+        background: #2563eb;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-export:hover {
+        background: #1d4ed8;
+    }
+
+    /* گرید پست‌ها */
     .posts-grid {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        gap: 10px;
     }
-    
-    .post-card {
-        min-height: 160px;
-        max-height: 220px;
-    }
-    
-    .modal-media {
-        height: 250px;
-    }
-}
 
-@media (min-width: 768px) {
-    .posts-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .post-card {
+        background: #1a1d23;
+        border-radius: 12px;
+        padding: 8px;
+        cursor: pointer;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        min-height: 180px;
+        max-height: 280px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        border-color: #f97316;
+    }
+
+    .post-card .media-container {
+        height: 50%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #0f1115;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .post-card .media-container img,
+    .post-card .media-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .post-card .play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.5;
+        pointer-events: none;
+        color: #fff;
+        font-size: 32px;
+    }
+
+    /* ===== برچسب‌های روی تصویر (اصلاح شده) ===== */
+    .post-card .badges-container {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-end;
+    }
+
+    .post-card .post-type-badge {
+        background: rgba(0,0,0,0.7);
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 9px;
+        color: #fff;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .post-card .post-status-badge {
+        background: rgba(0,0,0,0.7);
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 9px;
+        color: #a0a0a0;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .post-card .post-status-badge.active {
+        color: #4ade80;
+        border-color: rgba(74, 222, 128, 0.3);
+    }
+
+    .post-card .post-status-badge.pending {
+        color: #fbbf24;
+        border-color: rgba(251, 191, 36, 0.3);
+    }
+
+    .post-card .post-status-badge.inactive {
+        color: #f87171;
+        border-color: rgba(248, 113, 113, 0.3);
+    }
+
+    .post-card .post-caption {
+        flex: 1;
+        margin-top: 4px;
+        overflow: hidden;
+        min-height: 35px;
+        max-height: 55px;
+    }
+
+    .post-card .post-caption-text {
+        font-size: 11px;
+        font-weight: 500;
+        color: #fff;
+        white-space: normal;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-word;
+    }
+
+    .post-card .post-caption-text.empty {
+        color: #a0a0a0;
+    }
+
+    .post-card .post-score {
+        display: flex;
+        justify-content: center;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .post-card .post-score .number {
+        font-size: 12px;
+        font-weight: 600;
+        color: #fbbf24;
+    }
+
+    .post-card .post-score .label {
+        font-size: 7px;
+        color: #a0a0a0;
+    }
+
+    .post-card .post-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         gap: 12px;
+        flex-shrink: 0;
+        padding-top: 2px;
     }
-    
-    .post-card {
-        min-height: 220px;
-        max-height: 300px;
-    }
-}
 
-@media (min-width: 1200px) {
-    .posts-grid {
-        grid-template-columns: repeat(4, 1fr);
+    .post-card .post-actions button {
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 2px 4px;
+        border-radius: 6px;
+        transition: background 0.2s;
     }
-}
+
+    .post-card .post-actions .btn-star {
+        color: #facc15;
+    }
+
+    .post-card .post-actions .btn-star:hover {
+        background: rgba(250, 204, 21, 0.15);
+    }
+
+    .post-card .post-actions .btn-trash {
+        color: #ef4444;
+    }
+
+    .post-card .post-actions .btn-trash:hover {
+        background: rgba(239, 68, 68, 0.15);
+    }
+
+    .post-card .post-actions .divider {
+        width: 1px;
+        height: 18px;
+        background: #2a2d33;
+    }
+
+    /* مودال‌ها */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #1a1d23;
+        border-radius: 20px;
+        padding: 24px;
+        max-width: 800px;
+        width: 95%;
+        max-height: 95vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+        from {
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(0,0,0,0.5);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+    }
+
+    .modal-close:hover {
+        background: rgba(255,255,255,0.15);
+    }
+
+    .modal-title {
+        margin-top: 0;
+        color: #fff;
+        padding-left: 40px;
+        font-size: 18px;
+    }
+
+    .modal-media {
+        width: 100%;
+        height: 400px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #0f1115;
+        margin: 12px 0;
+    }
+
+    .modal-media video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+    }
+
+    .modal-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #0f1115;
+    }
+
+    .modal-info {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .modal-info-item {
+        color: #a0a0a0;
+        font-size: 13px;
+    }
+
+    .modal-info-item .highlight {
+        color: #fbbf24;
+        font-weight: 600;
+    }
+
+    .modal-caption {
+        color: #e0e0e0;
+        font-size: 14px;
+        margin-top: 4px;
+        display: none;
+        background: #0f1115;
+        padding: 12px;
+        border-radius: 8px;
+        max-height: 150px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 1.8;
+    }
+
+    .modal-caption.show {
+        display: block;
+    }
+
+    .modal-score-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #2a2d33;
+    }
+
+    .modal-score-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .modal-score-form input {
+        flex: 1;
+        min-width: 150px;
+        padding: 10px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    .modal-score-form input:focus {
+        outline: none;
+        border-color: #f97316;
+    }
+
+    .modal-score-form button {
+        background: #f97316;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        color: #fff;
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+
+    .modal-score-form button:hover {
+        background: #ea580c;
+    }
+
+    /* اسکرول بار */
+    .modal-caption::-webkit-scrollbar {
+        width: 4px;
+    }
+    .modal-caption::-webkit-scrollbar-track {
+        background: #1a1d23;
+    }
+    .modal-caption::-webkit-scrollbar-thumb {
+        background: #f97316;
+        border-radius: 4px;
+    }
+
+    /* واکنش‌گرا */
+    @media (max-width: 480px) {
+        .posts-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+        }
+        
+        .filter-row {
+            flex-direction: column;
+        }
+        
+        .filter-group {
+            min-width: 100%;
+        }
+        
+        .posts-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .post-card {
+            min-height: 160px;
+            max-height: 220px;
+        }
+        
+        .modal-media {
+            height: 250px;
+        }
+
+        .post-card .badges-container {
+            top: 4px;
+            right: 4px;
+            gap: 3px;
+        }
+
+        .post-card .post-type-badge,
+        .post-card .post-status-badge {
+            font-size: 8px;
+            padding: 1px 6px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .posts-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .post-card {
+            min-height: 220px;
+            max-height: 300px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .posts-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
 </style>
 
 <!-- ===== هدر ===== -->
@@ -587,7 +652,7 @@
             </div>
             
             <div class="filter-group">
-                <label><i class="fas fa-calendar"></i> تاریخ</label>
+                <label><i class="fas fa-calendar"></i> تاریخ (شمسی)</label>
                 <input type="date" id="dateFilter" name="date" value="{{ request.args.get('date', '') }}">
             </div>
             
@@ -625,18 +690,23 @@
                 </div>
             {% endif %}
             
-            <!-- برچسب نوع -->
-            <div class="post-type-badge">
-                {% if post.post_type == 'video' %}🎬 ویدیو
-                {% elif post.post_type == 'photo' %}📸 عکس
-                {% elif post.post_type == 'document' %}📄 سند
-                {% elif post.post_type == 'text' %}📝 متن
-                {% else %}{{ post.post_type }}{% endif %}
-            </div>
-            
-            <!-- وضعیت -->
-            <div class="post-status {% if post.status == 'active' %}active{% elif post.status == 'pending' %}pending{% endif %}">
-                {{ post.status }}
+            <!-- ===== برچسب‌ها (نوع و وضعیت در دو خط مجزا) ===== -->
+            <div class="badges-container">
+                <!-- برچسب نوع پست -->
+                <div class="post-type-badge">
+                    {% if post.post_type == 'video' %}🎬 ویدیو
+                    {% elif post.post_type == 'photo' %}📸 عکس
+                    {% elif post.post_type == 'document' %}📄 سند
+                    {% elif post.post_type == 'text' %}📝 متن
+                    {% else %}{{ post.post_type }}{% endif %}
+                </div>
+                
+                <!-- برچسب وضعیت پست -->
+                <div class="post-status-badge {% if post.status == 'active' %}active{% elif post.status == 'pending' %}pending{% else %}inactive{% endif %}">
+                    {% if post.status == 'active' %}✅ فعال
+                    {% elif post.status == 'pending' %}⏳ در انتظار
+                    {% else %}❌ غیرفعال{% endif %}
+                </div>
             </div>
         </div>
 
