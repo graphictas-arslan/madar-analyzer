@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block title %}مدیریت پست‌ها{% endblock %}
+
+{% block extra_head %}
+<!-- Flatpickr برای تقویم شمسی -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fa.js"></script>
+{% endblock %}
+
 {% block content %}
 
 <style>
     /* ===== استایل‌های پایه ===== */
-    * {
-        box-sizing: border-box;
-    }
-
     .posts-header {
         display: flex;
         justify-content: space-between;
@@ -93,7 +98,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        align-items: center;
+        align-items: flex-end;
     }
 
     .filter-group {
@@ -127,6 +132,7 @@
         -webkit-appearance: auto;
         -moz-appearance: auto;
         cursor: pointer;
+        font-family: inherit;
     }
 
     .filter-group select:hover,
@@ -141,54 +147,183 @@
         box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
     }
 
+    /* استایل آپشن‌های کشویی */
     .filter-group select option {
         background: #1a1d23;
         color: #fff;
-        padding: 8px;
-    }
-
-    /* استایل تاریخ شمسی */
-    .filter-group input[type="date"] {
-        color-scheme: dark;
         padding: 8px 12px;
-        background: #0f1115;
-        border: 1px solid #2a2d33;
-        border-radius: 8px;
-        color: #fff;
         font-size: 12px;
-        width: 100%;
-        cursor: pointer;
     }
 
-    .filter-group input[type="date"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-        cursor: pointer;
-        padding: 4px;
-    }
-
-    .filter-group input[type="date"]::-webkit-datetime-edit {
-        color: #fff;
-    }
-
-    .filter-group input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-        color: #fff;
-    }
-
-    .filter-group input[type="date"]::-webkit-datetime-edit-text {
+    .filter-group select optgroup {
+        background: #1a1d23;
         color: #a0a0a0;
-        padding: 0 2px;
     }
 
-    .filter-group input[type="date"]::-webkit-datetime-edit-month-field,
-    .filter-group input[type="date"]::-webkit-datetime-edit-day-field,
-    .filter-group input[type="date"]::-webkit-datetime-edit-year-field {
-        color: #fff;
+    /* ===== استایل فیلد تاریخ با flatpickr ===== */
+    .filter-group .date-input-wrapper {
+        position: relative;
+        width: 100%;
     }
 
-    .filter-group input[type="date"]:hover::-webkit-calendar-picker-indicator {
-        opacity: 1;
+    .filter-group .date-input-wrapper input {
+        padding-right: 32px;
+        cursor: pointer;
     }
 
+    .filter-group .date-input-wrapper .date-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-size: 14px;
+        pointer-events: none;
+    }
+
+    /* استایل flatpickr با تم تیره */
+    .flatpickr-calendar {
+        background: #1a1d23 !important;
+        border: 1px solid #2a2d33 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.5) !important;
+    }
+
+    .flatpickr-calendar .flatpickr-months {
+        background: #0f1115 !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+        fill: #a0a0a0 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-months .flatpickr-prev-month:hover,
+    .flatpickr-calendar .flatpickr-months .flatpickr-next-month:hover {
+        fill: #f97316 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month {
+        color: #fff !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+        background: #0f1115 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 4px 8px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months option {
+        background: #1a1d23 !important;
+        color: #fff !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month .numInputWrapper {
+        background: #0f1115 !important;
+        border-radius: 6px !important;
+        padding: 0 6px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-current-month .numInputWrapper input {
+        color: #fff !important;
+    }
+
+    .flatpickr-calendar .flatpickr-weekdays {
+        background: #0f1115 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-weekday {
+        color: #a0a0a0 !important;
+        font-weight: 500 !important;
+        font-size: 11px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day {
+        color: #e0e0e0 !important;
+        border-radius: 8px !important;
+        transition: all 0.2s !important;
+        font-size: 13px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day:hover {
+        background: #2a2d33 !important;
+        border-color: #2a2d33 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.selected {
+        background: #f97316 !important;
+        border-color: #f97316 !important;
+        color: #fff !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.selected:hover {
+        background: #ea580c !important;
+        border-color: #ea580c !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.today {
+        border-color: #f97316 !important;
+        color: #f97316 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.today.selected {
+        color: #fff !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.inRange {
+        background: rgba(249, 115, 22, 0.2) !important;
+        border-color: rgba(249, 115, 22, 0.2) !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.startRange,
+    .flatpickr-calendar .flatpickr-day.endRange {
+        background: #f97316 !important;
+        border-color: #f97316 !important;
+        color: #fff !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.flatpickr-disabled {
+        color: #444 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.prevMonthDay,
+    .flatpickr-calendar .flatpickr-day.nextMonthDay {
+        color: #555 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.prevMonthDay:hover,
+    .flatpickr-calendar .flatpickr-day.nextMonthDay:hover {
+        background: #1a1d23 !important;
+        border-color: #1a1d23 !important;
+    }
+
+    .flatpickr-calendar .flatpickr-rContainer {
+        padding: 4px 8px 8px 8px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-day.flatpickr-disabled {
+        color: #333 !important;
+    }
+
+    /* دکمه Clear در flatpickr */
+    .flatpickr-calendar .flatpickr-clear-day {
+        color: #fff !important;
+        background: rgba(239, 68, 68, 0.2) !important;
+        border-radius: 6px !important;
+        padding: 2px 8px !important;
+        font-size: 12px !important;
+    }
+
+    .flatpickr-calendar .flatpickr-clear-day:hover {
+        background: rgba(239, 68, 68, 0.4) !important;
+    }
+
+    /* ===== دکمه اعمال فیلتر ===== */
     .btn-apply-filter {
         padding: 8px 20px;
         background: #f97316;
@@ -200,17 +335,13 @@
         cursor: pointer;
         transition: all 0.3s;
         white-space: nowrap;
-        margin-top: 18px;
         align-self: flex-end;
+        margin-bottom: 0;
     }
 
     .btn-apply-filter:hover {
         background: #ea580c;
         transform: translateY(-1px);
-    }
-
-    .btn-apply-filter i {
-        margin-left: 4px;
     }
 
     /* ===== تعداد نتایج ===== */
@@ -286,52 +417,22 @@
         text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    /* ===== برچسب‌ها ===== */
-    .post-card .badges-container {
+    /* ===== برچسب نوع (فقط نوع، بدون وضعیت) ===== */
+    .post-card .badge-type {
         position: absolute;
         top: 8px;
         right: 8px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        align-items: flex-end;
-        z-index: 2;
-    }
-
-    .post-card .badge {
         padding: 3px 10px;
         border-radius: 6px;
         font-size: 9px;
         font-weight: 600;
         color: #fff;
         backdrop-filter: blur(8px);
-        background: rgba(0, 0, 0, 0.65);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(249, 115, 22, 0.25);
+        border: 1px solid rgba(249, 115, 22, 0.2);
         letter-spacing: 0.3px;
         white-space: nowrap;
-    }
-
-    .post-card .badge-type {
-        background: rgba(249, 115, 22, 0.25);
-        border-color: rgba(249, 115, 22, 0.2);
-    }
-
-    .post-card .badge-status-active {
-        color: #4ade80;
-        border-color: rgba(74, 222, 128, 0.2);
-        background: rgba(74, 222, 128, 0.1);
-    }
-
-    .post-card .badge-status-pending {
-        color: #fbbf24;
-        border-color: rgba(251, 191, 36, 0.2);
-        background: rgba(251, 191, 36, 0.1);
-    }
-
-    .post-card .badge-status-inactive {
-        color: #f87171;
-        border-color: rgba(248, 113, 113, 0.2);
-        background: rgba(248, 113, 113, 0.1);
+        z-index: 2;
     }
 
     /* ===== کپشن ===== */
@@ -686,15 +787,11 @@
             padding: 6px;
         }
 
-        .post-card .badges-container {
-            top: 5px;
-            right: 5px;
-            gap: 3px;
-        }
-
-        .post-card .badge {
+        .post-card .badge-type {
             font-size: 8px;
             padding: 2px 7px;
+            top: 5px;
+            right: 5px;
         }
 
         .post-card .play-icon {
@@ -761,39 +858,42 @@
     <form id="filterForm" method="GET" action="/dashboard/posts">
         <div class="filter-row">
             <div class="filter-group">
-                <label><i class="fas fa-search"></i> جستجو</label>
+                <label>جستجو</label>
                 <input type="text" id="searchInput" name="search" placeholder="متن کپشن..." value="{{ request.args.get('search', '') }}">
             </div>
             
             <div class="filter-group">
-                <label><i class="fas fa-tag"></i> نوع</label>
+                <label>نوع</label>
                 <select id="typeFilter" name="type">
                     <option value="">همه</option>
-                    <option value="photo" {% if request.args.get('type') == 'photo' %}selected{% endif %}>📸 عکس</option>
-                    <option value="video" {% if request.args.get('type') == 'video' %}selected{% endif %}>🎬 ویدیو</option>
-                    <option value="text" {% if request.args.get('type') == 'text' %}selected{% endif %}>📝 متن</option>
-                    <option value="document" {% if request.args.get('type') == 'document' %}selected{% endif %}>📄 سند</option>
+                    <option value="photo" {% if request.args.get('type') == 'photo' %}selected{% endif %}>عکس</option>
+                    <option value="video" {% if request.args.get('type') == 'video' %}selected{% endif %}>ویدیو</option>
+                    <option value="text" {% if request.args.get('type') == 'text' %}selected{% endif %}>متن</option>
+                    <option value="document" {% if request.args.get('type') == 'document' %}selected{% endif %}>سند</option>
                 </select>
             </div>
             
             <div class="filter-group">
-                <label><i class="fas fa-star"></i> امتیاز</label>
+                <label>امتیاز</label>
                 <select id="scoreFilter" name="score">
                     <option value="">همه</option>
-                    <option value="high" {% if request.args.get('score') == 'high' %}selected{% endif %}>⭐ بالا (≥ 70)</option>
-                    <option value="medium" {% if request.args.get('score') == 'medium' %}selected{% endif %}>⭐ متوسط (40-69)</option>
-                    <option value="low" {% if request.args.get('score') == 'low' %}selected{% endif %}>⭐ پایین (&lt; 40)</option>
+                    <option value="high" {% if request.args.get('score') == 'high' %}selected{% endif %}>بالا (≥ 70)</option>
+                    <option value="medium" {% if request.args.get('score') == 'medium' %}selected{% endif %}>متوسط (40-69)</option>
+                    <option value="low" {% if request.args.get('score') == 'low' %}selected{% endif %}>پایین (&lt; 40)</option>
                     <option value="none" {% if request.args.get('score') == 'none' %}selected{% endif %}>بدون امتیاز</option>
                 </select>
             </div>
             
             <div class="filter-group">
-                <label><i class="fas fa-calendar-alt"></i> تاریخ (شمسی)</label>
-                <input type="date" id="dateFilter" name="date" value="{{ request.args.get('date', '') }}">
+                <label>تاریخ (شمسی)</label>
+                <div class="date-input-wrapper">
+                    <input type="text" id="dateFilter" name="date" placeholder="انتخاب تاریخ..." value="{{ request.args.get('date', '') }}">
+                    <span class="date-icon">📅</span>
+                </div>
             </div>
             
             <button type="submit" class="btn-apply-filter">
-                <i class="fas fa-filter"></i> اعمال فیلتر
+                اعمال فیلتر
             </button>
         </div>
     </form>
@@ -827,24 +927,14 @@
                 </div>
             {% endif %}
             
-            <!-- برچسب‌ها -->
-            <div class="badges-container">
-                <span class="badge badge-type">
-                    {% if post.post_type == 'video' %}🎬 ویدیو
-                    {% elif post.post_type == 'photo' %}📸 عکس
-                    {% elif post.post_type == 'document' %}📄 سند
-                    {% elif post.post_type == 'text' %}📝 متن
-                    {% else %}{{ post.post_type }}{% endif %}
-                </span>
-                <span class="badge 
-                    {% if post.status == 'active' %}badge-status-active
-                    {% elif post.status == 'pending' %}badge-status-pending
-                    {% else %}badge-status-inactive{% endif %}">
-                    {% if post.status == 'active' %}✅ فعال
-                    {% elif post.status == 'pending' %}⏳ در انتظار
-                    {% else %}❌ غیرفعال{% endif %}
-                </span>
-            </div>
+            <!-- فقط برچسب نوع (بدون وضعیت) -->
+            <span class="badge-type">
+                {% if post.post_type == 'video' %}🎬 ویدیو
+                {% elif post.post_type == 'photo' %}📸 عکس
+                {% elif post.post_type == 'document' %}📄 سند
+                {% elif post.post_type == 'text' %}📝 متن
+                {% else %}{{ post.post_type }}{% endif %}
+            </span>
         </div>
 
         <!-- کپشن -->
@@ -960,7 +1050,7 @@
 
 <!-- ===== اسکریپت‌ها ===== -->
 <script>
-    // داده‌های پست‌ها
+    // ===== داده‌های پست‌ها =====
     const postsData = [
         {% for post in posts_data %}
         {
@@ -976,6 +1066,28 @@
     ];
 
     let currentPostId = null;
+
+    // ===== مقداردهی اولیه flatpickr =====
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('dateFilter');
+        if (dateInput) {
+            flatpickr(dateInput, {
+                locale: 'fa',
+                dateFormat: 'Y/m/d',
+                placeholder: 'انتخاب تاریخ...',
+                allowInput: true,
+                disableMobile: true,
+                onChange: function(selectedDates, dateStr, instance) {
+                    // مقدار انتخاب شده را تنظیم می‌کنیم
+                    instance.input.value = dateStr;
+                }
+            });
+        }
+
+        // به‌روزرسانی تعداد پست‌ها
+        const posts = document.querySelectorAll('.post-card');
+        document.getElementById('countDisplay').textContent = posts.length;
+    });
 
     // ===== باز کردن مودال جزئیات =====
     function openPostModal(index) {
@@ -1071,7 +1183,15 @@
         document.getElementById('searchInput').value = '';
         document.getElementById('typeFilter').value = '';
         document.getElementById('scoreFilter').value = '';
-        document.getElementById('dateFilter').value = '';
+        const dateInput = document.getElementById('dateFilter');
+        if (dateInput) {
+            dateInput.value = '';
+            // پاک کردن مقدار flatpickr
+            const fp = dateInput._flatpickr;
+            if (fp) {
+                fp.clear();
+            }
+        }
         document.getElementById('filterForm').submit();
     }
 
@@ -1082,12 +1202,6 @@
             closeScoreModal();
             closeDeleteModal();
         }
-    });
-
-    // ===== تعداد پست‌ها =====
-    document.addEventListener('DOMContentLoaded', function() {
-        const posts = document.querySelectorAll('.post-card');
-        document.getElementById('countDisplay').textContent = posts.length;
     });
 </script>
 
