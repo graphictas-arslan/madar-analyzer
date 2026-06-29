@@ -90,7 +90,8 @@
         const captionText = document.getElementById('postDetailCaptionText');
         if (post.caption) {
             captionDiv.style.display = 'block';
-            captionText.textContent = post.caption;
+            // حفظ پاراگراف‌بندی با innerHTML و replace
+            captionText.innerHTML = post.caption.replace(/\n/g, '<br>');
         } else {
             captionDiv.style.display = 'none';
         }
@@ -175,11 +176,11 @@
             {% endif %}
         </div>
 
-        <!-- کپشن -->
+        <!-- کپشن با حفظ پاراگراف‌بندی -->
         <div style="flex: 1; margin-top: 4px; overflow: hidden;">
             <div style="font-size: 11px; font-weight: 500; color: #fff; white-space: normal; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                 {% if post.caption %}
-                    {{ post.caption }}
+                    {{ post.caption|replace('\n', '<br>')|safe }}
                 {% else %}
                     <span style="color: #a0a0a0;">بدون کپشن</span>
                 {% endif %}
@@ -248,8 +249,9 @@
                 <span id="postDetailDate" style="color: #a0a0a0; font-size: 12px;">🕒 تاریخ: -</span>
             </div>
 
-            <div id="postDetailCaption" style="color: #e0e0e0; font-size: 14px; margin-top: 4px; display: none; background: #0f1115; padding: 12px; border-radius: 8px; max-height: 150px; overflow-y: auto;">
-                📌 کپشن: <span id="postDetailCaptionText" style="display: block; margin-top: 4px; line-height: 1.6;"></span>
+            <!-- کپشن با حفظ پاراگراف‌بندی -->
+            <div id="postDetailCaption" style="color: #e0e0e0; font-size: 14px; margin-top: 4px; display: none; background: #0f1115; padding: 12px; border-radius: 8px; max-height: 150px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; line-height: 1.8;">
+                📌 کپشن: <span id="postDetailCaptionText" style="display: block; margin-top: 4px;"></span>
             </div>
 
             <!-- فیلد امتیاز در پاپ‌آپ -->
