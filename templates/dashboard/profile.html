@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+{% block title %}پروفایل کاربری{% endblock %}
+{% block content %}
+
+<style>
+    /* استایل‌های پروفایل */
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: #fff;
+        margin: 0 auto 12px;
+        border: 3px solid #2a2d33;
+        box-shadow: 0 0 30px rgba(249, 115, 22, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: default;
+    }
+    
+    .profile-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 50px rgba(249, 115, 22, 0.4);
+    }
+    
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin: 16px 0;
+    }
+    
+    .profile-stat-item {
+        background: #0f1115;
+        border-radius: 12px;
+        padding: 12px 8px;
+        text-align: center;
+        border: 1px solid #2a2d33;
+        transition: border-color 0.3s ease;
+    }
+    
+    .profile-stat-item:hover {
+        border-color: #f97316;
+    }
+    
+    .profile-stat-item .number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #f97316;
+        display: block;
+    }
+    
+    .profile-stat-item .label {
+        font-size: 10px;
+        color: #a0a0a0;
+        margin-top: 2px;
+        display: block;
+    }
+    
+    .profile-info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #2a2d33;
+    }
+    
+    .profile-info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .profile-info-item .label {
+        color: #a0a0a0;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .profile-info-item .value {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        direction: ltr;
+        text-align: left;
+    }
+    
+    .profile-info-item .value.fa {
+        direction: rtl;
+    }
+    
+    .badge-role {
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .badge-role.admin {
+        background: #dc2626;
+        color: #fff;
+    }
+    
+    .badge-role.channel_admin {
+        background: #2563eb;
+        color: #fff;
+    }
+    
+    .badge-role.manager {
+        background: #7c3aed;
+        color: #fff;
+    }
+    
+    .badge-role.user {
+        background: #4b5563;
+        color: #fff;
+    }
+    
+    .profile-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 16px;
+    }
+    
+    .profile-actions .btn-action {
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #2a2d33;
+        background: transparent;
+        color: #a0a0a0;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .profile-actions .btn-action:hover {
+        background: #2a2d33;
+        color: #fff;
+        border-color: #f97316;
+    }
+    
+    .profile-actions .btn-action.danger:hover {
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+    
+    .profile-actions .btn-action.primary:hover {
+        border-color: #f97316;
+        color: #f97316;
+    }
+    
+    /* مودال تغییر رمز */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+    }
+    
+    .modal-box {
+        background: #1a1d23;
+        border-radius: 20px;
+        padding: 24px;
+        max-width: 420px;
+        width: 100%;
+        border: 1px solid #2a2d33;
+        animation: modalIn 0.3s ease;
+    }
+    
+    @keyframes modalIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    .modal-box h3 {
+        color: #fff;
+        margin-bottom: 16px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .modal-box .form-group {
+        margin-bottom: 14px;
+    }
+    
+    .modal-box .form-group label {
+        display: block;
+        color: #a0a0a0;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+    
+    .modal-box .form-group input {
+        width: 100%;
+        padding: 10px 12px;
+        background: #0f1115;
+        border: 1px solid #2a2d33;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+    
+    .modal-box .form-group input:focus {
+        outline: none;
+        border-color: #f97316;
+    }
+    
+    .modal-box .form-group input::placeholder {
+        color: #555;
+    }
+    
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+    }
+    
+    .modal-actions button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-actions .btn-cancel {
+        background: #2a2d33;
+        color: #a0a0a0;
+    }
+    
+    .modal-actions .btn-cancel:hover {
+        background: #3a3d43;
+    }
+    
+    .modal-actions .btn-save {
+        background: #f97316;
+        color: #fff;
+    }
+    
+    .modal-actions .btn-save:hover {
+        background: #ea580c;
+    }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            font-size: 32px;
+        }
+        
+        .profile-stats {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        
+        .profile-stat-item .number {
+            font-size: 16px;
+        }
+        
+        .profile-info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            padding: 8px 0;
+        }
+        
+        .profile-info-item .value {
+            text-align: right;
+            width: 100%;
+        }
+        
+        .profile-actions {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <!-- کارت اصلی پروفایل -->
+    <div class="card" style="padding: 20px;">
+        <!-- آواتار -->
+        <div class="profile-avatar">
+            {{ user.full_name[0]|upper if user.full_name else 'U' }}
+        </div>
+        
+        <!-- نام و نقش -->
+        <div style="text-align: center;">
+            <h2 style="color: #fff; font-size: 20px; margin: 0;">{{ user.full_name }}</h2>
+            <div style="margin-top: 4px;">
+                {% if user.role == 'admin' %}
+                    <span class="badge-role admin">👑 مدیر کل</span>
+                {% elif user.role == 'channel_admin' %}
+                    <span class="badge-role channel_admin">📢 ادمین کانال</span>
+                {% elif user.role == 'manager' %}
+                    <span class="badge-role manager">📊 مدیر</span>
+                {% else %}
+                    <span class="badge-role user">👤 کاربر</span>
+                {% endif %}
+                {% if user.is_super_admin %}
+                    <span class="badge-role admin" style="background: #f97316; margin-right: 4px;">⭐ سوپر ادمین</span>
+                {% endif %}
+            </div>
+            <div style="margin-top: 4px; font-size: 11px; color: #666;">
+                وضعیت: {% if user.is_active %}<span style="color: #4ade80;">● فعال</span>{% else %}<span style="color: #ef4444;">● غیرفعال</span>{% endif %}
+            </div>
+        </div>
+        
+        <!-- آمار -->
+        <div class="profile-stats">
+            <div class="profile-stat-item">
+                <span class="number">{{ total_posts or 0 }}</span>
+                <span class="label">📄 پست‌ها</span>
+            </div>
+            <div class="profile-stat-item">
+                <span class="number">{{ total_channels or 0 }}</span>
+                <span class="label">📢 کانال‌ها</span>
+            </div>
+            <div class="profile-stat-item">
+                <span class="number">{{ total_scored or 0 }}</span>
+                <span class="label">⭐ امتیاز داده</span>
+            </div>
+        </div>
+        
+        <!-- اطلاعات کاربری -->
+        <div style="margin-top: 12px; background: #0f1115; border-radius: 12px; padding: 4px 14px;">
+            <div class="profile-info-item">
+                <span class="label"><i class="fas fa-user"></i> نام کاربری</span>
+                <span class="value">@{{ user.username }}</span>
+            </div>
+            <div class="profile-info-item">
+                <span class="label"><i class="fas fa-phone"></i> موبایل</span>
+                <span class="value">{{ user.mobile or 'ثبت نشده' }}</span>
+            </div>
+            <div class="profile-info-item">
+                <span class="label"><i class="fas fa-calendar-alt"></i> تاریخ عضویت</span>
+                <span class="value">{{ user.created_at.strftime('%Y/%m/%d') if user.created_at else '-' }}</span>
+            </div>
+            <div class="profile-info-item">
+                <span class="label"><i class="fas fa-clock"></i> آخرین فعالیت</span>
+                <span class="value">{{ user.updated_at.strftime('%Y/%m/%d %H:%M') if user.updated_at else '-' }}</span>
+            </div>
+            {% if user.role == 'channel_admin' and user.channels %}
+            <div class="profile-info-item">
+                <span class="label"><i class="fas fa-bullhorn"></i> کانال‌های من</span>
+                <span class="value" style="font-size: 11px; font-weight: 400; color: #a0a0a0;">
+                    {% for channel in user.channels %}
+                        {{ channel.channel_name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- دکمه‌های اقدام -->
+        <div class="profile-actions">
+            <button class="btn-action primary" onclick="openChangePassword()">
+                <i class="fas fa-key"></i> تغییر رمز
+            </button>
+            <a href="/auth/logout" class="btn-action danger">
+                <i class="fas fa-sign-out-alt"></i> خروج
+            </a>
+            <a href="/dashboard" class="btn-action">
+                <i class="fas fa-arrow-right"></i> بازگشت به داشبورد
+            </a>
+            <button class="btn-action" onclick="location.reload()">
+                <i class="fas fa-sync"></i> بروزرسانی
+            </button>
+        </div>
+    </div>
+    
+    <!-- کارت اطلاعات اضافی -->
+    <div class="card" style="padding: 16px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: #a0a0a0;">
+                <i class="fas fa-shield-alt" style="color: #f97316;"></i>
+                آخرین ورود: {{ user.updated_at.strftime('%Y/%m/%d %H:%M') if user.updated_at else 'نامشخص' }}
+            </span>
+            <span style="font-size: 11px; color: #555;">
+                نسخه 1.0.0
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- مودال تغییر رمز -->
+<div id="changePasswordModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3><i class="fas fa-key" style="color: #f97316;"></i> تغییر رمز عبور</h3>
+        <form id="changePasswordForm" method="POST" action="/users/change-password">
+            <div class="form-group">
+                <label>رمز عبور فعلی</label>
+                <input type="password" name="current_password" placeholder="رمز فعلی را وارد کنید" required>
+            </div>
+            <div class="form-group">
+                <label>رمز عبور جدید</label>
+                <input type="password" name="new_password" placeholder="رمز جدید را وارد کنید" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label>تکرار رمز عبور جدید</label>
+                <input type="password" name="confirm_password" placeholder="رمز جدید را دوباره وارد کنید" required minlength="6">
+            </div>
+            <div id="passwordError" style="color: #ef4444; font-size: 12px; display: none; margin-bottom: 8px;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeChangePassword()">لغو</button>
+                <button type="submit" class="btn-save">تغییر رمز</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // باز کردن مودال تغییر رمز
+    function openChangePassword() {
+        document.getElementById('changePasswordModal').classList.add('active');
+        document.getElementById('passwordError').style.display = 'none';
+        document.getElementById('changePasswordForm').reset();
+    }
+    
+    // بستن مودال تغییر رمز
+    function closeChangePassword() {
+        document.getElementById('changePasswordModal').classList.remove('active');
+    }
+    
+    // بستن مودال با کلیک خارج از آن
+    document.getElementById('changePasswordModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeChangePassword();
+        }
+    });
+    
+    // اعتبارسنجی فرم تغییر رمز
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+        const newPass = this.querySelector('input[name="new_password"]').value;
+        const confirmPass = this.querySelector('input[name="confirm_password"]').value;
+        const errorDiv = document.getElementById('passwordError');
+        
+        if (newPass !== confirmPass) {
+            e.preventDefault();
+            errorDiv.textContent = '⚠️ رمز عبور جدید و تکرار آن مطابقت ندارند!';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+        
+        if (newPass.length < 6) {
+            e.preventDefault();
+            errorDiv.textContent = '⚠️ رمز عبور باید حداقل ۶ کاراکتر باشد!';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+        
+        errorDiv.style.display = 'none';
+        return true;
+    });
+</script>
+
+{% endblock %}
