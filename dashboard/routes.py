@@ -7,6 +7,7 @@ from sqlalchemy import func
 from datetime import datetime, timedelta
 import requests
 import io
+import jdatetime
 
 from .excel_exporter import generate_excel
 
@@ -38,6 +39,17 @@ def sort_key(item):
     else:
         parts = time_str.split(':')
         return int(parts[0]) * 60 + int(parts[1])
+
+
+def convert_to_jalali(dt):
+    """تبدیل تاریخ میلادی به هجری شمسی"""
+    if dt is None:
+        return '-'
+    try:
+        jalali_date = jdatetime.datetime.fromgregorian(datetime=dt)
+        return jalali_date.strftime('%Y/%m/%d %H:%M')
+    except:
+        return dt.strftime('%Y/%m/%d %H:%M')
 
 
 # ============== صفحه اصلی (داشبورد) ==============
@@ -252,6 +264,25 @@ def channel_posts(channel_id):
         flash("کانال پیدا نشد!", "danger")
         return redirect(url_for("dashboard.channels"))
     posts = Post.query.filter_by(channel_id=channel_id).order_by(Post.publish_date.desc()).all()
+    
+    # تبدیل تاریخ‌ها به شمسی برای نمایش در تمپلیت
+    posts_data = []
+    for post in posts:
+        posts_data.append({
+            'id': post.id,
+            'caption': post.caption,
+            'media_url': post.media_url,
+            'score': post.score,
+            'publish_date': convert_to_jalali(post.publish_date),
+            'views': post.views or 0,
+            'likes': post.likes or 0,
+            'comments': post.comments or 0,
+            'status': post.status,
+            'text': post.text,
+            'post_type': post.post_type,
+            'channel_name': channel.channel_name
+        })
+    
     stats = {
         'total': len(posts),
         'scored': Post.query.filter(Post.channel_id == channel_id, Post.score >= 1).count(),
@@ -261,6 +292,7 @@ def channel_posts(channel_id):
         "dashboard/channel_posts.html",
         channel=channel,
         posts=posts,
+        posts_data=posts_data,
         stats=stats
     )
 
@@ -282,7 +314,26 @@ def posts():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
     posts = Post.query.order_by(Post.publish_date.desc()).all()
-    return render_template("dashboard/posts.html", posts=posts)
+    
+    # تبدیل تاریخ‌ها به شمسی برای نمایش در تمپلیت
+    posts_data = []
+    for post in posts:
+        posts_data.append({
+            'id': post.id,
+            'caption': post.caption,
+            'media_url': post.media_url,
+            'channel': post.channel.channel_name if post.channel else None,
+            'score': post.score,
+            'publish_date': convert_to_jalali(post.publish_date),
+            'views': post.views or 0,
+            'likes': post.likes or 0,
+            'comments': post.comments or 0,
+            'status': post.status,
+            'text': post.text,
+            'post_type': post.post_type
+        })
+    
+    return render_template("dashboard/posts.html", posts=posts, posts_data=posts_data)
 
 
 @dashboard_bp.route("/posts/score/<int:post_id>", methods=["POST"])
