@@ -1,390 +1,134 @@
-<!-- ===== نوار پایین (فوتر) - دیزاین جدید ===== -->
+<!-- ============================================
+     ===== نوار پایین (فوتر) - دیزاین مدرن و خلاقانه =====
+     ============================================ -->
 <nav class="bottom-nav" id="bottomNav">
     
+    <!-- آیتم ۱: خانه -->
     <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
         <div class="nav-icon-wrapper">
             <i class="fas fa-home"></i>
-            <span class="nav-tooltip">خانه</span>
+            <div class="nav-ripple"></div>
         </div>
         <span class="nav-label">خانه</span>
+        <span class="nav-tooltip">🏠 صفحه اصلی</span>
     </a>
 
+    <!-- آیتم ۲: کانال‌ها -->
     <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
         <div class="nav-icon-wrapper">
             <i class="fas fa-bullhorn"></i>
-            <span class="nav-badge">12</span>
-            <span class="nav-tooltip">کانال‌ها</span>
+            <span class="nav-badge pulse">12</span>
+            <div class="nav-ripple"></div>
         </div>
         <span class="nav-label">کانال‌ها</span>
+        <span class="nav-tooltip">📢 مدیریت کانال‌ها</span>
     </a>
 
-    <!-- دکمه مرکزی -->
+    <!-- آیتم ۳: دکمه مرکزی (ایجاد) -->
     <a href="/dashboard/posts" class="nav-item center-btn {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
         <div class="center-circle">
             <i class="fas fa-plus"></i>
+            <div class="center-pulse"></div>
         </div>
         <span class="nav-label">پست‌ها</span>
-        <span class="nav-tooltip">پست‌ها</span>
+        <span class="nav-tooltip">📝 مدیریت پست‌ها</span>
     </a>
 
+    <!-- آیتم ۴: پروفایل -->
     <a href="/dashboard/profile" class="nav-item {% if request.path.startswith('/dashboard/profile') %}active{% endif %}">
         <div class="nav-icon-wrapper">
             <i class="fas fa-user"></i>
-            <span class="nav-tooltip">پروفایل</span>
+            <div class="nav-ripple"></div>
         </div>
         <span class="nav-label">پروفایل</span>
+        <span class="nav-tooltip">👤 حساب کاربری</span>
     </a>
 
+    <!-- آیتم ۵: خروج -->
     <a href="/auth/logout" class="nav-item logout" onclick="return confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')">
         <div class="nav-icon-wrapper">
             <i class="fas fa-sign-out-alt"></i>
-            <span class="nav-tooltip">خروج</span>
+            <div class="nav-ripple"></div>
         </div>
         <span class="nav-label">خروج</span>
+        <span class="nav-tooltip">🚪 خروج از حساب</span>
     </a>
+
+    <!-- نوار پیشرفت نشانگر فعال -->
+    <div class="nav-indicator" id="navIndicator"></div>
 
 </nav>
 
 <style>
     /* ============================================
-       ===== استایل‌های جدید فوتر =====
+       ===== استایل‌های فوتر جدید =====
        ============================================ */
     
-    /* ===== حالت موبایل (زیر 768px) ===== */
+    /* ===== متغیرها ===== */
+    :root {
+        --nav-bg: rgba(26, 29, 35, 0.92);
+        --nav-border: rgba(42, 45, 51, 0.5);
+        --nav-shadow: 0 8px 50px rgba(0, 0, 0, 0.6);
+        --nav-radius: 28px;
+        --nav-color: #666;
+        --nav-active: #f97316;
+        --nav-hover: rgba(255, 255, 255, 0.05);
+        --nav-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================
+       ===== حالت موبایل (زیر 768px) =====
+       ============================================ */
     @media (max-width: 768px) {
         .bottom-nav {
             position: fixed;
-            bottom: 16px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 24px);
-            max-width: 440px;
-            background: rgba(26, 29, 35, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
+            width: calc(100% - 28px);
+            max-width: 460px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: var(--nav-radius);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border: 1px solid rgba(42, 45, 51, 0.6);
-            box-shadow: 0 8px 50px rgba(0,0,0,0.6);
+            border: 1px solid var(--nav-border);
+            box-shadow: var(--nav-shadow);
             z-index: 1000;
-            padding: 6px 8px 8px 8px;
-            gap: 2px;
-            transition: all 0.3s ease;
+            padding: 8px 10px 10px 10px;
+            gap: 4px;
+            transition: var(--nav-transition);
+        }
+
+        /* نوار نشانگر */
+        .bottom-nav .nav-indicator {
+            display: none;
         }
 
         .bottom-nav .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
-            color: #666;
+            gap: 3px;
+            color: var(--nav-color);
             text-decoration: none;
             font-size: 9px;
             padding: 6px 4px;
-            border-radius: 14px;
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            transition: var(--nav-transition);
             position: relative;
             border: none;
             background: transparent;
             cursor: pointer;
             flex: 1;
-            min-width: 32px;
-            max-width: 70px;
+            min-width: 36px;
+            max-width: 72px;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .bottom-nav .nav-item .nav-icon-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item i {
-            font-size: 18px;
-            transition: all 0.3s ease;
-            color: #666;
-        }
-
-        .bottom-nav .nav-item .nav-label {
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 8px;
-            color: #666;
-            white-space: nowrap;
-        }
-
-        .bottom-nav .nav-item:hover {
-            color: #a0a0a0;
-        }
-
-        .bottom-nav .nav-item:hover i {
-            color: #a0a0a0;
-        }
-
-        .bottom-nav .nav-item.active i {
-            color: #f97316;
-        }
-
-        .bottom-nav .nav-item.active .nav-label {
-            color: #f97316;
-        }
-
-        .bottom-nav .nav-item.active .nav-icon-wrapper {
-            background: rgba(249, 115, 22, 0.08);
-        }
-
-        .bottom-nav .nav-item .nav-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #ef4444;
-            color: #fff;
-            font-size: 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #1a1d23;
-        }
-
-        /* دکمه مرکزی */
-        .bottom-nav .nav-item.center-btn {
-            position: relative;
-            margin-top: -16px;
-            flex: 0 0 auto;
-            min-width: unset;
-            max-width: unset;
-            padding: 6px 4px;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 22px;
-            box-shadow: 0 4px 25px rgba(249, 115, 22, 0.35);
-            transition: all 0.3s ease;
-            border: 2px solid #1a1d23;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 35px rgba(249, 115, 22, 0.5);
-        }
-
-        .bottom-nav .nav-item.center-btn .nav-label {
-            margin-top: 2px;
-            font-size: 8px;
-        }
-
-        .bottom-nav .nav-item.logout i {
-            color: #666;
-        }
-
-        .bottom-nav .nav-item.logout:hover i {
-            color: #f87171;
-        }
-
-        .bottom-nav .nav-item.logout.active i {
-            color: #f87171;
-        }
-
-        .bottom-nav .nav-item .nav-tooltip {
-            display: none;
-        }
-
-        /* موبایل خیلی کوچک */
-        @media (max-width: 380px) {
-            .bottom-nav {
-                padding: 4px 4px 6px 4px;
-                border-radius: 18px;
-                bottom: 10px;
-                max-width: 340px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 4px 2px;
-                min-width: 26px;
-                max-width: 50px;
-            }
-
-            .bottom-nav .nav-item .nav-icon-wrapper {
-                width: 30px;
-                height: 30px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 14px;
-            }
-
-            .bottom-nav .nav-item .nav-label {
-                font-size: 7px;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 12px;
-                height: 12px;
-                font-size: 6px;
-                top: -3px;
-                right: -3px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 38px;
-                height: 38px;
-                font-size: 17px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -10px;
-            }
-        }
-
-        /* موبایل متوسط */
-        @media (min-width: 381px) and (max-width: 480px) {
-            .bottom-nav {
-                padding: 5px 6px 7px 6px;
-                max-width: 380px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 4px 3px;
-                min-width: 30px;
-                max-width: 56px;
-            }
-
-            .bottom-nav .nav-item .nav-icon-wrapper {
-                width: 32px;
-                height: 32px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 16px;
-            }
-
-            .bottom-nav .nav-item .nav-label {
-                font-size: 7px;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 14px;
-                height: 14px;
-                font-size: 7px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 42px;
-                height: 42px;
-                font-size: 19px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -12px;
-            }
-        }
-
-        /* موبایل بزرگ */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .bottom-nav {
-                padding: 6px 10px 8px 10px;
-                max-width: 460px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 6px 6px;
-                min-width: 38px;
-                max-width: 66px;
-            }
-
-            .bottom-nav .nav-item .nav-icon-wrapper {
-                width: 38px;
-                height: 38px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 18px;
-            }
-
-            .bottom-nav .nav-item .nav-label {
-                font-size: 9px;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 16px;
-                height: 16px;
-                font-size: 8px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 48px;
-                height: 48px;
-                font-size: 22px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -16px;
-            }
-        }
-    }
-
-    /* ===== حالت دسکتاپ (بالای 769px) ===== */
-    @media (min-width: 769px) {
-        .bottom-nav {
-            position: fixed;
-            right: 24px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 68px;
-            background: rgba(26, 29, 35, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            border: 1px solid rgba(42, 45, 51, 0.6);
-            box-shadow: 0 8px 50px rgba(0,0,0,0.6);
-            z-index: 1000;
-            padding: 18px 8px;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            color: #666;
-            text-decoration: none;
-            font-size: 8px;
-            padding: 10px 6px;
-            border-radius: 14px;
-            transition: all 0.3s ease;
-            position: relative;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            width: 100%;
-            min-height: 54px;
-            justify-content: center;
-        }
-
+        /* رپر آیکون */
         .bottom-nav .nav-item .nav-icon-wrapper {
             position: relative;
             display: flex;
@@ -393,52 +137,119 @@
             width: 40px;
             height: 40px;
             border-radius: 14px;
-            transition: all 0.3s ease;
+            transition: var(--nav-transition);
         }
 
         .bottom-nav .nav-item i {
-            font-size: 20px;
-            transition: all 0.3s ease;
-            color: #666;
+            font-size: 18px;
+            transition: var(--nav-transition);
+            color: var(--nav-color);
+            position: relative;
+            z-index: 2;
         }
 
+        /* لیبل */
         .bottom-nav .nav-item .nav-label {
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: var(--nav-transition);
             font-size: 8px;
-            color: #666;
+            color: var(--nav-color);
             white-space: nowrap;
-            margin-top: 2px;
+            letter-spacing: 0.3px;
         }
 
-        .bottom-nav .nav-item:hover {
-            color: #a0a0a0;
-        }
-
+        /* ===== حالت‌های هاور و اکتیو ===== */
         .bottom-nav .nav-item:hover i {
             color: #a0a0a0;
         }
 
-        .bottom-nav .nav-item:hover .nav-icon-wrapper {
-            background: rgba(255,255,255,0.03);
+        .bottom-nav .nav-item:hover .nav-label {
+            color: #a0a0a0;
         }
 
         .bottom-nav .nav-item.active i {
-            color: #f97316;
+            color: var(--nav-active);
         }
 
         .bottom-nav .nav-item.active .nav-label {
-            color: #f97316;
+            color: var(--nav-active);
         }
 
         .bottom-nav .nav-item.active .nav-icon-wrapper {
-            background: rgba(249, 115, 22, 0.08);
+            background: rgba(249, 115, 22, 0.1);
         }
 
+        .bottom-nav .nav-item.active .nav-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            border: 1.5px solid rgba(249, 115, 22, 0.2);
+            animation: borderPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* ===== دکمه مرکزی ===== */
+        .bottom-nav .nav-item.center-btn {
+            margin-top: -18px;
+            flex: 0 0 auto;
+            min-width: unset;
+            max-width: unset;
+            padding: 4px 4px;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #f97316, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            box-shadow: 0 4px 30px rgba(249, 115, 22, 0.4);
+            transition: var(--nav-transition);
+            border: 2.5px solid rgba(26, 29, 35, 0.9);
+            position: relative;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle .center-pulse {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(249, 115, 22, 0.15);
+            animation: centerPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes centerPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle:hover {
+            transform: scale(1.06) rotate(90deg);
+            box-shadow: 0 6px 40px rgba(249, 115, 22, 0.5);
+        }
+
+        .bottom-nav .nav-item.center-btn .nav-label {
+            margin-top: 3px;
+            font-size: 8px;
+        }
+
+        .bottom-nav .nav-item.center-btn.active .center-circle {
+            box-shadow: 0 4px 40px rgba(249, 115, 22, 0.6);
+        }
+
+        /* ===== Badge ===== */
         .bottom-nav .nav-item .nav-badge {
             position: absolute;
-            top: -2px;
-            right: -2px;
+            top: -4px;
+            right: -4px;
             width: 18px;
             height: 18px;
             border-radius: 50%;
@@ -450,47 +261,21 @@
             align-items: center;
             justify-content: center;
             border: 2px solid #1a1d23;
+            z-index: 5;
         }
 
-        .bottom-nav .nav-item.center-btn {
-            margin-top: 0;
-            flex: 0 0 auto;
-            min-height: 64px;
+        .bottom-nav .nav-item .nav-badge.pulse {
+            animation: badgePulse 2s ease-in-out infinite;
         }
 
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 20px;
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
-            transition: all 0.3s ease;
-            border: 2px solid #1a1d23;
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
 
-        .bottom-nav .nav-item.center-btn .center-circle:hover {
-            transform: scale(1.05) rotate(90deg);
-            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.4);
-        }
-
-        .bottom-nav .nav-item.center-btn .nav-label {
-            margin-top: 2px;
-            font-size: 8px;
-        }
-
-        .bottom-nav .nav-item.logout {
-            margin-top: 8px;
-            border-top: 1px solid rgba(42, 45, 51, 0.4);
-            padding-top: 12px;
-        }
-
+        /* ===== خروج ===== */
         .bottom-nav .nav-item.logout i {
-            color: #666;
+            color: var(--nav-color);
         }
 
         .bottom-nav .nav-item.logout:hover i {
@@ -501,7 +286,371 @@
             color: #f87171;
         }
 
-        /* ابزارنما */
+        /* ===== ابزارنما ===== */
+        .bottom-nav .nav-item .nav-tooltip {
+            display: none;
+        }
+
+        /* ===== Ripple Effect ===== */
+        .bottom-nav .nav-item .nav-ripple {
+            display: none;
+        }
+
+        /* ===== موبایل خیلی کوچک ===== */
+        @media (max-width: 380px) {
+            .bottom-nav {
+                padding: 6px 6px 8px 6px;
+                border-radius: 22px;
+                bottom: 14px;
+                max-width: 340px;
+                gap: 2px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 4px 2px;
+                min-width: 28px;
+                max-width: 50px;
+            }
+
+            .bottom-nav .nav-item .nav-icon-wrapper {
+                width: 32px;
+                height: 32px;
+                border-radius: 10px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 14px;
+            }
+
+            .bottom-nav .nav-item .nav-label {
+                font-size: 7px;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                width: 14px;
+                height: 14px;
+                font-size: 7px;
+                top: -3px;
+                right: -3px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                margin-top: -14px;
+            }
+        }
+
+        /* ===== موبایل متوسط ===== */
+        @media (min-width: 381px) and (max-width: 480px) {
+            .bottom-nav {
+                padding: 6px 8px 8px 8px;
+                max-width: 400px;
+                gap: 2px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 5px 3px;
+                min-width: 32px;
+                max-width: 56px;
+            }
+
+            .bottom-nav .nav-item .nav-icon-wrapper {
+                width: 36px;
+                height: 36px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 16px;
+            }
+
+            .bottom-nav .nav-item .nav-label {
+                font-size: 7px;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 46px;
+                height: 46px;
+                font-size: 20px;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                margin-top: -16px;
+            }
+        }
+
+        /* ===== موبایل بزرگ ===== */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .bottom-nav {
+                padding: 8px 12px 10px 12px;
+                max-width: 480px;
+                gap: 4px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 6px 6px;
+                min-width: 40px;
+                max-width: 68px;
+            }
+
+            .bottom-nav .nav-item .nav-icon-wrapper {
+                width: 42px;
+                height: 42px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 18px;
+            }
+
+            .bottom-nav .nav-item .nav-label {
+                font-size: 9px;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                width: 18px;
+                height: 18px;
+                font-size: 9px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 52px;
+                height: 52px;
+                font-size: 24px;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                margin-top: -18px;
+            }
+        }
+    }
+
+    /* ============================================
+       ===== حالت دسکتاپ (بالای 769px) =====
+       ============================================ */
+    @media (min-width: 769px) {
+        .bottom-nav {
+            position: fixed;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 72px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid var(--nav-border);
+            box-shadow: var(--nav-shadow);
+            z-index: 1000;
+            padding: 20px 10px;
+            transition: var(--nav-transition);
+        }
+
+        /* نوار نشانگر */
+        .bottom-nav .nav-indicator {
+            position: absolute;
+            right: -1px;
+            top: 0;
+            width: 3px;
+            height: 48px;
+            background: linear-gradient(180deg, #f97316, #ea580c);
+            border-radius: 0 4px 4px 0;
+            transition: var(--nav-transition);
+            opacity: 0;
+        }
+
+        .bottom-nav .nav-indicator.show {
+            opacity: 1;
+        }
+
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: var(--nav-color);
+            text-decoration: none;
+            font-size: 8px;
+            padding: 10px 6px;
+            border-radius: 16px;
+            transition: var(--nav-transition);
+            position: relative;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            width: 100%;
+            min-height: 56px;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* رپر آیکون */
+        .bottom-nav .nav-item .nav-icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            transition: var(--nav-transition);
+        }
+
+        .bottom-nav .nav-item i {
+            font-size: 20px;
+            transition: var(--nav-transition);
+            color: var(--nav-color);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* لیبل */
+        .bottom-nav .nav-item .nav-label {
+            font-weight: 500;
+            transition: var(--nav-transition);
+            font-size: 8px;
+            color: var(--nav-color);
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+
+        /* ===== حالت‌های هاور و اکتیو ===== */
+        .bottom-nav .nav-item:hover {
+            color: #a0a0a0;
+        }
+
+        .bottom-nav .nav-item:hover i {
+            color: #a0a0a0;
+        }
+
+        .bottom-nav .nav-item:hover .nav-icon-wrapper {
+            background: var(--nav-hover);
+        }
+
+        .bottom-nav .nav-item.active i {
+            color: var(--nav-active);
+        }
+
+        .bottom-nav .nav-item.active .nav-label {
+            color: var(--nav-active);
+        }
+
+        .bottom-nav .nav-item.active .nav-icon-wrapper {
+            background: rgba(249, 115, 22, 0.08);
+        }
+
+        .bottom-nav .nav-item.active .nav-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            border: 1.5px solid rgba(249, 115, 22, 0.15);
+            animation: borderPulse 2.5s ease-in-out infinite;
+        }
+
+        /* ===== دکمه مرکزی ===== */
+        .bottom-nav .nav-item.center-btn {
+            margin-top: 0;
+            flex: 0 0 auto;
+            min-height: 68px;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #f97316, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 4px 25px rgba(249, 115, 22, 0.35);
+            transition: var(--nav-transition);
+            border: 2.5px solid rgba(26, 29, 35, 0.9);
+            position: relative;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle .center-pulse {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(249, 115, 22, 0.12);
+            animation: centerPulse 2.5s ease-in-out infinite;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle:hover {
+            transform: scale(1.08) rotate(90deg);
+            box-shadow: 0 6px 35px rgba(249, 115, 22, 0.5);
+        }
+
+        .bottom-nav .nav-item.center-btn .nav-label {
+            margin-top: 3px;
+            font-size: 8px;
+        }
+
+        .bottom-nav .nav-item.center-btn.active .center-circle {
+            box-shadow: 0 4px 45px rgba(249, 115, 22, 0.6);
+        }
+
+        /* ===== Badge ===== */
+        .bottom-nav .nav-item .nav-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1a1d23;
+            z-index: 5;
+        }
+
+        .bottom-nav .nav-item .nav-badge.pulse {
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        /* ===== خروج ===== */
+        .bottom-nav .nav-item.logout {
+            margin-top: 10px;
+            border-top: 1px solid rgba(42, 45, 51, 0.3);
+            padding-top: 14px;
+        }
+
+        .bottom-nav .nav-item.logout i {
+            color: var(--nav-color);
+        }
+
+        .bottom-nav .nav-item.logout:hover i {
+            color: #f87171;
+        }
+
+        .bottom-nav .nav-item.logout.active i {
+            color: #f87171;
+        }
+
+        /* ===== ابزارنما ===== */
         .bottom-nav .nav-item .nav-tooltip {
             display: none;
             position: absolute;
@@ -510,15 +659,16 @@
             transform: translateY(-50%);
             background: #1a1d23;
             color: #fff;
-            padding: 5px 16px;
-            border-radius: 8px;
+            padding: 6px 18px;
+            border-radius: 10px;
             font-size: 11px;
             white-space: nowrap;
-            border: 1px solid #2a2d33;
-            margin-right: 14px;
+            border: 1px solid var(--nav-border);
+            margin-right: 16px;
             opacity: 0;
-            transition: opacity 0.3s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+            pointer-events: none;
         }
 
         .bottom-nav .nav-item .nav-tooltip::after {
@@ -534,25 +684,55 @@
         .bottom-nav .nav-item:hover .nav-tooltip {
             display: block;
             opacity: 1;
+            transform: translateY(-50%) translateX(-4px);
         }
 
-        /* دسکتاپ بزرگ */
+        /* ===== Ripple Effect ===== */
+        .bottom-nav .nav-item .nav-ripple {
+            display: none;
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.15);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .bottom-nav .nav-item:active .nav-ripple {
+            display: block;
+            width: 80px;
+            height: 80px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ===== دسکتاپ بزرگ ===== */
         @media (min-width: 1200px) {
             .bottom-nav {
-                width: 76px;
-                right: 28px;
-                padding: 22px 10px;
-                border-radius: 32px;
+                width: 80px;
+                right: 32px;
+                padding: 24px 12px;
+                border-radius: 36px;
+                gap: 8px;
             }
 
             .bottom-nav .nav-item {
-                min-height: 60px;
+                min-height: 62px;
                 padding: 12px 8px;
             }
 
             .bottom-nav .nav-item .nav-icon-wrapper {
-                width: 44px;
-                height: 44px;
+                width: 48px;
+                height: 48px;
+                border-radius: 18px;
             }
 
             .bottom-nav .nav-item i {
@@ -564,27 +744,197 @@
             }
 
             .bottom-nav .nav-item .nav-badge {
-                width: 20px;
-                height: 20px;
+                width: 22px;
+                height: 22px;
                 font-size: 10px;
                 top: -2px;
                 right: -2px;
             }
 
             .bottom-nav .nav-item.center-btn .center-circle {
-                width: 48px;
-                height: 48px;
-                font-size: 22px;
+                width: 52px;
+                height: 52px;
+                font-size: 24px;
             }
 
             .bottom-nav .nav-item.center-btn {
-                min-height: 68px;
+                min-height: 72px;
             }
 
             .bottom-nav .nav-item .nav-tooltip {
                 font-size: 12px;
-                padding: 6px 18px;
+                padding: 8px 20px;
+                margin-right: 18px;
+            }
+
+            .bottom-nav .nav-indicator {
+                height: 52px;
+            }
+        }
+
+        /* ===== دسکتاپ فوق‌العاده بزرگ ===== */
+        @media (min-width: 1600px) {
+            .bottom-nav {
+                width: 88px;
+                right: 40px;
+                padding: 28px 14px;
+                border-radius: 40px;
+                gap: 10px;
+            }
+
+            .bottom-nav .nav-item {
+                min-height: 68px;
+                padding: 14px 10px;
+            }
+
+            .bottom-nav .nav-item .nav-icon-wrapper {
+                width: 52px;
+                height: 52px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 24px;
+            }
+
+            .bottom-nav .nav-item .nav-label {
+                font-size: 10px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 56px;
+                height: 56px;
+                font-size: 26px;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                min-height: 76px;
+            }
+
+            .bottom-nav .nav-item .nav-tooltip {
+                font-size: 13px;
+                padding: 8px 22px;
+            }
+
+            .bottom-nav .nav-indicator {
+                height: 56px;
             }
         }
     }
+
+    /* ============================================
+       ===== انیمیشن‌های عمومی =====
+       ============================================ */
+    
+    /* انیمیشن ورود فوتر */
+    @keyframes navSlideUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+
+    .bottom-nav {
+        animation: navSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* انیمیشن آیتم‌ها */
+    .bottom-nav .nav-item {
+        animation: navItemFade 0.4s ease forwards;
+        opacity: 0;
+    }
+
+    .bottom-nav .nav-item:nth-child(1) { animation-delay: 0.05s; }
+    .bottom-nav .nav-item:nth-child(2) { animation-delay: 0.1s; }
+    .bottom-nav .nav-item:nth-child(3) { animation-delay: 0.15s; }
+    .bottom-nav .nav-item:nth-child(4) { animation-delay: 0.2s; }
+    .bottom-nav .nav-item:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes navItemFade {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ============================================
+       ===== تنظیمات مرجین و فاصله‌گذاری =====
+       ============================================ */
+    
+    /* فاصله محتوا از فوتر */
+    @media (max-width: 768px) {
+        .app-container {
+            padding-bottom: 90px;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .app-container {
+            padding-right: 120px;
+            padding-left: 30px;
+            padding-bottom: 20px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .app-container {
+            padding-right: 140px;
+            padding-left: 40px;
+        }
+    }
+
+    @media (min-width: 1600px) {
+        .app-container {
+            padding-right: 160px;
+            padding-left: 50px;
+        }
+    }
 </style>
+
+<!-- ===== اسکریپت نشانگر فعال ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // پیدا کردن آیتم فعال
+        const activeItem = document.querySelector('.bottom-nav .nav-item.active');
+        const indicator = document.getElementById('navIndicator');
+        
+        if (activeItem && indicator) {
+            // فقط در دسکتاپ
+            if (window.innerWidth >= 769) {
+                const rect = activeItem.getBoundingClientRect();
+                const navRect = document.querySelector('.bottom-nav').getBoundingClientRect();
+                
+                // محاسبه موقعیت نشانگر
+                const topOffset = activeItem.offsetTop + (activeItem.offsetHeight / 2) - (48 / 2);
+                indicator.style.top = topOffset + 'px';
+                indicator.classList.add('show');
+            }
+        }
+
+        // به‌روزرسانی نشانگر هنگام تغییر اندازه
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 769) {
+                const activeItem = document.querySelector('.bottom-nav .nav-item.active');
+                const indicator = document.getElementById('navIndicator');
+                
+                if (activeItem && indicator) {
+                    const topOffset = activeItem.offsetTop + (activeItem.offsetHeight / 2) - (48 / 2);
+                    indicator.style.top = topOffset + 'px';
+                    indicator.classList.add('show');
+                }
+            } else {
+                const indicator = document.getElementById('navIndicator');
+                if (indicator) {
+                    indicator.classList.remove('show');
+                }
+            }
+        });
+    });
+</script>
