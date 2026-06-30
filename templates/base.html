@@ -38,7 +38,7 @@
         }
 
         /* ============================================
-           ===== هدر بالا =====
+           ===== استایل‌های هدر =====
            ============================================ */
         .app-header {
             background: #1a1d23;
@@ -269,10 +269,10 @@
         }
 
         /* ============================================
-           ===== نوار پایین (فوتر) =====
+           ===== استایل‌های فوتر =====
            ============================================ */
         
-        /* ===== حالت موبایل (زیر 768px) - افقی در پایین ===== */
+        /* حالت موبایل (زیر 768px) - افقی در پایین */
         @media (max-width: 768px) {
             .bottom-nav {
                 position: fixed;
@@ -526,13 +526,8 @@
             }
         }
 
-        /* ===== حالت دسکتاپ (بالای 769px) - عمودی در سمت راست ===== */
+        /* حالت دسکتاپ (بالای 769px) - عمودی در سمت راست */
         @media (min-width: 769px) {
-            body {
-                padding-right: 0;
-                padding-bottom: 0;
-            }
-
             .app-container {
                 padding-right: 100px;
                 padding-left: 30px;
@@ -976,107 +971,15 @@
     <div class="app-container page-enter">
 
         <!-- ===== هدر بالا ===== -->
-        <header class="app-header" id="appHeader">
-            
-            <div class="header-left">
-                <a href="/dashboard" class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <span class="logo-text">
-                        مادر <span class="highlight">آنالیزر</span>
-                    </span>
-                </a>
-
-                {% if request.path != '/dashboard' and request.path != '/' %}
-                <button onclick="history.back()" class="btn-back">
-                    <i class="fas fa-arrow-right"></i>
-                    <span>بازگشت</span>
-                </button>
-                {% endif %}
-            </div>
-
-            <div class="header-right">
-                
-                <button class="btn-notification" title="اعلان‌ها">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </button>
-
-                <a href="/dashboard/profile" class="user-profile">
-                    <div class="avatar">
-                        {{ session.get('user_full_name', 'کاربر')[0]|upper if session.get('user_full_name') else 'U' }}
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">{{ session.get('user_full_name', 'کاربر') }}</span>
-                        <span class="user-role">
-                            <span class="role-dot 
-                                {% if session.get('user_role') == 'admin' %}admin
-                                {% elif session.get('user_role') == 'channel_admin' %}channel_admin
-                                {% elif session.get('user_role') == 'manager' %}manager
-                                {% else %}user{% endif %}">
-                            </span>
-                            {% if session.get('user_role') == 'admin' %}مدیر کل
-                            {% elif session.get('user_role') == 'channel_admin' %}ادمین کانال
-                            {% elif session.get('user_role') == 'manager' %}مدیر
-                            {% else %}کاربر{% endif %}
-                        </span>
-                    </div>
-                </a>
-
-                <button class="hamburger" id="hamburgerBtn" aria-label="منو">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-
-        </header>
+        {% include 'includes/header.html' %}
 
         <!-- ===== محتوای اصلی ===== -->
         {% block content %}{% endblock %}
 
     </div>
 
-    <!-- ==========================================
-    ===== نوار پایین (فوتر) =====
-    ========================================== -->
-    <nav class="bottom-nav" id="bottomNav">
-        
-        <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
-            <i class="fas fa-home"></i>
-            <span>خانه</span>
-            <span class="tooltip">خانه</span>
-        </a>
-
-        <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
-            <i class="fas fa-bullhorn"></i>
-            <span>کانال‌ها</span>
-            <span class="nav-badge">12</span>
-            <span class="tooltip">کانال‌ها</span>
-        </a>
-
-        <a href="/dashboard/posts" class="nav-item center-btn {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
-            <div class="center-circle">
-                <i class="fas fa-plus"></i>
-            </div>
-            <span>پست‌ها</span>
-            <span class="tooltip">پست‌ها</span>
-        </a>
-
-        <a href="/dashboard/profile" class="nav-item {% if request.path.startswith('/dashboard/profile') %}active{% endif %}">
-            <i class="fas fa-user"></i>
-            <span>پروفایل</span>
-            <span class="tooltip">پروفایل</span>
-        </a>
-
-        <a href="/auth/logout" class="nav-item logout" onclick="return confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>خروج</span>
-            <span class="tooltip">خروج</span>
-        </a>
-
-    </nav>
+    <!-- ===== فوتر پایین ===== -->
+    {% include 'includes/footer.html' %}
 
     <!-- ===== اسکریپت‌ها ===== -->
     <script>
