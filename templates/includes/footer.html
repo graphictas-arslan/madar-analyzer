@@ -1,5 +1,5 @@
 <!-- ============================================
-     ===== نوار پایین (فوتر) - نسخه مستقل =====
+     ===== نوار پایین (فوتر) - هماهنگ با هدر =====
      ============================================ -->
 <nav class="bottom-nav" id="bottomNav">
     
@@ -51,446 +51,246 @@
 
 <style>
     /* ============================================
-       ===== فوتر - کاملاً مستقل =====
+       ===== فوتر - هماهنگ با هدر =====
        ============================================ */
     
-    /* ریست کامل برای فوتر */
-    .bottom-nav,
-    .bottom-nav * {
-        all: unset;
-        display: revert;
-        box-sizing: border-box;
-    }
-
-    /* ===== استایل اصلی فوتر ===== */
-    .bottom-nav {
-        position: fixed !important;
-        bottom: 16px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: auto !important;
-        max-width: 420px !important;
-        min-width: 280px !important;
-        background: rgba(26, 29, 35, 0.95) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-radius: 18px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-around !important;
-        align-items: center !important;
-        border: 1px solid rgba(42, 45, 51, 0.5) !important;
-        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5) !important;
-        z-index: 9999 !important;
-        padding: 5px 8px !important;
-        gap: 2px !important;
-    }
-
-    /* ===== جداکننده ===== */
-    .bottom-nav .nav-divider {
-        width: 1px !important;
-        height: 22px !important;
-        background: rgba(42, 45, 51, 0.4) !important;
-        flex-shrink: 0 !important;
-        border-radius: 1px !important;
-    }
-
-    /* ===== آیتم‌ها ===== */
-    .bottom-nav .nav-item {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 1px !important;
-        color: #666 !important;
-        text-decoration: none !important;
-        font-size: 7px !important;
-        padding: 3px 4px !important;
-        border-radius: 10px !important;
-        transition: all 0.3s ease !important;
-        cursor: pointer !important;
-        flex: 1 !important;
-        min-width: 28px !important;
-        max-width: 50px !important;
-        background: transparent !important;
-        border: none !important;
-    }
-
-    /* ===== آیکون ===== */
-    .bottom-nav .nav-item .nav-icon-wrapper {
-        position: relative !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 24px !important;
-        height: 24px !important;
-        border-radius: 8px !important;
-        transition: all 0.3s ease !important;
-    }
-
-    .bottom-nav .nav-item i {
-        font-size: 12px !important;
-        transition: all 0.3s ease !important;
-        color: #666 !important;
-    }
-
-    /* ===== لیبل ===== */
-    .bottom-nav .nav-item .nav-label {
-        font-weight: 500 !important;
-        transition: all 0.3s ease !important;
-        font-size: 6px !important;
-        color: #666 !important;
-        white-space: nowrap !important;
-    }
-
-    /* ===== هاور و اکتیو ===== */
-    .bottom-nav .nav-item:hover i {
-        color: #a0a0a0 !important;
-    }
-
-    .bottom-nav .nav-item:hover .nav-label {
-        color: #a0a0a0 !important;
-    }
-
-    .bottom-nav .nav-item.active i {
-        color: #f97316 !important;
-    }
-
-    .bottom-nav .nav-item.active .nav-label {
-        color: #f97316 !important;
-    }
-
-    .bottom-nav .nav-item.active .nav-icon-wrapper {
-        background: rgba(249, 115, 22, 0.08) !important;
-    }
-
-    /* ===== دکمه مرکزی ===== */
-    .bottom-nav .nav-item.center-btn {
-        margin-top: -12px !important;
-        flex: 0 0 auto !important;
-        min-width: unset !important;
-        max-width: unset !important;
-        padding: 2px 4px !important;
-    }
-
-    .bottom-nav .nav-item.center-btn .center-circle {
-        width: 34px !important;
-        height: 34px !important;
-        border-radius: 50% !important;
-        background: linear-gradient(145deg, #f97316, #ea580c) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        color: #fff !important;
-        font-size: 15px !important;
-        box-shadow: 0 2px 15px rgba(249, 115, 22, 0.3) !important;
-        transition: all 0.3s ease !important;
-        border: 2px solid rgba(26, 29, 35, 0.9) !important;
-    }
-
-    .bottom-nav .nav-item.center-btn .center-circle:hover {
-        transform: scale(1.05) rotate(90deg) !important;
-        box-shadow: 0 3px 20px rgba(249, 115, 22, 0.4) !important;
-    }
-
-    .bottom-nav .nav-item.center-btn .nav-label {
-        margin-top: 1px !important;
-        font-size: 6px !important;
-    }
-
-    .bottom-nav .nav-item.center-btn.active .center-circle {
-        box-shadow: 0 2px 25px rgba(249, 115, 22, 0.5) !important;
-    }
-
-    /* ===== Badge ===== */
-    .bottom-nav .nav-item .nav-badge {
-        position: absolute !important;
-        top: -3px !important;
-        right: -3px !important;
-        width: 12px !important;
-        height: 12px !important;
-        border-radius: 50% !important;
-        background: #ef4444 !important;
-        color: #fff !important;
-        font-size: 6px !important;
-        font-weight: 700 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border: 1.5px solid #1a1d23 !important;
-        z-index: 5 !important;
-    }
-
-    .bottom-nav .nav-item .nav-badge.pulse {
-        animation: badgePulse 2s ease-in-out infinite !important;
-    }
-
-    @keyframes badgePulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.08); }
-    }
-
-    /* ===== خروج ===== */
-    .bottom-nav .nav-item.logout i {
-        color: #666 !important;
-    }
-
-    .bottom-nav .nav-item.logout:hover i {
-        color: #f87171 !important;
-    }
-
-    .bottom-nav .nav-item.logout.active i {
-        color: #f87171 !important;
-    }
-
-    /* ============================================
-       ===== واکنش‌گرایی =====
-       ============================================ */
-    
-    @media (max-width: 400px) {
-        .bottom-nav {
-            max-width: 320px !important;
-            min-width: 240px !important;
-            padding: 4px 4px !important;
-            gap: 1px !important;
-            border-radius: 14px !important;
-            bottom: 12px !important;
-        }
-
-        .bottom-nav .nav-divider {
-            height: 16px !important;
-        }
-
-        .bottom-nav .nav-item {
-            min-width: 22px !important;
-            max-width: 38px !important;
-            padding: 2px 2px !important;
-        }
-
-        .bottom-nav .nav-item .nav-icon-wrapper {
-            width: 18px !important;
-            height: 18px !important;
-        }
-
-        .bottom-nav .nav-item i {
-            font-size: 9px !important;
-        }
-
-        .bottom-nav .nav-item .nav-label {
-            font-size: 5px !important;
-        }
-
-        .bottom-nav .nav-item .nav-badge {
-            width: 9px !important;
-            height: 9px !important;
-            font-size: 4px !important;
-            top: -3px !important;
-            right: -3px !important;
-            border-width: 1px !important;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 28px !important;
-            height: 28px !important;
-            font-size: 12px !important;
-        }
-
-        .bottom-nav .nav-item.center-btn {
-            margin-top: -10px !important;
-        }
-    }
-
-    @media (min-width: 401px) and (max-width: 600px) {
-        .bottom-nav {
-            max-width: 380px !important;
-            min-width: 260px !important;
-            padding: 4px 6px !important;
-            gap: 1px !important;
-            border-radius: 16px !important;
-        }
-
-        .bottom-nav .nav-divider {
-            height: 18px !important;
-        }
-
-        .bottom-nav .nav-item {
-            min-width: 24px !important;
-            max-width: 42px !important;
-            padding: 2px 3px !important;
-        }
-
-        .bottom-nav .nav-item .nav-icon-wrapper {
-            width: 20px !important;
-            height: 20px !important;
-        }
-
-        .bottom-nav .nav-item i {
-            font-size: 10px !important;
-        }
-
-        .bottom-nav .nav-item .nav-label {
-            font-size: 5px !important;
-        }
-
-        .bottom-nav .nav-item .nav-badge {
-            width: 10px !important;
-            height: 10px !important;
-            font-size: 5px !important;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 30px !important;
-            height: 30px !important;
-            font-size: 13px !important;
-        }
-
-        .bottom-nav .nav-item.center-btn {
-            margin-top: -11px !important;
-        }
-    }
-
-    @media (min-width: 601px) and (max-width: 768px) {
-        .bottom-nav {
-            max-width: 420px !important;
-            min-width: 300px !important;
-            padding: 5px 8px !important;
-            gap: 2px !important;
-            border-radius: 18px !important;
-        }
-
-        .bottom-nav .nav-divider {
-            height: 22px !important;
-        }
-
-        .bottom-nav .nav-item {
-            min-width: 28px !important;
-            max-width: 48px !important;
-            padding: 3px 4px !important;
-        }
-
-        .bottom-nav .nav-item .nav-icon-wrapper {
-            width: 24px !important;
-            height: 24px !important;
-        }
-
-        .bottom-nav .nav-item i {
-            font-size: 12px !important;
-        }
-
-        .bottom-nav .nav-item .nav-label {
-            font-size: 6px !important;
-        }
-
-        .bottom-nav .nav-item .nav-badge {
-            width: 12px !important;
-            height: 12px !important;
-            font-size: 6px !important;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 34px !important;
-            height: 34px !important;
-            font-size: 15px !important;
-        }
-
-        .bottom-nav .nav-item.center-btn {
-            margin-top: -12px !important;
-        }
-    }
-
-    /* ===== دسکتاپ ===== */
-    @media (min-width: 769px) {
+    /* ===== حالت موبایل ===== */
+    @media (max-width: 768px) {
         .bottom-nav {
             position: fixed !important;
-            right: 20px !important;
-            top: 50% !important;
-            left: auto !important;
-            transform: translateY(-50%) !important;
-            width: 48px !important;
-            max-width: 48px !important;
-            min-width: 48px !important;
-            flex-direction: column !important;
-            border-radius: 20px !important;
-            padding: 10px 6px !important;
+            bottom: 16px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: calc(100% - 24px) !important;
+            max-width: 460px !important;
+            min-width: 280px !important;
+            background: rgba(26, 29, 35, 0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-radius: 16px !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-around !important;
+            align-items: center !important;
+            border: 1px solid #2a2d33 !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+            z-index: 9999 !important;
+            padding: 8px 12px !important;
             gap: 2px !important;
-            bottom: auto !important;
         }
 
         .bottom-nav .nav-divider {
-            width: 20px !important;
-            height: 1px !important;
-            margin: 1px 0 !important;
+            width: 1px !important;
+            height: 28px !important;
+            background: rgba(42, 45, 51, 0.4) !important;
+            flex-shrink: 0 !important;
         }
 
         .bottom-nav .nav-item {
-            min-width: unset !important;
-            max-width: unset !important;
-            width: 100% !important;
-            padding: 4px 2px !important;
-            min-height: 32px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 2px !important;
+            color: #666 !important;
+            text-decoration: none !important;
+            font-size: 9px !important;
+            padding: 4px 4px !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            flex: 1 !important;
+            min-width: 32px !important;
+            max-width: 56px !important;
+            background: transparent !important;
+            border: none !important;
         }
 
         .bottom-nav .nav-item .nav-icon-wrapper {
-            width: 26px !important;
-            height: 26px !important;
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
         }
 
         .bottom-nav .nav-item i {
-            font-size: 13px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            color: #666 !important;
         }
 
         .bottom-nav .nav-item .nav-label {
-            font-size: 5px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            font-size: 8px !important;
+            color: #666 !important;
+            white-space: nowrap !important;
+        }
+
+        .bottom-nav .nav-item:hover i {
+            color: #a0a0a0 !important;
+        }
+
+        .bottom-nav .nav-item:hover .nav-label {
+            color: #a0a0a0 !important;
+        }
+
+        .bottom-nav .nav-item.active i {
+            color: #f97316 !important;
+        }
+
+        .bottom-nav .nav-item.active .nav-label {
+            color: #f97316 !important;
+        }
+
+        .bottom-nav .nav-item.active .nav-icon-wrapper {
+            background: rgba(249, 115, 22, 0.08) !important;
         }
 
         .bottom-nav .nav-item .nav-badge {
-            width: 12px !important;
-            height: 12px !important;
-            font-size: 5px !important;
+            position: absolute !important;
             top: -2px !important;
             right: -2px !important;
+            width: 16px !important;
+            height: 16px !important;
+            border-radius: 50% !important;
+            background: #ef4444 !important;
+            color: #fff !important;
+            font-size: 8px !important;
+            font-weight: 700 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 2px solid #1a1d23 !important;
+            z-index: 5 !important;
+        }
+
+        .bottom-nav .nav-item .nav-badge.pulse {
+            animation: badgePulse 2s ease-in-out infinite !important;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
 
         .bottom-nav .nav-item.center-btn {
-            margin-top: 0 !important;
-            min-height: 38px !important;
-            padding: 4px 2px !important;
+            margin-top: -14px !important;
+            flex: 0 0 auto !important;
+            min-width: unset !important;
+            max-width: unset !important;
+            padding: 2px 4px !important;
         }
 
         .bottom-nav .nav-item.center-btn .center-circle {
-            width: 30px !important;
-            height: 30px !important;
-            font-size: 14px !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(145deg, #f97316, #ea580c) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #fff !important;
+            font-size: 20px !important;
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35) !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid rgba(26, 29, 35, 0.9) !important;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle:hover {
+            transform: scale(1.05) rotate(90deg) !important;
+            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.45) !important;
         }
 
         .bottom-nav .nav-item.center-btn .nav-label {
-            font-size: 5px !important;
-        }
-
-        .bottom-nav .nav-item.logout {
             margin-top: 2px !important;
-            border-top: 1px solid rgba(42, 45, 51, 0.15) !important;
-            padding-top: 5px !important;
+            font-size: 8px !important;
         }
 
-        /* دسکتاپ بزرگ */
-        @media (min-width: 1200px) {
+        .bottom-nav .nav-item.center-btn.active .center-circle {
+            box-shadow: 0 4px 30px rgba(249, 115, 22, 0.5) !important;
+        }
+
+        .bottom-nav .nav-item.logout i {
+            color: #666 !important;
+        }
+
+        .bottom-nav .nav-item.logout:hover i {
+            color: #f87171 !important;
+        }
+
+        .bottom-nav .nav-item.logout.active i {
+            color: #f87171 !important;
+        }
+
+        /* موبایل خیلی کوچک */
+        @media (max-width: 400px) {
             .bottom-nav {
-                right: 24px !important;
-                width: 52px !important;
-                max-width: 52px !important;
-                min-width: 52px !important;
-                padding: 12px 7px !important;
-                border-radius: 22px !important;
-                gap: 3px !important;
+                padding: 6px 8px !important;
+                max-width: 340px !important;
+                min-width: 200px !important;
+                border-radius: 14px !important;
+                bottom: 12px !important;
             }
 
             .bottom-nav .nav-divider {
-                width: 22px !important;
+                height: 22px !important;
             }
 
             .bottom-nav .nav-item {
-                min-height: 36px !important;
-                padding: 5px 3px !important;
+                min-width: 26px !important;
+                max-width: 42px !important;
+                padding: 3px 2px !important;
+                font-size: 8px !important;
+            }
+
+            .bottom-nav .nav-item .nav-icon-wrapper {
+                width: 26px !important;
+                height: 26px !important;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 13px !important;
+            }
+
+            .bottom-nav .nav-item .nav-label {
+                font-size: 7px !important;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                width: 13px !important;
+                height: 13px !important;
+                font-size: 7px !important;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 16px !important;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                margin-top: -12px !important;
+            }
+        }
+
+        /* موبایل متوسط */
+        @media (min-width: 401px) and (max-width: 600px) {
+            .bottom-nav {
+                padding: 6px 10px !important;
+                max-width: 380px !important;
+            }
+
+            .bottom-nav .nav-divider {
+                height: 24px !important;
+            }
+
+            .bottom-nav .nav-item {
+                min-width: 28px !important;
+                max-width: 48px !important;
             }
 
             .bottom-nav .nav-item .nav-icon-wrapper {
@@ -503,73 +303,305 @@
             }
 
             .bottom-nav .nav-item .nav-label {
-                font-size: 6px !important;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 13px !important;
-                height: 13px !important;
-                font-size: 6px !important;
+                font-size: 7px !important;
             }
 
             .bottom-nav .nav-item.center-btn .center-circle {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 15px !important;
+                width: 38px !important;
+                height: 38px !important;
+                font-size: 17px !important;
             }
 
             .bottom-nav .nav-item.center-btn {
-                min-height: 42px !important;
+                margin-top: -13px !important;
+            }
+        }
+    }
+
+    /* ============================================
+       ===== حالت دسکتاپ - هماهنگ با هدر =====
+       ============================================ */
+    @media (min-width: 769px) {
+        .bottom-nav {
+            position: fixed !important;
+            right: 20px !important;
+            top: 50% !important;
+            left: auto !important;
+            transform: translateY(-50%) !important;
+            width: 56px !important;
+            max-width: 56px !important;
+            min-width: 56px !important;
+            background: rgba(26, 29, 35, 0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-radius: 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 1px solid #2a2d33 !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+            z-index: 9999 !important;
+            padding: 12px 8px !important;
+            gap: 2px !important;
+            bottom: auto !important;
+        }
+
+        .bottom-nav .nav-divider {
+            width: 24px !important;
+            height: 1px !important;
+            background: rgba(42, 45, 51, 0.4) !important;
+            flex-shrink: 0 !important;
+            margin: 2px 0 !important;
+        }
+
+        .bottom-nav .nav-item {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 2px !important;
+            color: #666 !important;
+            text-decoration: none !important;
+            font-size: 9px !important;
+            padding: 6px 4px !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            width: 100% !important;
+            min-height: 40px !important;
+            justify-content: center !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .bottom-nav .nav-item .nav-icon-wrapper {
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .bottom-nav .nav-item i {
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            color: #666 !important;
+        }
+
+        .bottom-nav .nav-item .nav-label {
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            font-size: 8px !important;
+            color: #666 !important;
+            white-space: nowrap !important;
+            margin-top: 1px !important;
+        }
+
+        .bottom-nav .nav-item:hover i {
+            color: #a0a0a0 !important;
+        }
+
+        .bottom-nav .nav-item:hover .nav-label {
+            color: #a0a0a0 !important;
+        }
+
+        .bottom-nav .nav-item:hover .nav-icon-wrapper {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+
+        .bottom-nav .nav-item.active i {
+            color: #f97316 !important;
+        }
+
+        .bottom-nav .nav-item.active .nav-label {
+            color: #f97316 !important;
+        }
+
+        .bottom-nav .nav-item.active .nav-icon-wrapper {
+            background: rgba(249, 115, 22, 0.08) !important;
+        }
+
+        .bottom-nav .nav-item .nav-badge {
+            position: absolute !important;
+            top: -2px !important;
+            right: -2px !important;
+            width: 16px !important;
+            height: 16px !important;
+            border-radius: 50% !important;
+            background: #ef4444 !important;
+            color: #fff !important;
+            font-size: 8px !important;
+            font-weight: 700 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 2px solid #1a1d23 !important;
+            z-index: 5 !important;
+        }
+
+        .bottom-nav .nav-item .nav-badge.pulse {
+            animation: badgePulse 2s ease-in-out infinite !important;
+        }
+
+        .bottom-nav .nav-item.center-btn {
+            margin-top: 0 !important;
+            flex: 0 0 auto !important;
+            min-height: 48px !important;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(145deg, #f97316, #ea580c) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #fff !important;
+            font-size: 17px !important;
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3) !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid rgba(26, 29, 35, 0.9) !important;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle:hover {
+            transform: scale(1.05) rotate(90deg) !important;
+            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.4) !important;
+        }
+
+        .bottom-nav .nav-item.center-btn .nav-label {
+            margin-top: 2px !important;
+            font-size: 8px !important;
+        }
+
+        .bottom-nav .nav-item.center-btn.active .center-circle {
+            box-shadow: 0 4px 30px rgba(249, 115, 22, 0.5) !important;
+        }
+
+        .bottom-nav .nav-item.logout {
+            margin-top: 4px !important;
+            border-top: 1px solid rgba(42, 45, 51, 0.2) !important;
+            padding-top: 8px !important;
+        }
+
+        .bottom-nav .nav-item.logout i {
+            color: #666 !important;
+        }
+
+        .bottom-nav .nav-item.logout:hover i {
+            color: #f87171 !important;
+        }
+
+        .bottom-nav .nav-item.logout.active i {
+            color: #f87171 !important;
+        }
+
+        /* دسکتاپ بزرگ */
+        @media (min-width: 1200px) {
+            .bottom-nav {
+                right: 24px !important;
+                width: 60px !important;
+                max-width: 60px !important;
+                min-width: 60px !important;
+                padding: 14px 10px !important;
+                border-radius: 18px !important;
+                gap: 3px !important;
+            }
+
+            .bottom-nav .nav-divider {
+                width: 28px !important;
+            }
+
+            .bottom-nav .nav-item {
+                min-height: 44px !important;
+                padding: 8px 6px !important;
+                font-size: 10px !important;
+            }
+
+            .bottom-nav .nav-item .nav-icon-wrapper {
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 12px !important;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 18px !important;
+            }
+
+            .bottom-nav .nav-item .nav-label {
+                font-size: 9px !important;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                width: 18px !important;
+                height: 18px !important;
+                font-size: 9px !important;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 18px !important;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                min-height: 52px !important;
             }
         }
 
+        /* دسکتاپ فوق‌العاده بزرگ */
         @media (min-width: 1600px) {
             .bottom-nav {
                 right: 28px !important;
-                width: 56px !important;
-                max-width: 56px !important;
-                min-width: 56px !important;
-                padding: 14px 8px !important;
-                border-radius: 24px !important;
+                width: 64px !important;
+                max-width: 64px !important;
+                min-width: 64px !important;
+                padding: 16px 12px !important;
+                border-radius: 20px !important;
                 gap: 4px !important;
             }
 
             .bottom-nav .nav-divider {
-                width: 24px !important;
+                width: 32px !important;
             }
 
             .bottom-nav .nav-item {
-                min-height: 40px !important;
-                padding: 6px 4px !important;
+                min-height: 48px !important;
+                padding: 10px 8px !important;
+                font-size: 11px !important;
             }
 
             .bottom-nav .nav-item .nav-icon-wrapper {
-                width: 30px !important;
-                height: 30px !important;
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 12px !important;
             }
 
             .bottom-nav .nav-item i {
-                font-size: 15px !important;
+                font-size: 20px !important;
             }
 
             .bottom-nav .nav-item .nav-label {
-                font-size: 6px !important;
+                font-size: 10px !important;
             }
 
             .bottom-nav .nav-item .nav-badge {
-                width: 14px !important;
-                height: 14px !important;
-                font-size: 6px !important;
+                width: 20px !important;
+                height: 20px !important;
+                font-size: 10px !important;
             }
 
             .bottom-nav .nav-item.center-btn .center-circle {
-                width: 34px !important;
-                height: 34px !important;
-                font-size: 16px !important;
+                width: 44px !important;
+                height: 44px !important;
+                font-size: 20px !important;
             }
 
             .bottom-nav .nav-item.center-btn {
-                min-height: 46px !important;
+                min-height: 56px !important;
             }
         }
     }
@@ -579,27 +611,27 @@
        ============================================ */
     @media (max-width: 768px) {
         .app-container {
-            padding-bottom: 75px !important;
+            padding-bottom: 80px !important;
         }
     }
 
     @media (min-width: 769px) {
         .app-container {
-            padding-right: 85px !important;
+            padding-right: 90px !important;
             padding-left: 25px !important;
         }
     }
 
     @media (min-width: 1200px) {
         .app-container {
-            padding-right: 95px !important;
+            padding-right: 100px !important;
             padding-left: 30px !important;
         }
     }
 
     @media (min-width: 1600px) {
         .app-container {
-            padding-right: 105px !important;
+            padding-right: 110px !important;
             padding-left: 35px !important;
         }
     }
