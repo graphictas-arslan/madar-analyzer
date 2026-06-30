@@ -1,0 +1,57 @@
+<!-- ===== هدر بالا ===== -->
+<header class="app-header" id="appHeader">
+    
+    <div class="header-left">
+        <a href="/dashboard" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <span class="logo-text">
+                مادر <span class="highlight">آنالیزر</span>
+            </span>
+        </a>
+
+        {% if request.path != '/dashboard' and request.path != '/' %}
+        <button onclick="history.back()" class="btn-back">
+            <i class="fas fa-arrow-right"></i>
+            <span>بازگشت</span>
+        </button>
+        {% endif %}
+    </div>
+
+    <div class="header-right">
+        
+        <button class="btn-notification" title="اعلان‌ها">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
+        </button>
+
+        <a href="/dashboard/profile" class="user-profile">
+            <div class="avatar">
+                {{ session.get('user_full_name', 'کاربر')[0]|upper if session.get('user_full_name') else 'U' }}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ session.get('user_full_name', 'کاربر') }}</span>
+                <span class="user-role">
+                    <span class="role-dot 
+                        {% if session.get('user_role') == 'admin' %}admin
+                        {% elif session.get('user_role') == 'channel_admin' %}channel_admin
+                        {% elif session.get('user_role') == 'manager' %}manager
+                        {% else %}user{% endif %}">
+                    </span>
+                    {% if session.get('user_role') == 'admin' %}مدیر کل
+                    {% elif session.get('user_role') == 'channel_admin' %}ادمین کانال
+                    {% elif session.get('user_role') == 'manager' %}مدیر
+                    {% else %}کاربر{% endif %}
+                </span>
+            </div>
+        </a>
+
+        <button class="hamburger" id="hamburgerBtn" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+</header>
