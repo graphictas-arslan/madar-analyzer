@@ -2,169 +2,862 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Madar Analyzer{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}مادر آنالیزر{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jalali-moment"></script>
     
-    <!-- پیام‌های فلش -->
+    {% block extra_head %}{% endblock %}
+    
+    <style>
+        /* ============================================
+           استایل‌های جدید هدر و فوتر
+           ============================================ */
+        
+        /* ===== ریست ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f1115;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            direction: rtl;
+            color: #ffffff;
+            font-size: 13px;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            margin: 0;
+        }
+
+        /* ===== کانتینر اصلی ===== */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 16px 80px 16px;
+        }
+
+        /* ============================================
+           ===== هدر جدید =====
+           ============================================ */
+        .app-header {
+            background: #1a1d23;
+            border-radius: 16px;
+            padding: 10px 18px;
+            margin-bottom: 16px;
+            border: 1px solid #2a2d33;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 8px;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(26, 29, 35, 0.92);
+            transition: all 0.3s ease;
+        }
+
+        .app-header.scrolled {
+            box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+
+        /* بخش چپ هدر */
+        .app-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .app-header .logo .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .app-header .logo .logo-icon:hover {
+            transform: scale(1.05) rotate(-5deg);
+        }
+
+        .app-header .logo .logo-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .app-header .logo .logo-text .highlight {
+            color: #f97316;
+        }
+
+        /* دکمه بازگشت */
+        .app-header .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            background: #2a2d33;
+            border: none;
+            border-radius: 8px;
+            color: #a0a0a0;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .app-header .btn-back:hover {
+            background: #3a3d43;
+            color: #fff;
+        }
+
+        /* بخش راست هدر */
+        .app-header .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* دکمه نوتیفیکیشن */
+        .app-header .btn-notification {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2a2d33;
+            border: 1px solid #2a2d33;
+            color: #a0a0a0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .app-header .btn-notification:hover {
+            border-color: #f97316;
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .app-header .btn-notification .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1a1d23;
+        }
+
+        /* پروفایل کاربر */
+        .app-header .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            padding: 4px 10px 4px 4px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .app-header .user-profile:hover {
+            background: #2a2d33;
+            border-color: #2a2d33;
+        }
+
+        .app-header .user-profile .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .app-header .user-profile .user-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .app-header .user-profile .user-info .user-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .app-header .user-profile .user-info .user-role {
+            font-size: 9px;
+            color: #a0a0a0;
+        }
+
+        .app-header .user-profile .user-info .user-role .role-dot {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            margin-left: 4px;
+        }
+
+        .app-header .user-profile .user-info .user-role .role-dot.admin {
+            background: #f97316;
+        }
+        .app-header .user-profile .user-info .user-role .role-dot.channel_admin {
+            background: #60a5fa;
+        }
+        .app-header .user-profile .user-info .user-role .role-dot.manager {
+            background: #a78bfa;
+        }
+        .app-header .user-profile .user-info .user-role .role-dot.user {
+            background: #4ade80;
+        }
+
+        /* ===== منوی همبرگر (موبایل) ===== */
+        .app-header .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px;
+            border: none;
+            background: transparent;
+        }
+
+        .app-header .hamburger span {
+            width: 22px;
+            height: 2px;
+            background: #a0a0a0;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .app-header .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .app-header .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .app-header .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        /* ============================================
+           ===== پیام‌های فلش =====
+           ============================================ */
+        .flash-container {
+            position: fixed;
+            top: 80px;
+            right: 50%;
+            transform: translateX(50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 420px;
+            direction: rtl;
+        }
+
+        .flash-message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+            animation: slideDown 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid transparent;
+        }
+
+        .flash-message.success {
+            background: #1a3a2a;
+            color: #4ade80;
+            border-color: #2a5a3a;
+        }
+
+        .flash-message.danger {
+            background: #3a1a1a;
+            color: #f87171;
+            border-color: #5a2a2a;
+        }
+
+        .flash-message.warning {
+            background: #3a2a1a;
+            color: #fbbf24;
+            border-color: #5a4a2a;
+        }
+
+        .flash-message.info {
+            background: #1a2a3a;
+            color: #60a5fa;
+            border-color: #2a4a5a;
+        }
+
+        .flash-message .flash-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .flash-message .flash-text {
+            flex: 1;
+        }
+
+        .flash-message .flash-close {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            padding: 0 4px;
+        }
+
+        .flash-message .flash-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px) scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================
+           ===== نوار پایین (فوتر) جدید =====
+           ============================================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            max-width: 500px;
+            min-width: 320px;
+            background: #1a1d23;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 6px 12px;
+            border: 1px solid #2a2d33;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(16px);
+            background: rgba(26, 29, 35, 0.92);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            color: #666;
+            text-decoration: none;
+            font-size: 9px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 48px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .bottom-nav .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-nav .nav-item span {
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-nav .nav-item:hover {
+            color: #a0a0a0;
+        }
+
+        .bottom-nav .nav-item.active {
+            color: #f97316;
+        }
+
+        .bottom-nav .nav-item.active i {
+            transform: translateY(-2px);
+            text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .bottom-nav .nav-item .nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1a1d23;
+        }
+
+        /* آیتم خاص خروج */
+        .bottom-nav .nav-item.logout {
+            color: #666;
+        }
+
+        .bottom-nav .nav-item.logout:hover {
+            color: #f87171;
+        }
+
+        .bottom-nav .nav-item.logout.active {
+            color: #f87171;
+        }
+
+        /* ===== دکمه مرکزی (اضافه کردن) ===== */
+        .bottom-nav .nav-item.center-btn {
+            position: relative;
+            margin-top: -18px;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+            transition: all 0.3s ease;
+            border: 2px solid #1a1d23;
+        }
+
+        .bottom-nav .nav-item.center-btn .center-circle:hover {
+            transform: scale(1.05) rotate(90deg);
+            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5);
+        }
+
+        .bottom-nav .nav-item.center-btn span {
+            margin-top: 2px;
+            font-size: 8px;
+        }
+
+        /* ============================================
+           ===== واکنش‌گرایی =====
+           ============================================ */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 8px 10px 80px 10px;
+            }
+
+            .app-header {
+                padding: 8px 12px;
+                border-radius: 12px;
+            }
+
+            .app-header .logo .logo-text {
+                font-size: 14px;
+            }
+
+            .app-header .logo .logo-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .app-header .user-profile .user-info .user-role {
+                display: none;
+            }
+
+            .app-header .btn-back span {
+                display: none;
+            }
+
+            .app-header .btn-notification {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .app-header .user-profile .avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            .app-header .user-profile .user-info .user-name {
+                font-size: 11px;
+            }
+
+            .app-header .hamburger {
+                display: flex;
+            }
+
+            .bottom-nav {
+                min-width: unset;
+                width: calc(100% - 20px);
+                padding: 4px 8px;
+                border-radius: 16px;
+                bottom: 8px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 4px 6px;
+                min-width: 36px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 16px;
+            }
+
+            .bottom-nav .nav-item span {
+                font-size: 8px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                margin-top: -14px;
+            }
+
+            .flash-container {
+                top: 70px;
+                width: 95%;
+            }
+
+            .flash-message {
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .app-header .hamburger {
+                display: none;
+            }
+
+            .bottom-nav {
+                min-width: 380px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 6px 14px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .app-header .hamburger {
+                display: none;
+            }
+
+            .app-header {
+                padding: 12px 24px;
+            }
+
+            .bottom-nav {
+                min-width: 420px;
+                padding: 8px 16px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 8px 18px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 22px;
+            }
+
+            .bottom-nav .nav-item span {
+                font-size: 10px;
+            }
+        }
+
+        /* ===== انیمیشن ورود صفحات ===== */
+        .page-enter {
+            animation: pageFadeIn 0.4s ease;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== اسکرول بار سفارشی ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f97316;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ea580c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+    ===== پیام‌های فلش =====
+    ========================================== -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <style>
-                .flash-container {
-                    position: fixed;
-                    top: 70px;
-                    right: 50%;
-                    transform: translateX(50%);
-                    z-index: 9999;
-                    width: 90%;
-                    max-width: 400px;
-                    direction: rtl;
-                }
-                .flash-message {
-                    padding: 12px 16px;
-                    border-radius: 12px;
-                    font-size: 13px;
-                    font-weight: 500;
-                    margin-bottom: 8px;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                    animation: slideDown 0.4s ease;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-                .flash-message.success {
-                    background: #1a3a2a;
-                    color: #4ade80;
-                    border: 1px solid #2a5a3a;
-                }
-                .flash-message.danger {
-                    background: #3a1a1a;
-                    color: #f87171;
-                    border: 1px solid #5a2a2a;
-                }
-                .flash-message.warning {
-                    background: #3a2a1a;
-                    color: #fbbf24;
-                    border: 1px solid #5a4a2a;
-                }
-                .flash-message.info {
-                    background: #1a2a3a;
-                    color: #60a5fa;
-                    border: 1px solid #2a4a5a;
-                }
-                .flash-close {
-                    background: transparent;
-                    border: none;
-                    color: inherit;
-                    font-size: 16px;
-                    cursor: pointer;
-                    margin-right: auto;
-                    opacity: 0.6;
-                    transition: opacity 0.2s;
-                }
-                .flash-close:hover {
-                    opacity: 1;
-                }
-                @keyframes slideDown {
-                    from {
-                        transform: translateY(-20px);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateY(0);
-                        opacity: 1;
-                    }
-                }
-            </style>
             <div class="flash-container" id="flashContainer">
                 {% for category, message in messages %}
                     <div class="flash-message {{ category }}">
-                        <span>
+                        <span class="flash-icon">
                             {% if category == 'success' %}✅
                             {% elif category == 'danger' %}❌
                             {% elif category == 'warning' %}⚠️
                             {% else %}ℹ️{% endif %}
-                            {{ message }}
                         </span>
+                        <span class="flash-text">{{ message }}</span>
                         <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
                     </div>
                 {% endfor %}
             </div>
             <script>
-                // حذف خودکار پیام‌ها بعد از 5 ثانیه
                 setTimeout(function() {
                     const container = document.getElementById('flashContainer');
                     if (container) {
                         container.style.opacity = '0';
                         container.style.transition = 'opacity 0.5s';
                         setTimeout(function() {
-                            container.remove();
+                            if (container.parentNode) container.remove();
                         }, 500);
                     }
                 }, 5000);
             </script>
         {% endif %}
     {% endwith %}
-</head>
-<body>
-    <div class="app-container">
-        <!-- ===== هدر ===== -->
-        <header style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 12px; border-bottom: 1px solid #2a2d33;">
+
+    <!-- ==========================================
+    ===== کانتینر اصلی =====
+    ========================================== -->
+    <div class="app-container page-enter">
+
+        <!-- ===== هدر جدید ===== -->
+        <header class="app-header" id="appHeader">
             
-            <!-- سمت چپ: لوگو و نام برنامه -->
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="background: #f97316; border-radius: 8px; padding: 6px 8px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-chart-line" style="color: #fff; font-size: 16px;"></i>
-                </div>
-                <span style="font-size: 16px; font-weight: 700; color: #ffffff;">مادر آنالیزر</span>
+            <!-- بخش چپ -->
+            <div class="header-left">
+                <a href="/dashboard" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <span class="logo-text">
+                        مادر <span class="highlight">آنالیزر</span>
+                    </span>
+                </a>
+
+                <!-- دکمه بازگشت (فقط در صفحات غیر از داشبورد) -->
+                {% if request.path != '/dashboard' and request.path != '/' %}
+                <button onclick="history.back()" class="btn-back">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>بازگشت</span>
+                </button>
+                {% endif %}
             </div>
 
-            <!-- سمت راست: دکمه بازگشت + نام ادمین -->
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <!-- دکمه بازگشت -->
-                <button onclick="history.back()" 
-                        style="background: transparent; border: 1px solid #2a2d33; border-radius: 8px; padding: 4px 10px; color: #a0a0a0; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                    <i class="fas fa-arrow-right"></i> بازگشت
+            <!-- بخش راست -->
+            <div class="header-right">
+                
+                <!-- دکمه نوتیفیکیشن -->
+                <button class="btn-notification" title="اعلان‌ها">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
                 </button>
 
-                <!-- نام کاربر -->
-                <a href="/dashboard/profile" style="display: flex; align-items: center; gap: 6px; color: #a0a0a0; font-size: 13px; text-decoration: none; transition: color 0.3s;">
-                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #f97316; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600;">
+                <!-- پروفایل کاربر -->
+                <a href="/dashboard/profile" class="user-profile">
+                    <div class="avatar">
                         {{ session.get('user_full_name', 'A')[0]|upper if session.get('user_full_name') else 'A' }}
                     </div>
-                    <span>{{ session.get('user_full_name', 'ادمین') }}</span>
+                    <div class="user-info">
+                        <span class="user-name">{{ session.get('user_full_name', 'کاربر') }}</span>
+                        <span class="user-role">
+                            <span class="role-dot 
+                                {% if session.get('user_role') == 'admin' %}admin
+                                {% elif session.get('user_role') == 'channel_admin' %}channel_admin
+                                {% elif session.get('user_role') == 'manager' %}manager
+                                {% else %}user{% endif %}">
+                            </span>
+                            {% if session.get('user_role') == 'admin' %}مدیر کل
+                            {% elif session.get('user_role') == 'channel_admin' %}ادمین کانال
+                            {% elif session.get('user_role') == 'manager' %}مدیر
+                            {% else %}کاربر{% endif %}
+                        </span>
+                    </div>
                 </a>
+
+                <!-- دکمه همبرگر (موبایل) -->
+                <button class="hamburger" id="hamburgerBtn" aria-label="منو">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
+
         </header>
 
-        <!-- محتوای اصلی -->
+        <!-- ===== محتوای اصلی ===== -->
         {% block content %}{% endblock %}
+
     </div>
 
-    <!-- نوار پایین -->
-    <nav class="bottom-nav">
+    <!-- ==========================================
+    ===== نوار پایین (فوتر) جدید =====
+    ========================================== -->
+    <nav class="bottom-nav" id="bottomNav">
+        
         <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
             <i class="fas fa-home"></i>
             <span>خانه</span>
         </a>
+
         <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
             <i class="fas fa-bullhorn"></i>
             <span>کانال‌ها</span>
+            <span class="nav-badge">12</span>
         </a>
-        <a href="/dashboard/posts" class="nav-item {% if request.path.startswith('/dashboard/posts') and not request.path.startswith('/dashboard/posts/export') %}active{% endif %}">
-            <i class="fas fa-file-alt"></i>
+
+        <!-- دکمه مرکزی (اضافه کردن) -->
+        <a href="/dashboard/posts" class="nav-item center-btn {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
+            <div class="center-circle">
+                <i class="fas fa-plus"></i>
+            </div>
             <span>پست‌ها</span>
         </a>
+
         <a href="/dashboard/profile" class="nav-item {% if request.path.startswith('/dashboard/profile') %}active{% endif %}">
             <i class="fas fa-user"></i>
             <span>پروفایل</span>
         </a>
-        <a href="/auth/logout" class="nav-item">
+
+        <a href="/auth/logout" class="nav-item logout" onclick="return confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')">
             <i class="fas fa-sign-out-alt"></i>
             <span>خروج</span>
         </a>
+
     </nav>
+
+    <!-- ==========================================
+    ===== اسکریپت‌ها =====
+    ========================================== -->
+    <script>
+        // ===== ۱. افکت اسکرول برای هدر =====
+        const header = document.getElementById('appHeader');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (currentScroll > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // ===== ۲. منوی همبرگر =====
+        const hamburger = document.getElementById('hamburgerBtn');
+        let menuOpen = false;
+
+        hamburger.addEventListener('click', function() {
+            menuOpen = !menuOpen;
+            this.classList.toggle('active');
+            
+            // در اینجا می‌توانید منوی کشویی اضافه کنید
+            // برای نمونه یک alert ساده
+            if (menuOpen) {
+                // می‌توانید یک منوی کشویی نمایش دهید
+                console.log('منو باز شد');
+            }
+        });
+
+        // ===== ۳. بستن پیام‌های فلش با کلیک =====
+        document.querySelectorAll('.flash-close').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                this.parentElement.remove();
+            });
+        });
+
+        // ===== ۴. تشخیص مسیر فعال در فوتر =====
+        // (با کلاس‌های active که در خود لینک‌ها قرار داده شده‌اند)
+
+        // ===== ۵. جلوگیری از کلیک روی دکمه مرکزی =====
+        // (دکمه مرکزی به صفحه پست‌ها لینک شده)
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>
