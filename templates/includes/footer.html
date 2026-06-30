@@ -1,0 +1,37 @@
+<!-- ===== نوار پایین (فوتر) ===== -->
+<nav class="bottom-nav" id="bottomNav">
+    
+    <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
+        <i class="fas fa-home"></i>
+        <span>خانه</span>
+        <span class="tooltip">خانه</span>
+    </a>
+
+    <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
+        <i class="fas fa-bullhorn"></i>
+        <span>کانال‌ها</span>
+        <span class="nav-badge">12</span>
+        <span class="tooltip">کانال‌ها</span>
+    </a>
+
+    <a href="/dashboard/posts" class="nav-item center-btn {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
+        <div class="center-circle">
+            <i class="fas fa-plus"></i>
+        </div>
+        <span>پست‌ها</span>
+        <span class="tooltip">پست‌ها</span>
+    </a>
+
+    <a href="/dashboard/profile" class="nav-item {% if request.path.startswith('/dashboard/profile') %}active{% endif %}">
+        <i class="fas fa-user"></i>
+        <span>پروفایل</span>
+        <span class="tooltip">پروفایل</span>
+    </a>
+
+    <a href="/auth/logout" class="nav-item logout" onclick="return confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>خروج</span>
+        <span class="tooltip">خروج</span>
+    </a>
+
+</nav>
