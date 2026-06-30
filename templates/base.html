@@ -28,7 +28,6 @@
             color: #ffffff;
             font-size: 13px;
             min-height: 100vh;
-            padding-bottom: 80px;
             margin: 0;
         }
 
@@ -270,394 +269,422 @@
         }
 
         /* ============================================
-           ===== نوار پایین (فوتر) - ثابت در همه اندازه‌ها =====
+           ===== نوار پایین (فوتر) =====
            ============================================ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1d23;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border: 1px solid #2a2d33;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-            backdrop-filter: blur(16px);
-            background: rgba(26, 29, 35, 0.95);
-            z-index: 1000;
-            padding: 8px 12px;
-            gap: 4px;
-            width: auto;
-            max-width: 500px;
-            min-width: 320px;
-        }
-
-        .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            color: #666;
-            text-decoration: none;
-            font-size: 9px;
-            padding: 6px 10px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            flex: 1;
-            min-width: 40px;
-        }
-
-        .bottom-nav .nav-item i {
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item span {
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 8px;
-            white-space: nowrap;
-        }
-
-        .bottom-nav .nav-item:hover {
-            color: #a0a0a0;
-        }
-
-        .bottom-nav .nav-item.active {
-            color: #f97316;
-        }
-
-        .bottom-nav .nav-item.active i {
-            transform: translateY(-2px);
-            text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
-        }
-
-        .bottom-nav .nav-item .nav-badge {
-            position: absolute;
-            top: 0px;
-            right: 2px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #ef4444;
-            color: #fff;
-            font-size: 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #1a1d23;
-        }
-
-        /* دکمه مرکزی */
-        .bottom-nav .nav-item.center-btn {
-            position: relative;
-            margin-top: -16px;
-            flex: 0 0 auto;
-            min-width: unset;
-            padding: 6px 6px;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 22px;
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
-            transition: all 0.3s ease;
-            border: 2px solid #1a1d23;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5);
-        }
-
-        .bottom-nav .nav-item.center-btn span {
-            margin-top: 2px;
-            font-size: 8px;
-        }
-
-        .bottom-nav .nav-item.logout {
-            color: #666;
-        }
-
-        .bottom-nav .nav-item.logout:hover {
-            color: #f87171;
-        }
-
-        .bottom-nav .nav-item.logout.active {
-            color: #f87171;
-        }
-
-        /* ابزارنما (فقط دسکتاپ) */
-        .bottom-nav .nav-item .tooltip {
-            display: none;
-        }
-
-        /* ===== واکنش‌گرایی فوتر ===== */
         
-        /* موبایل خیلی کوچک (زیر 380px) */
-        @media (max-width: 380px) {
+        /* ===== حالت موبایل (زیر 768px) - افقی در پایین ===== */
+        @media (max-width: 768px) {
             .bottom-nav {
-                padding: 4px 6px;
-                border-radius: 16px;
-                bottom: 10px;
-                min-width: 280px;
-                max-width: 340px;
-                gap: 2px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 4px 4px;
-                min-width: 28px;
-                font-size: 7px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 14px;
-            }
-
-            .bottom-nav .nav-item span {
-                font-size: 7px;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 12px;
-                height: 12px;
-                font-size: 6px;
-                top: -2px;
-                right: 0px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 36px;
-                height: 36px;
-                font-size: 16px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -10px;
-            }
-        }
-
-        /* موبایل متوسط (381px - 480px) */
-        @media (min-width: 381px) and (max-width: 480px) {
-            .bottom-nav {
-                padding: 6px 8px;
-                border-radius: 18px;
-                bottom: 12px;
-                min-width: 300px;
-                max-width: 380px;
-                gap: 2px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 5px 6px;
-                min-width: 32px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 16px;
-            }
-
-            .bottom-nav .nav-item span {
-                font-size: 7px;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 14px;
-                height: 14px;
-                font-size: 7px;
-                top: -1px;
-                right: 0px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -12px;
-            }
-        }
-
-        /* موبایل بزرگ و تبلت (481px - 768px) */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .bottom-nav {
-                padding: 8px 12px;
-                border-radius: 20px;
+                position: fixed;
                 bottom: 16px;
-                min-width: 340px;
-                max-width: 450px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 24px);
+                max-width: 420px;
+                background: #1a1d23;
+                border-radius: 20px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border: 1px solid #2a2d33;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+                backdrop-filter: blur(16px);
+                background: rgba(26, 29, 35, 0.95);
+                z-index: 1000;
+                padding: 8px 8px;
+                gap: 2px;
             }
 
             .bottom-nav .nav-item {
-                padding: 6px 10px;
-                min-width: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                color: #666;
+                text-decoration: none;
+                font-size: 9px;
+                padding: 6px 6px;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                position: relative;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                flex: 1;
+                min-width: 36px;
+                max-width: 70px;
             }
 
             .bottom-nav .nav-item i {
                 font-size: 18px;
+                transition: all 0.3s ease;
             }
 
             .bottom-nav .nav-item span {
+                font-weight: 500;
+                transition: all 0.3s ease;
                 font-size: 8px;
+                white-space: nowrap;
+            }
+
+            .bottom-nav .nav-item:hover {
+                color: #a0a0a0;
+            }
+
+            .bottom-nav .nav-item.active {
+                color: #f97316;
+            }
+
+            .bottom-nav .nav-item.active i {
+                transform: translateY(-2px);
+                text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
             }
 
             .bottom-nav .nav-item .nav-badge {
+                position: absolute;
+                top: 0px;
+                right: 0px;
                 width: 16px;
                 height: 16px;
+                border-radius: 50%;
+                background: #ef4444;
+                color: #fff;
+                font-size: 8px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #1a1d23;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                position: relative;
+                margin-top: -16px;
+                flex: 0 0 auto;
+                min-width: unset;
+                max-width: unset;
+                padding: 6px 4px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #f97316, #ea580c);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 22px;
+                box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+                transition: all 0.3s ease;
+                border: 2px solid #1a1d23;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5);
+            }
+
+            .bottom-nav .nav-item.center-btn span {
+                margin-top: 2px;
                 font-size: 8px;
             }
 
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 46px;
-                height: 46px;
-                font-size: 20px;
+            .bottom-nav .nav-item.logout {
+                color: #666;
             }
 
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -14px;
+            .bottom-nav .nav-item.logout:hover {
+                color: #f87171;
+            }
+
+            .bottom-nav .nav-item.logout.active {
+                color: #f87171;
+            }
+
+            .bottom-nav .nav-item .tooltip {
+                display: none;
+            }
+
+            /* موبایل خیلی کوچک */
+            @media (max-width: 380px) {
+                .bottom-nav {
+                    padding: 4px 4px;
+                    border-radius: 16px;
+                    bottom: 10px;
+                    max-width: 340px;
+                }
+
+                .bottom-nav .nav-item {
+                    padding: 4px 3px;
+                    min-width: 28px;
+                    max-width: 50px;
+                }
+
+                .bottom-nav .nav-item i {
+                    font-size: 14px;
+                }
+
+                .bottom-nav .nav-item span {
+                    font-size: 7px;
+                }
+
+                .bottom-nav .nav-item .nav-badge {
+                    width: 12px;
+                    height: 12px;
+                    font-size: 6px;
+                    top: -2px;
+                    right: -2px;
+                }
+
+                .bottom-nav .nav-item.center-btn .center-circle {
+                    width: 38px;
+                    height: 38px;
+                    font-size: 17px;
+                }
+
+                .bottom-nav .nav-item.center-btn {
+                    margin-top: -12px;
+                }
+            }
+
+            /* موبایل متوسط */
+            @media (min-width: 381px) and (max-width: 480px) {
+                .bottom-nav {
+                    padding: 6px 6px;
+                    max-width: 380px;
+                }
+
+                .bottom-nav .nav-item {
+                    padding: 5px 4px;
+                    min-width: 32px;
+                    max-width: 60px;
+                }
+
+                .bottom-nav .nav-item i {
+                    font-size: 16px;
+                }
+
+                .bottom-nav .nav-item span {
+                    font-size: 7px;
+                }
+
+                .bottom-nav .nav-item .nav-badge {
+                    width: 14px;
+                    height: 14px;
+                    font-size: 7px;
+                }
+
+                .bottom-nav .nav-item.center-btn .center-circle {
+                    width: 42px;
+                    height: 42px;
+                    font-size: 19px;
+                }
+
+                .bottom-nav .nav-item.center-btn {
+                    margin-top: -14px;
+                }
+            }
+
+            /* موبایل بزرگ */
+            @media (min-width: 481px) and (max-width: 768px) {
+                .bottom-nav {
+                    padding: 8px 10px;
+                    max-width: 450px;
+                }
+
+                .bottom-nav .nav-item {
+                    padding: 6px 8px;
+                    min-width: 40px;
+                    max-width: 70px;
+                }
+
+                .bottom-nav .nav-item i {
+                    font-size: 18px;
+                }
+
+                .bottom-nav .nav-item span {
+                    font-size: 9px;
+                }
+
+                .bottom-nav .nav-item .nav-badge {
+                    width: 16px;
+                    height: 16px;
+                    font-size: 8px;
+                }
+
+                .bottom-nav .nav-item.center-btn .center-circle {
+                    width: 48px;
+                    height: 48px;
+                    font-size: 22px;
+                }
+
+                .bottom-nav .nav-item.center-btn {
+                    margin-top: -16px;
+                }
             }
         }
 
-        /* دسکتاپ (769px - 1199px) */
-        @media (min-width: 769px) and (max-width: 1199px) {
+        /* ===== حالت دسکتاپ (بالای 769px) - عمودی در سمت راست ===== */
+        @media (min-width: 769px) {
+            body {
+                padding-right: 0;
+                padding-bottom: 0;
+            }
+
+            .app-container {
+                padding-right: 100px;
+                padding-left: 30px;
+                padding-bottom: 20px;
+            }
+
             .bottom-nav {
-                padding: 8px 16px;
-                border-radius: 22px;
-                bottom: 20px;
-                min-width: 380px;
-                max-width: 480px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 8px 14px;
-                min-width: 50px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 20px;
-            }
-
-            .bottom-nav .nav-item span {
-                font-size: 9px;
-            }
-
-            .bottom-nav .nav-item .nav-badge {
-                width: 18px;
-                height: 18px;
-                font-size: 9px;
-                top: 0px;
-                right: 4px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -16px;
-            }
-
-            /* نمایش ابزارنما در دسکتاپ */
-            .bottom-nav .nav-item .tooltip {
-                display: none;
-                position: absolute;
-                bottom: 100%;
-                left: 50%;
-                transform: translateX(-50%);
+                position: fixed;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 64px;
                 background: #1a1d23;
-                color: #fff;
-                padding: 4px 12px;
-                border-radius: 6px;
-                font-size: 10px;
-                white-space: nowrap;
-                border: 1px solid #2a2d33;
-                margin-bottom: 6px;
-                opacity: 0;
-                transition: opacity 0.3s;
-            }
-
-            .bottom-nav .nav-item:hover .tooltip {
-                display: block;
-                opacity: 1;
-            }
-        }
-
-        /* دسکتاپ بزرگ (1200px+) */
-        @media (min-width: 1200px) {
-            .bottom-nav {
-                padding: 10px 20px;
                 border-radius: 24px;
-                bottom: 24px;
-                min-width: 420px;
-                max-width: 520px;
-                gap: 6px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                border: 1px solid #2a2d33;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+                backdrop-filter: blur(16px);
+                background: rgba(26, 29, 35, 0.95);
+                z-index: 1000;
+                padding: 16px 8px;
             }
 
             .bottom-nav .nav-item {
-                padding: 8px 18px;
-                min-width: 56px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                color: #666;
+                text-decoration: none;
+                font-size: 8px;
+                padding: 10px 6px;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                position: relative;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                width: 100%;
+                min-height: 52px;
+                justify-content: center;
             }
 
             .bottom-nav .nav-item i {
-                font-size: 22px;
+                font-size: 20px;
+                transition: all 0.3s ease;
             }
 
             .bottom-nav .nav-item span {
-                font-size: 10px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                font-size: 8px;
+                white-space: nowrap;
+                margin-top: 2px;
+            }
+
+            .bottom-nav .nav-item:hover {
+                color: #a0a0a0;
+                background: rgba(255,255,255,0.03);
+            }
+
+            .bottom-nav .nav-item.active {
+                color: #f97316;
+            }
+
+            .bottom-nav .nav-item.active i {
+                transform: scale(1.1);
+                text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
             }
 
             .bottom-nav .nav-item .nav-badge {
-                width: 20px;
-                height: 20px;
-                font-size: 10px;
-                top: -2px;
+                position: absolute;
+                top: 4px;
                 right: 4px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 54px;
-                height: 54px;
-                font-size: 24px;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #ef4444;
+                color: #fff;
+                font-size: 8px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #1a1d23;
             }
 
             .bottom-nav .nav-item.center-btn {
-                margin-top: -18px;
+                margin-top: 0;
+                flex: 0 0 auto;
+                min-height: 60px;
             }
 
-            /* نمایش ابزارنما در دسکتاپ بزرگ */
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #f97316, #ea580c);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 18px;
+                box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+                transition: all 0.3s ease;
+                border: 2px solid #1a1d23;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle:hover {
+                transform: scale(1.05) rotate(90deg);
+                box-shadow: 0 6px 25px rgba(249, 115, 22, 0.4);
+            }
+
+            .bottom-nav .nav-item.center-btn span {
+                margin-top: 2px;
+                font-size: 8px;
+            }
+
+            .bottom-nav .nav-item.logout {
+                color: #666;
+                margin-top: 6px;
+                border-top: 1px solid #2a2d33;
+                padding-top: 12px;
+            }
+
+            .bottom-nav .nav-item.logout:hover {
+                color: #f87171;
+            }
+
+            .bottom-nav .nav-item.logout.active {
+                color: #f87171;
+            }
+
+            /* ابزارنما */
             .bottom-nav .nav-item .tooltip {
                 display: none;
                 position: absolute;
-                bottom: 100%;
-                left: 50%;
-                transform: translateX(-50%);
+                right: 100%;
+                top: 50%;
+                transform: translateY(-50%);
                 background: #1a1d23;
                 color: #fff;
                 padding: 4px 14px;
-                border-radius: 6px;
+                border-radius: 8px;
                 font-size: 11px;
                 white-space: nowrap;
                 border: 1px solid #2a2d33;
-                margin-bottom: 8px;
+                margin-right: 12px;
                 opacity: 0;
                 transition: opacity 0.3s;
             }
@@ -666,9 +693,53 @@
                 display: block;
                 opacity: 1;
             }
+
+            /* دسکتاپ بزرگ */
+            @media (min-width: 1200px) {
+                .app-container {
+                    padding-right: 120px;
+                    padding-left: 40px;
+                }
+
+                .bottom-nav {
+                    width: 72px;
+                    right: 24px;
+                    padding: 20px 10px;
+                    border-radius: 28px;
+                }
+
+                .bottom-nav .nav-item {
+                    min-height: 58px;
+                    padding: 12px 8px;
+                }
+
+                .bottom-nav .nav-item i {
+                    font-size: 22px;
+                }
+
+                .bottom-nav .nav-item span {
+                    font-size: 9px;
+                }
+
+                .bottom-nav .nav-item.center-btn .center-circle {
+                    width: 46px;
+                    height: 46px;
+                    font-size: 20px;
+                }
+
+                .bottom-nav .nav-item .nav-badge {
+                    width: 18px;
+                    height: 18px;
+                    font-size: 9px;
+                    top: 4px;
+                    right: 4px;
+                }
+            }
         }
 
-        /* ===== پیام‌های فلش ===== */
+        /* ============================================
+           ===== پیام‌های فلش =====
+           ============================================ */
         .flash-container {
             position: fixed;
             top: 80px;
@@ -744,7 +815,9 @@
             }
         }
 
-        /* ===== سایر استایل‌ها ===== */
+        /* ============================================
+           ===== سایر استایل‌ها =====
+           ============================================ */
         .page-enter {
             animation: pageFadeIn 0.4s ease;
         }
@@ -778,7 +851,7 @@
             background: #ea580c;
         }
 
-        /* واکنش‌گرایی هدر بالا */
+        /* ===== واکنش‌گرایی هدر بالا ===== */
         @media (max-width: 480px) {
             .app-container {
                 padding: 8px 10px 80px 10px;
@@ -966,7 +1039,7 @@
     </div>
 
     <!-- ==========================================
-    ===== نوار پایین (فوتر) ثابت در وسط =====
+    ===== نوار پایین (فوتر) =====
     ========================================== -->
     <nav class="bottom-nav" id="bottomNav">
         
