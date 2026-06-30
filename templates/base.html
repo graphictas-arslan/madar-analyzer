@@ -13,10 +13,8 @@
     
     <style>
         /* ============================================
-           استایل‌های جدید هدر و فوتر
+           استایل‌های اصلی
            ============================================ */
-        
-        /* ===== ریست ===== */
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +32,6 @@
             margin: 0;
         }
 
-        /* ===== کانتینر اصلی ===== */
         .app-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -42,7 +39,7 @@
         }
 
         /* ============================================
-           ===== هدر جدید =====
+           ===== هدر بالا =====
            ============================================ */
         .app-header {
             background: #1a1d23;
@@ -65,7 +62,6 @@
             box-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
 
-        /* بخش چپ هدر */
         .app-header .header-left {
             display: flex;
             align-items: center;
@@ -91,6 +87,7 @@
             color: #fff;
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
             transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
         .app-header .logo .logo-icon:hover {
@@ -108,7 +105,6 @@
             color: #f97316;
         }
 
-        /* دکمه بازگشت */
         .app-header .btn-back {
             display: flex;
             align-items: center;
@@ -129,14 +125,12 @@
             color: #fff;
         }
 
-        /* بخش راست هدر */
         .app-header .header-right {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* دکمه نوتیفیکیشن */
         .app-header .btn-notification {
             position: relative;
             width: 36px;
@@ -176,7 +170,6 @@
             border: 2px solid #1a1d23;
         }
 
-        /* پروفایل کاربر */
         .app-header .user-profile {
             display: flex;
             align-items: center;
@@ -246,7 +239,6 @@
             background: #4ade80;
         }
 
-        /* ===== منوی همبرگر (موبایل) ===== */
         .app-header .hamburger {
             display: none;
             flex-direction: column;
@@ -278,8 +270,346 @@
         }
 
         /* ============================================
-           ===== پیام‌های فلش =====
+           ===== نوار پایین (فوتر) اصلاح شده =====
            ============================================ */
+        
+        /* حالت موبایل */
+        @media (max-width: 768px) {
+            .bottom-nav {
+                position: fixed;
+                bottom: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 24px);
+                max-width: 500px;
+                background: #1a1d23;
+                border-radius: 20px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border: 1px solid #2a2d33;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+                backdrop-filter: blur(16px);
+                background: rgba(26, 29, 35, 0.95);
+                z-index: 1000;
+                padding: 6px 8px;
+                gap: 2px;
+            }
+
+            .bottom-nav .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1px;
+                color: #666;
+                text-decoration: none;
+                font-size: 9px;
+                padding: 6px 8px;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                position: relative;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                flex: 1;
+                min-width: 40px;
+                max-width: 80px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 18px;
+                transition: all 0.3s ease;
+            }
+
+            .bottom-nav .nav-item span {
+                font-weight: 500;
+                transition: all 0.3s ease;
+                font-size: 8px;
+                white-space: nowrap;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                position: absolute;
+                top: 0px;
+                right: 2px;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #ef4444;
+                color: #fff;
+                font-size: 8px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #1a1d23;
+            }
+
+            .bottom-nav .nav-item.center-btn {
+                position: relative;
+                margin-top: -14px;
+                flex: 0 0 auto;
+                min-width: unset;
+                max-width: unset;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #f97316, #ea580c);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 20px;
+                box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+                transition: all 0.3s ease;
+                border: 2px solid #1a1d23;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle:hover {
+                transform: scale(1.05) rotate(90deg);
+                box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5);
+            }
+
+            .bottom-nav .nav-item.center-btn span {
+                margin-top: 2px;
+                font-size: 8px;
+            }
+
+            .bottom-nav .nav-item:hover {
+                color: #a0a0a0;
+            }
+
+            .bottom-nav .nav-item.active {
+                color: #f97316;
+            }
+
+            .bottom-nav .nav-item.active i {
+                transform: translateY(-2px);
+                text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+            }
+
+            .bottom-nav .nav-item.logout {
+                color: #666;
+            }
+
+            .bottom-nav .nav-item.logout:hover {
+                color: #f87171;
+            }
+
+            .bottom-nav .nav-item.logout.active {
+                color: #f87171;
+            }
+        }
+
+        /* ===== حالت دسکتاپ - فوتر باریک در سمت راست ===== */
+        @media (min-width: 769px) {
+            .app-container {
+                padding-right: 90px;
+                padding-left: 20px;
+            }
+
+            .bottom-nav {
+                position: fixed;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 56px;
+                background: #1a1d23;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2px;
+                border: 1px solid #2a2d33;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+                backdrop-filter: blur(16px);
+                background: rgba(26, 29, 35, 0.95);
+                z-index: 1000;
+                padding: 12px 6px;
+            }
+
+            .bottom-nav .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1px;
+                color: #666;
+                text-decoration: none;
+                font-size: 8px;
+                padding: 8px 4px;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                position: relative;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                width: 100%;
+                min-height: 44px;
+                justify-content: center;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 18px;
+                transition: all 0.3s ease;
+            }
+
+            .bottom-nav .nav-item span {
+                font-weight: 500;
+                transition: all 0.3s ease;
+                font-size: 7px;
+                white-space: nowrap;
+                margin-top: 1px;
+            }
+
+            .bottom-nav .nav-item:hover {
+                color: #a0a0a0;
+                background: rgba(255,255,255,0.03);
+            }
+
+            .bottom-nav .nav-item.active {
+                color: #f97316;
+            }
+
+            .bottom-nav .nav-item.active i {
+                transform: scale(1.1);
+                text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: #ef4444;
+                color: #fff;
+                font-size: 7px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid #1a1d23;
+            }
+
+            /* دکمه مرکزی در دسکتاپ - به صورت عادی */
+            .bottom-nav .nav-item.center-btn {
+                margin-top: 0;
+                flex: 0 0 auto;
+                min-height: 52px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #f97316, #ea580c);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+                transition: all 0.3s ease;
+                border: 2px solid #1a1d23;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle:hover {
+                transform: scale(1.05) rotate(90deg);
+                box-shadow: 0 6px 25px rgba(249, 115, 22, 0.4);
+            }
+
+            .bottom-nav .nav-item.center-btn span {
+                margin-top: 1px;
+                font-size: 7px;
+            }
+
+            .bottom-nav .nav-item.logout {
+                color: #666;
+                margin-top: 4px;
+                border-top: 1px solid #2a2d33;
+                padding-top: 8px;
+            }
+
+            .bottom-nav .nav-item.logout:hover {
+                color: #f87171;
+            }
+
+            .bottom-nav .nav-item.logout.active {
+                color: #f87171;
+            }
+
+            /* ابزارنمای دسکتاپ برای آیتم‌ها */
+            .bottom-nav .nav-item .tooltip {
+                display: none;
+                position: absolute;
+                right: 100%;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #1a1d23;
+                color: #fff;
+                padding: 4px 12px;
+                border-radius: 6px;
+                font-size: 11px;
+                white-space: nowrap;
+                border: 1px solid #2a2d33;
+                margin-right: 8px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .bottom-nav .nav-item:hover .tooltip {
+                display: block;
+                opacity: 1;
+            }
+        }
+
+        /* ===== دسکتاپ بزرگ (1200px+) ===== */
+        @media (min-width: 1200px) {
+            .app-container {
+                padding-right: 100px;
+            }
+
+            .bottom-nav {
+                width: 64px;
+                right: 20px;
+                padding: 16px 8px;
+                border-radius: 24px;
+            }
+
+            .bottom-nav .nav-item {
+                min-height: 50px;
+                padding: 10px 6px;
+            }
+
+            .bottom-nav .nav-item i {
+                font-size: 20px;
+            }
+
+            .bottom-nav .nav-item span {
+                font-size: 8px;
+            }
+
+            .bottom-nav .nav-item.center-btn .center-circle {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .bottom-nav .nav-item .nav-badge {
+                width: 16px;
+                height: 16px;
+                font-size: 8px;
+                top: 2px;
+                right: 2px;
+            }
+        }
+
+        /* ===== پیام‌های فلش ===== */
         .flash-container {
             position: fixed;
             top: 80px;
@@ -329,15 +659,6 @@
             border-color: #2a4a5a;
         }
 
-        .flash-message .flash-icon {
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .flash-message .flash-text {
-            flex: 1;
-        }
-
         .flash-message .flash-close {
             background: transparent;
             border: none;
@@ -364,268 +685,7 @@
             }
         }
 
-        /* ============================================
-           ===== نوار پایین (فوتر) جدید =====
-           ============================================ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            max-width: 500px;
-            min-width: 320px;
-            background: #1a1d23;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 6px 12px;
-            border: 1px solid #2a2d33;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-            backdrop-filter: blur(16px);
-            background: rgba(26, 29, 35, 0.92);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1px;
-            color: #666;
-            text-decoration: none;
-            font-size: 9px;
-            padding: 6px 12px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            min-width: 48px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .bottom-nav .nav-item i {
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item span {
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item:hover {
-            color: #a0a0a0;
-        }
-
-        .bottom-nav .nav-item.active {
-            color: #f97316;
-        }
-
-        .bottom-nav .nav-item.active i {
-            transform: translateY(-2px);
-            text-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
-        }
-
-        .bottom-nav .nav-item .nav-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #ef4444;
-            color: #fff;
-            font-size: 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #1a1d23;
-        }
-
-        /* آیتم خاص خروج */
-        .bottom-nav .nav-item.logout {
-            color: #666;
-        }
-
-        .bottom-nav .nav-item.logout:hover {
-            color: #f87171;
-        }
-
-        .bottom-nav .nav-item.logout.active {
-            color: #f87171;
-        }
-
-        /* ===== دکمه مرکزی (اضافه کردن) ===== */
-        .bottom-nav .nav-item.center-btn {
-            position: relative;
-            margin-top: -18px;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 22px;
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
-            transition: all 0.3s ease;
-            border: 2px solid #1a1d23;
-        }
-
-        .bottom-nav .nav-item.center-btn .center-circle:hover {
-            transform: scale(1.05) rotate(90deg);
-            box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5);
-        }
-
-        .bottom-nav .nav-item.center-btn span {
-            margin-top: 2px;
-            font-size: 8px;
-        }
-
-        /* ============================================
-           ===== واکنش‌گرایی =====
-           ============================================ */
-        @media (max-width: 480px) {
-            .app-container {
-                padding: 8px 10px 80px 10px;
-            }
-
-            .app-header {
-                padding: 8px 12px;
-                border-radius: 12px;
-            }
-
-            .app-header .logo .logo-text {
-                font-size: 14px;
-            }
-
-            .app-header .logo .logo-icon {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
-            }
-
-            .app-header .user-profile .user-info .user-role {
-                display: none;
-            }
-
-            .app-header .btn-back span {
-                display: none;
-            }
-
-            .app-header .btn-notification {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
-            }
-
-            .app-header .user-profile .avatar {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-            }
-
-            .app-header .user-profile .user-info .user-name {
-                font-size: 11px;
-            }
-
-            .app-header .hamburger {
-                display: flex;
-            }
-
-            .bottom-nav {
-                min-width: unset;
-                width: calc(100% - 20px);
-                padding: 4px 8px;
-                border-radius: 16px;
-                bottom: 8px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 4px 6px;
-                min-width: 36px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 16px;
-            }
-
-            .bottom-nav .nav-item span {
-                font-size: 8px;
-            }
-
-            .bottom-nav .nav-item.center-btn .center-circle {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-
-            .bottom-nav .nav-item.center-btn {
-                margin-top: -14px;
-            }
-
-            .flash-container {
-                top: 70px;
-                width: 95%;
-            }
-
-            .flash-message {
-                padding: 10px 14px;
-                font-size: 12px;
-            }
-        }
-
-        @media (min-width: 481px) and (max-width: 768px) {
-            .app-header .hamburger {
-                display: none;
-            }
-
-            .bottom-nav {
-                min-width: 380px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 6px 14px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .app-header .hamburger {
-                display: none;
-            }
-
-            .app-header {
-                padding: 12px 24px;
-            }
-
-            .bottom-nav {
-                min-width: 420px;
-                padding: 8px 16px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 8px 18px;
-            }
-
-            .bottom-nav .nav-item i {
-                font-size: 22px;
-            }
-
-            .bottom-nav .nav-item span {
-                font-size: 10px;
-            }
-        }
-
-        /* ===== انیمیشن ورود صفحات ===== */
+        /* ===== سایر استایل‌ها ===== */
         .page-enter {
             animation: pageFadeIn 0.4s ease;
         }
@@ -641,7 +701,6 @@
             }
         }
 
-        /* ===== اسکرول بار سفارشی ===== */
         ::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -659,13 +718,97 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #ea580c;
         }
+
+        /* واکنش‌گرایی هدر بالا */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 8px 10px 80px 10px;
+            }
+
+            .app-header {
+                padding: 8px 12px;
+                border-radius: 12px;
+            }
+
+            .app-header .logo .logo-text {
+                font-size: 13px;
+            }
+
+            .app-header .logo .logo-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 13px;
+            }
+
+            .app-header .user-profile .user-info .user-role {
+                display: none;
+            }
+
+            .app-header .btn-back span {
+                display: none;
+            }
+
+            .app-header .btn-notification {
+                width: 28px;
+                height: 28px;
+                font-size: 13px;
+            }
+
+            .app-header .btn-notification .badge {
+                width: 14px;
+                height: 14px;
+                font-size: 7px;
+            }
+
+            .app-header .user-profile .avatar {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+            }
+
+            .app-header .user-profile .user-info .user-name {
+                font-size: 11px;
+            }
+
+            .app-header .user-profile {
+                padding: 2px 6px 2px 2px;
+            }
+
+            .app-header .hamburger {
+                display: flex;
+            }
+
+            .flash-container {
+                top: 70px;
+                width: 95%;
+            }
+
+            .flash-message {
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .app-header .hamburger {
+                display: none;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .app-header .hamburger {
+                display: none;
+            }
+
+            .app-header {
+                padding: 12px 24px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ==========================================
-    ===== پیام‌های فلش =====
-    ========================================== -->
+    <!-- ===== پیام‌های فلش ===== -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-container" id="flashContainer">
@@ -697,15 +840,12 @@
         {% endif %}
     {% endwith %}
 
-    <!-- ==========================================
-    ===== کانتینر اصلی =====
-    ========================================== -->
+    <!-- ===== کانتینر اصلی ===== -->
     <div class="app-container page-enter">
 
-        <!-- ===== هدر جدید ===== -->
+        <!-- ===== هدر بالا ===== -->
         <header class="app-header" id="appHeader">
             
-            <!-- بخش چپ -->
             <div class="header-left">
                 <a href="/dashboard" class="logo">
                     <div class="logo-icon">
@@ -716,7 +856,6 @@
                     </span>
                 </a>
 
-                <!-- دکمه بازگشت (فقط در صفحات غیر از داشبورد) -->
                 {% if request.path != '/dashboard' and request.path != '/' %}
                 <button onclick="history.back()" class="btn-back">
                     <i class="fas fa-arrow-right"></i>
@@ -725,19 +864,16 @@
                 {% endif %}
             </div>
 
-            <!-- بخش راست -->
             <div class="header-right">
                 
-                <!-- دکمه نوتیفیکیشن -->
                 <button class="btn-notification" title="اعلان‌ها">
                     <i class="fas fa-bell"></i>
                     <span class="badge">3</span>
                 </button>
 
-                <!-- پروفایل کاربر -->
                 <a href="/dashboard/profile" class="user-profile">
                     <div class="avatar">
-                        {{ session.get('user_full_name', 'A')[0]|upper if session.get('user_full_name') else 'A' }}
+                        {{ session.get('user_full_name', 'کاربر')[0]|upper if session.get('user_full_name') else 'U' }}
                     </div>
                     <div class="user-info">
                         <span class="user-name">{{ session.get('user_full_name', 'کاربر') }}</span>
@@ -756,7 +892,6 @@
                     </div>
                 </a>
 
-                <!-- دکمه همبرگر (موبایل) -->
                 <button class="hamburger" id="hamburgerBtn" aria-label="منو">
                     <span></span>
                     <span></span>
@@ -772,49 +907,50 @@
     </div>
 
     <!-- ==========================================
-    ===== نوار پایین (فوتر) جدید =====
+    ===== نوار پایین (فوتر) =====
     ========================================== -->
     <nav class="bottom-nav" id="bottomNav">
         
         <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
             <i class="fas fa-home"></i>
             <span>خانه</span>
+            <span class="tooltip">خانه</span>
         </a>
 
         <a href="/dashboard/channels" class="nav-item {% if request.path.startswith('/dashboard/channels') %}active{% endif %}">
             <i class="fas fa-bullhorn"></i>
             <span>کانال‌ها</span>
             <span class="nav-badge">12</span>
+            <span class="tooltip">کانال‌ها</span>
         </a>
 
-        <!-- دکمه مرکزی (اضافه کردن) -->
         <a href="/dashboard/posts" class="nav-item center-btn {% if request.path.startswith('/dashboard/posts') %}active{% endif %}">
             <div class="center-circle">
                 <i class="fas fa-plus"></i>
             </div>
             <span>پست‌ها</span>
+            <span class="tooltip">پست‌ها</span>
         </a>
 
         <a href="/dashboard/profile" class="nav-item {% if request.path.startswith('/dashboard/profile') %}active{% endif %}">
             <i class="fas fa-user"></i>
             <span>پروفایل</span>
+            <span class="tooltip">پروفایل</span>
         </a>
 
         <a href="/auth/logout" class="nav-item logout" onclick="return confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')">
             <i class="fas fa-sign-out-alt"></i>
             <span>خروج</span>
+            <span class="tooltip">خروج</span>
         </a>
 
     </nav>
 
-    <!-- ==========================================
-    ===== اسکریپت‌ها =====
-    ========================================== -->
+    <!-- ===== اسکریپت‌ها ===== -->
     <script>
         // ===== ۱. افکت اسکرول برای هدر =====
         const header = document.getElementById('appHeader');
-        let lastScroll = 0;
-
+        
         window.addEventListener('scroll', function() {
             const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
             
@@ -823,8 +959,6 @@
             } else {
                 header.classList.remove('scrolled');
             }
-            
-            lastScroll = currentScroll;
         });
 
         // ===== ۲. منوی همبرگر =====
@@ -834,27 +968,14 @@
         hamburger.addEventListener('click', function() {
             menuOpen = !menuOpen;
             this.classList.toggle('active');
-            
-            // در اینجا می‌توانید منوی کشویی اضافه کنید
-            // برای نمونه یک alert ساده
-            if (menuOpen) {
-                // می‌توانید یک منوی کشویی نمایش دهید
-                console.log('منو باز شد');
-            }
         });
 
-        // ===== ۳. بستن پیام‌های فلش با کلیک =====
+        // ===== ۳. بستن پیام‌های فلش =====
         document.querySelectorAll('.flash-close').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 this.parentElement.remove();
             });
         });
-
-        // ===== ۴. تشخیص مسیر فعال در فوتر =====
-        // (با کلاس‌های active که در خود لینک‌ها قرار داده شده‌اند)
-
-        // ===== ۵. جلوگیری از کلیک روی دکمه مرکزی =====
-        // (دکمه مرکزی به صفحه پست‌ها لینک شده)
     </script>
 
     {% block extra_scripts %}{% endblock %}
